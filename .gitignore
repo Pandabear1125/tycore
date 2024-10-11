@@ -1,0 +1,10 @@
+# Ignore build and any build artifacts
+build
+
+# Ignore the installed compiler and any tools artifacts
+tools/compiler
+tools/*.txt
+
+# Ignore the project executables
+*.elf
+*.hex
