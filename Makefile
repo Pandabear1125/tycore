@@ -28,16 +28,17 @@ CPU_FLAGS = -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 
 LINKER_FLAGS = -Wl,--gc-sections,--print-memory-usage
 
+
 all: clean $(OUTPUT).hex
 
 
 $(BUILD_DIR)/%.o : %.c
-	mkdir -p $(dir $@)
-	$(COMPILER_C) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
+	@mkdir -p $(dir $@)
+	@$(COMPILER_C) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 
 $(OUTPUT).elf : $(SOURCE_OBJS)
-	$(COMPILER_C) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
+	@$(COMPILER_C) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
 
 
 $(OUTPUT).hex : $(OUTPUT).elf
