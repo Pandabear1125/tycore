@@ -5,34 +5,35 @@
 
 #include <stdint.h>
 
-// TODO implement entry point function
-extern void reset_vector(void);
+#include "../macros.h"
 
-extern uint32_t image_vector_table[];
-extern uint32_t boot_data[];
-extern uint32_t dcd[];
-extern uint32_t csf[];
+CFUNC void reset_vector(void);
+
+extern const uint32_t image_vector_table[];
+extern const uint32_t boot_data[];
+extern const uint8_t  dcd[];
+extern const uint32_t csf[];    // unused
+extern const uint32_t serial_nor_configuration[];
 
 // the Image Vector Table entry
 // RM 9.7.1.1
-const uint32_t image_vector_table[8] = {
-    /* header   */ 0x412000D1,                      // VERSION|LENGTH|TAG, it must be 41|2000|D1 // TODO see why this is endian-y
+SECTION(".ivt") const uint32_t image_vector_table[8] = {
+    /* header   */ 0x412000D1,                      // VERSION|LENGTH|TAG, it must be in little endian
     /* entry    */ (uint32_t)&reset_vector,         // the address of the first instruction
     /* reserved */ 0x00000000,
     /* DCD      */ (uint32_t)dcd,                   // the address of the Device Configuration Data
     /* bootdata */ (uint32_t)boot_data,             // the address of the boot data
     /* self     */ (uint32_t)image_vector_table,    // the address of the Image Vector Table (itself)
-    /* CSF      */ (uint32_t)csf,                   // the address of the Command Sequence File used by High-Assurance Boot
+    /* CSF      */ 0x00000000,                      // the address of the Command Sequence File used by High-Assurance Boot
     /* reserved */ 0x00000000
 };
 
 // the length of the flash image, derrived form the linker
-// TODO define __ld_flash_length
 extern uint32_t __ld_flash_length;
 
 // the boot data entry
 // RM 9.7.1.2
-const uint32_t boot_data[3] = {
+SECTION(".boot_data") const uint32_t boot_data[3] = {
     /* start  */ 0x60000000,                        // the address of the start of the image (start of flash)
     /* length */ (uint32_t)&__ld_flash_length,      // the total size of the image  
     /* plugin */ 0x00000000                         // any plugin flags
@@ -40,17 +41,21 @@ const uint32_t boot_data[3] = {
 
 // the Device Configuration Data entry
 // RM 9.7.2
-// TODO determine if we want this
-const uint8_t dcd[1768] = {
+SECTION(".dcd") const uint8_t dcd[1768] = {
     /* header */ 0xD2, 0x00, 0x04, 0x41,
     /* write  */ // ...
     /* check  */ // ...
 };
 
+// the Command Sequence File used by the High-Assurance Boot
+// RM 9.12
+// currently unused
+SECTION(".csf") const uint32_t csf[128] = {};
+
 // the Serial NOR FlexSPI configuration entry
 // RM 9.6.3
 // RM 9.6.3.3
-const uint32_t serial_nor_configuration[128] = {
+SECTION(".serial_nor_fcfb") const uint32_t serial_nor_configuration[] = {
     // FlexSPI NOR common memory configuration block
 
 /* 0x000 : tag                      */  0x42464346,

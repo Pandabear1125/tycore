@@ -22,27 +22,28 @@ READELF			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-readelf
 ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
-COMPILER_FLAGS = -lnosys -lc -nostartfiles
+COMPILER_FLAGS =
 
 CPU_FLAGS = -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 
-LINKER_FLAGS = -Wl,--gc-sections,--print-memory-usage
+LINKER_FLAGS = -Wl,--gc-sections,--relax,--print-memory-usage,-T$(SOURCE_DIR)/linker.ld
 
 
 all: clean $(OUTPUT).hex
-
+	@$(OBJDUMP) -dstz  $(OUTPUT).elf > $(OUTPUT).dump
 
 $(BUILD_DIR)/%.o : %.c
+	@echo [Building $<]
 	@mkdir -p $(dir $@)
-	@$(COMPILER_C) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
+	@$(COMPILER_CPP) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 
 $(OUTPUT).elf : $(SOURCE_OBJS)
-	@$(COMPILER_C) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
+	$(COMPILER_CPP) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
 
 
 $(OUTPUT).hex : $(OUTPUT).elf
-	$(OBJCOPY) -O ihex -R .eeprom $^ $@
+	@$(OBJCOPY) -O ihex -R .eeprom $^ $@
 
 
 clean:
