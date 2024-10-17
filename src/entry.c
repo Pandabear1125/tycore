@@ -10,3 +10,8 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	GPIO7_GDIR |= (1<<3);
 	GPIO7_DR_SET = (1<<3); // digitalWrite(13, HIGH);
 }
+
+// TODO create actual main, this is just to satisfy linker references
+int main(void) {
+
+}

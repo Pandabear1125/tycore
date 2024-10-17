@@ -26,6 +26,8 @@ ENTRY(reset_vector)
 /* Defined elf sections */
 SECTIONS {
     .boot (READONLY) : {
+        __ld_image_start = .;
+        __ld_boot_start = .;
         KEEP(*(.serial_nor_fcfb))
         KEEP(*(.boot_data))
         KEEP(*(.dcd))
@@ -34,12 +36,57 @@ SECTIONS {
         . = ALIGN(0x1000);
         KEEP(*(.ivt))
         KEEP(*(.reset_vector))
-        __ld_flash_length = .;
+        __ld_boot_end = .;
     } > FLEXSPI
 
-    /* TODO: figure out what we need to define for the C/C++ standard lib to work */
-    .all (READONLY) : {
-        KEEP(*(*))
-    } > FLEXSPI2
+    .init : {
+        KEEP(*(.init*))
+        __ld_preinit_array_start = .;
+        KEEP(*(.preinit_array*))
+        __ld_preinit_array_end = .;
+        __ld_init_array_start = .;
+        KEEP(*(.init_array*))
+        __ld_init_array_end = .;
+        KEEP(*(.fini*))
+    } > FLEXSPI
 
+    .itcm (READONLY) : {
+        __ld_itcm_start = .;
+        *(.text*)
+        __ld_itcm_end = .;
+    } > ITCM AT > FLEXSPI
+
+    .dtcm : {
+        __ld_dtcm_start = .;
+        *(.data*)
+        *(.rodata*)
+        *(.bss*)
+        *(COMMON*)   /* this might be useless since COMMON only exists in .o files */
+        __ld_dtcm_end = .;
+    } > DTCM AT > FLEXSPI
+
+    .ocram : {
+        __ld_ocram_start = .;
+        __ld_ocram_end = .;
+    } > OCRAM1 AT > FLEXSPI
+
+    .ARM : {
+        *(.ARM.*)
+    } > FLEXSPI
+
+    .debug : {
+        *(.debug*)
+        *(.comment*)
+    } > FLEXSPI
+
+    .end (READONLY) : {
+        __ld_image_end = .;
+    } > FLEXSPI
+
+    .all : {
+        *(*)
+    } > OCRAM2
+    ASSERT(SIZEOF(.all) == 0, "Something was placed in .all!")
+
+    __ld_image_length = __ld_image_end - __ld_image_start;
 }

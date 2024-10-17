@@ -29,13 +29,13 @@ SECTION(".ivt") const uint32_t image_vector_table[8] = {
 };
 
 // the length of the flash image, derrived form the linker
-extern uint32_t __ld_flash_length;
+extern uint32_t __ld_image_length;
 
 // the boot data entry
 // RM 9.7.1.2
 SECTION(".boot_data") const uint32_t boot_data[3] = {
     /* start  */ 0x60000000,                        // the address of the start of the image (start of flash)
-    /* length */ (uint32_t)&__ld_flash_length,      // the total size of the image  
+    /* length */ (uint32_t)&__ld_image_length,      // the total size of the image  
     /* plugin */ 0x00000000                         // any plugin flags
 };
 

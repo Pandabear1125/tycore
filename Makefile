@@ -22,14 +22,16 @@ READELF			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-readelf
 ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
-COMPILER_FLAGS =
+COMPILER_FLAGS  = -nostartfiles		# TODO remove this
+COMPILER_FLAGS += -fno-exceptions	# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
 
 CPU_FLAGS = -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 
-LINKER_FLAGS = -Wl,--gc-sections,--relax,--print-memory-usage,-T$(SOURCE_DIR)/linker.ld
+LINKER_FLAGS = -Wl,--gc-sections,--relax,--print-memory-usage,-T$(SOURCE_DIR)/linker.ld,-Map=$(OUTPUT).map,--cref
 
 
 all: clean $(OUTPUT).hex
+	@rm -f $(OUTPUT).dump
 	@$(OBJDUMP) -dstz  $(OUTPUT).elf > $(OUTPUT).dump
 
 $(BUILD_DIR)/%.o : %.c
@@ -39,6 +41,7 @@ $(BUILD_DIR)/%.o : %.c
 
 
 $(OUTPUT).elf : $(SOURCE_OBJS)
+	@rm -f $(OUTPUT).map
 	$(COMPILER_CPP) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
 
 

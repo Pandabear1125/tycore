@@ -12,5 +12,6 @@ tools/*.txt
 # Ignore vscode stuff
 .vscode
 
-# Ignore any disassembly files
+# Ignore any development files
 *.dump
+*.map
