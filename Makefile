@@ -34,6 +34,7 @@ all: clean $(OUTPUT).hex
 	@rm -f $(OUTPUT).dump
 	@$(OBJDUMP) -dstz  $(OUTPUT).elf > $(OUTPUT).dump
 
+
 $(BUILD_DIR)/%.o : %.c
 	@echo [Building $<]
 	@mkdir -p $(dir $@)
@@ -47,6 +48,10 @@ $(OUTPUT).elf : $(SOURCE_OBJS)
 
 $(OUTPUT).hex : $(OUTPUT).elf
 	@$(OBJCOPY) -O ihex -R .eeprom $^ $@
+
+
+upload: all
+	tycmd upload $(OUTPUT).hex
 
 
 clean:
