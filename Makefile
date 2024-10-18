@@ -50,6 +50,7 @@ $(OUTPUT).hex : $(OUTPUT).elf
 
 
 clean:
+	rm -rf $(OUTPUT).dump $(OUTPUT).map
 	rm -rf $(BUILD_DIR) $(OUTPUT).elf $(OUTPUT).hex
 
 
