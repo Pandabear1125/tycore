@@ -28,7 +28,6 @@ SECTIONS {
     /* All sections required for the processor to boot properly */
     .boot (READONLY) : {
         __ld_image_start = .;
-        __ld_boot_start = .;
         KEEP(*(.serial_nor_fcfb))
         KEEP(*(.boot_data))
         KEEP(*(.dcd))
@@ -37,7 +36,7 @@ SECTIONS {
         . = ALIGN(0x1000);
         KEEP(*(.ivt))
         KEEP(*(.reset_vector))
-        __ld_boot_end = .;
+        . = ALIGN(0x10);
     } > FLEXSPI
 
     /* All sections required for C/C++ initialization */
@@ -50,29 +49,36 @@ SECTIONS {
         KEEP(*(.init_array*))
         __ld_init_array_end = .;
         KEEP(*(.fini*))
+        . = ALIGN(0x10);
     } > FLEXSPI
 
     /* All code to be placed into the I-TCM */
     .itcm (READONLY) : {
-        __ld_itcm_start = .;
         *(.text*)
-        __ld_itcm_end = .;
+        . = ALIGN(0x10);
     } > ITCM AT > FLEXSPI
+
+    __ld_itcm_start = ADDR(.itcm);
+    __ld_itcm_load = LOADADDR(.itcm);
+    __ld_itcm_size = SIZEOF(.itcm);
 
     /* All data to be placed into the D-TCM */
     .dtcm : {
-        __ld_dtcm_start = .;
         *(.data*)
         *(.rodata*)
         *(.bss*)
         *(COMMON*)   /* this might be useless since COMMON only exists in .o files */
-        __ld_dtcm_end = .;
+        . = ALIGN(0x10);
     } > DTCM AT > FLEXSPI
+
+    __ld_dtcm_start = ADDR(.dtcm);
+    __ld_dtcm_load = LOADADDR(.dtcm);
+    __ld_dtcm_size = SIZEOF(.dtcm);
 
     /* All data pre-allocated to exist within the OCRAM */
     .ocram : {
-        __ld_ocram_start = .;
-        __ld_ocram_end = .;
+        __ld_stack_start = .;
+        . = ALIGN(0x10);
     } > OCRAM1 AT > FLEXSPI
 
     /* All ARM symbol information */
@@ -102,8 +108,8 @@ SECTIONS {
 
     /* RM 31.3.2 */
     /* The ITCM, DTCM, OCRAM configuration information */
-    __ld_itcm_blocks = ((__ld_itcm_end - __ld_itcm_start) >> 15) + 1;
-    __ld_dtcm_blocks = ((__ld_dtcm_end - __ld_dtcm_start) >> 15) + 1;
+    __ld_itcm_blocks = ((__ld_itcm_size) >> 15) + 1;
+    __ld_dtcm_blocks = ((__ld_dtcm_size) >> 15) + 1;
     __ld_ocram_blocks = 16 - __ld_itcm_blocks - __ld_dtcm_blocks;
     ASSERT(__ld_ocram_blocks >= 2, "Not enough memory allocated to OCRAM. Too much allocated to ITCM/DTCM")
 
