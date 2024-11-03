@@ -17,6 +17,32 @@
 
 typedef volatile uint32_t reg_t;
 
+// IOMUXC Memory Map/Register Definition
+// RM 11
+
+#pragma region IOMUXC
+
+typedef volatile struct {
+    reg_t MUX_MODE : 4;
+    reg_t SION : 1;
+    reg_t : 27;
+} IOMUXC_SW_MUX_CTL_PAD_t;
+
+typedef volatile struct {
+    reg_t SRE : 1;
+    reg_t : 2;
+    reg_t DSE :3;
+    reg_t SPEED : 2;
+    reg_t : 3;
+    reg_t ODE : 1;
+    reg_t PKE : 1;
+    reg_t PUE : 1;
+    reg_t PUS : 2;
+    reg_t HYS : 1;
+    reg_t : 15;
+} IOMUXC_SW_PAD_CTL_PAD_t;
+
+
 // IOMUXC GPR Memory Map/Register Definition
 // RM 11.3
 
@@ -456,27 +482,8 @@ typedef volatile struct {
     reg_t : 23;
 } IOMUXC_GPR_GPR34_t;
 #define IOMUXC_GPR_GPR34 ((IOMUXC_GPR_GPR34_t*)0x400AC088)
-#pragma endregion
 
-typedef volatile struct {
-    reg_t MUX_MODE : 4;
-    reg_t SION : 1;
-    reg_t : 27;
-} IOMUXC_SW_MUX_CTL_PAD_t;
-
-typedef volatile struct {
-    reg_t SRE : 1;
-    reg_t : 2;
-    reg_t DSE :3;
-    reg_t SPEED : 2;
-    reg_t : 3;
-    reg_t ODE : 1;
-    reg_t PKE : 1;
-    reg_t PUE : 1;
-    reg_t PUS : 2;
-    reg_t HYS : 1;
-    reg_t : 15;
-} IOMUXC_SW_PAD_CTL_PAD_t;
+#pragma endregion // IOMUXC_GPR
 
 // IOMUXC SNVS Memory Map/Register Definition
 // RM 11.4
@@ -494,7 +501,7 @@ typedef volatile struct {
 #define IOMUXC_SNVS_SW_PAD_CTL_PAD_PMIC_ON_REQ      ((IOMUXC_SW_PAD_CTL_PAD_t*)0x401F801C)
 #define IOMUXC_SNVS_SW_PAD_CTL_PAD_PMIC_STBY_REQ    ((IOMUXC_SW_PAD_CTL_PAD_t*)0x401F8020)
 
-#pragma endregion
+#pragma endregion // IOMUXC_SNVS
 
 // IOMUXC SNVS GPR Memory Map/Register Definition
 // RM 11.5
@@ -667,7 +674,7 @@ typedef volatile struct {
 #define IOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B1_10     ((IOMUXC_SW_MUX_CTL_PAD_t*)0x401F81FC)
 #define IOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B1_11     ((IOMUXC_SW_MUX_CTL_PAD_t*)0x401F8200)
 
-#pragma endregion
+#pragma endregion // IOMUXC_SW_MUX
 
 // IOMUXC SW PAD Memory Map/Register Definition
 // RM 11.6
@@ -805,7 +812,7 @@ typedef volatile struct {
 #define IOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B1_10     ((IOMUXC_SW_PAD_CTL_PAD_t*)0x401F83EC)
 #define IOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B1_11     ((IOMUXC_SW_PAD_CTL_PAD_t*)0x401F83F0)
 
-#pragma endregion
+#pragma endregion // IOMUXC_SW_PAD
 
 // IOMUXC SELECT_INPUT DAISY Register Definition
 // RM 11.6
@@ -1005,6 +1012,8 @@ typedef volatile struct {
 #define IOMUXC_SEMC_I_IPP_IND_DQS4_SELECT_INPUT         ((IOMUXC_SELECT_INPUT_DAISY_t*)0x401F8788)
 #define IOMUXC_CANFD_IPP_IND_CANRX_SELECT_INPUT         ((IOMUXC_SELECT_INPUT_DAISY_t*)0x401F878C)
 
-#pragma endregion
+#pragma endregion // IOMUXC_SELECT_INPUT_DAISY
+
+#pragma endregion // IOMUXC
 
 #endif // IMXRT_REGMAP_H
