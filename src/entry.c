@@ -17,9 +17,12 @@ extern uint32_t __ld_dtcm_size;
 extern int main(void);
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
+	// enable ITCM/DTCM/OCRAM config
 	IOMUXC_GPR_GPR16->FLEXRAM_BANK_CFG_SEL = 1;
+	// set the ITCM/DTCM/OCRAM config
 	IOMUXC_GPR_GPR17->FLEXRAM_BANK_CFG = (uint32_t)&__ld_flexram_config;
 
+	// set the stack pointer
 	asm volatile (
 		"mov sp, %0"
 		: 
@@ -27,16 +30,20 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 		: "memory"
 	);
 
-	// Copy the ITCM and DTCM sections from flash to RAM
+	// copy ITCM section into ITCM memory
 	uint32_t *src = &__ld_itcm_load;
 	uint32_t *dst = &__ld_itcm_start;
 	uint32_t len = (uint32_t)&__ld_itcm_size;
 	while (len--) *dst++ = *src++;
 
+	// copy DTCM section into DTCM memory
 	src = &__ld_dtcm_load;
 	dst = &__ld_dtcm_start;
 	len = (uint32_t)&__ld_dtcm_size;
 	while (len--) *dst++ = *src++;
+
+	// enable GPIO7 rather GPIO2
+	IOMUXC_GPR_GPR27->GPIO_MUX2_GPIO_SEL = 0xffffffff;
 
 	main();
 

@@ -1014,6 +1014,112 @@ typedef volatile struct {
 
 #pragma endregion // IOMUXC_SELECT_INPUT_DAISY
 
+// General Purpose Input/Output (GPIO) Register Definition
+// RM 12.1
+
+#pragma region GPIO
+
+typedef volatile struct {
+    reg_t DR : 32;
+} GPIO_DR_t;
+
+typedef volatile struct {
+    reg_t GDIR : 32;
+} GPIO_GDIR_t;
+
+typedef volatile struct {
+    reg_t PSR : 32;
+} GPIO_PSR_t;
+
+typedef volatile struct {
+    reg_t ICR0 : 2;
+    reg_t ICR1 : 2;
+    reg_t ICR2 : 2;
+    reg_t ICR3 : 2;
+    reg_t ICR4 : 2;
+    reg_t ICR5 : 2;
+    reg_t ICR6 : 2;
+    reg_t ICR7 : 2;
+    reg_t ICR8 : 2;
+    reg_t ICR9 : 2;
+    reg_t ICR10 : 2;
+    reg_t ICR11 : 2;
+    reg_t ICR12 : 2;
+    reg_t ICR13 : 2;
+    reg_t ICR14 : 2;
+    reg_t ICR15 : 2;
+} GPIO_ICR1_t;
+
+typedef volatile struct {
+    reg_t ICR16 : 2;
+    reg_t ICR17 : 2;
+    reg_t ICR18 : 2;
+    reg_t ICR19 : 2;
+    reg_t ICR20 : 2;
+    reg_t ICR21 : 2;
+    reg_t ICR22 : 2;
+    reg_t ICR23 : 2;
+    reg_t ICR24 : 2;
+    reg_t ICR25 : 2;
+    reg_t ICR26 : 2;
+    reg_t ICR27 : 2;
+    reg_t ICR28 : 2;
+    reg_t ICR29 : 2;
+    reg_t ICR30 : 2;
+    reg_t ICR31 : 2;
+} GPIO_ICR2_t;
+
+typedef volatile struct {
+    reg_t IMR : 32;
+} GPIO_IMR_t;
+
+typedef volatile struct {
+    reg_t ISR : 32;
+} GPIO_ISR_t;
+
+typedef volatile struct {
+    reg_t EDGE_SEL : 32;
+} GPIO_EDGE_SEL_t;
+
+typedef volatile struct {
+    reg_t DR_SET : 32;
+} GPIO_DR_SET_t;
+
+typedef volatile struct {
+    reg_t DR_CLEAR : 32;
+} GPIO_DR_CLEAR_t;
+
+typedef volatile struct {
+    reg_t DR_TOGGLE : 32;
+} GPIO_DR_TOGGLE_t;
+
+typedef volatile struct {
+    /* 0x0  */ GPIO_DR_t DR;
+    /* 0x4  */ GPIO_GDIR_t GDIR;
+    /* 0x8  */ GPIO_PSR_t PSR;
+    /* 0xC  */ GPIO_ICR1_t ICR1;
+    /* 0x10 */ GPIO_ICR2_t ICR2;
+    /* 0x14 */ GPIO_IMR_t IMR;
+    /* 0x18 */ GPIO_ISR_t ISR;
+    /* 0x1C */ GPIO_EDGE_SEL_t EDGE_SEL;
+    /*      */ uint32_t reserved[25];
+    /* 0x84 */ GPIO_DR_SET_t DR_SET;
+    /* 0x88 */ GPIO_DR_CLEAR_t DR_CLEAR;
+    /* 0x8C */ GPIO_DR_TOGGLE_t DR_TOGGLE;
+} GPIO_t;
+
+#define GPIO1 ((GPIO_t*)0x401B8000)
+#define GPIO2 ((GPIO_t*)0x401BC000)
+#define GPIO3 ((GPIO_t*)0x401C0000)
+#define GPIO4 ((GPIO_t*)0x401C4000)
+#define GPIO5 ((GPIO_t*)0x400C0000)
+#define GPIO6 ((GPIO_t*)0x42000000)
+#define GPIO7 ((GPIO_t*)0x42004000)
+#define GPIO8 ((GPIO_t*)0x42008000)
+#define GPIO9 ((GPIO_t*)0x4200C000)
+
+#pragma endregion // GPIO
+
 #pragma endregion // IOMUXC
 
 #endif // IMXRT_REGMAP_H
