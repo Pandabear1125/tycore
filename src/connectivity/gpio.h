@@ -3,95 +3,61 @@
 
 #include "../imxrt_regmap.h"
 
-static IOMUXC_SW_MUX_CTL_PAD_t* gpio_pin_mux_map[] = {
-    /*  0  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_03,     // GPIO_AD_B0_03
-    /*  1  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_02,     // GPIO_AD_B0_02
-    /*  2  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_04,       // GPIO_EMC_04
-    /*  3  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_05,       // GPIO_EMC_05
-    /*  4  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_06,       // GPIO_EMC_06
-    /*  5  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_08,       // GPIO_EMC_08
-    /*  6  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B0_10,        // GPIO_B0_10
-    /*  7  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B1_01,        // GPIO_B1_01
-    /*  8  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B1_00,        // GPIO_B1_00
-    /*  9  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B0_11,        // GPIO_B0_11
-    /* 10  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B0_00,        // GPIO_B0_00
-    /* 11  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B0_02,        // GPIO_B0_02
-    /* 12  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B0_01,        // GPIO_B0_01
-    /* 13  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B0_03,        // GPIO_B0_03
-    /* 14  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_02,     // GPIO_AD_B1_02
-    /* 15  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_03,     // GPIO_AD_B1_03
-    /* 16  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_07,     // GPIO_AD_B1_07
-    /* 17  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_06,     // GPIO_AD_B1_06
-    /* 18  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_01,     // GPIO_AD_B1_01
-    /* 19  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_00,     // GPIO_AD_B1_00
-    /* 20  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_10,     // GPIO_AD_B1_10
-    /* 21  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_11,     // GPIO_AD_B1_11
-    /* 22  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_08,     // GPIO_AD_B1_08
-    /* 23  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_09,     // GPIO_AD_B1_09
-    /* 24  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_12,     // GPIO_AD_B0_12
-    /* 25  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_13,     // GPIO_AD_B0_13
-    /* 26  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_14,     // GPIO_AD_B1_14
-    /* 27  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_15,     // GPIO_AD_B1_15
-    /* 28  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_32,       // GPIO_EMC_32
-    /* 29  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_31,       // GPIO_EMC_31
-    /* 30  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_37,       // GPIO_EMC_37
-    /* 31  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_36,       // GPIO_EMC_36
-    /* 32  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B0_12,        // GPIO_B0_12
-    /* 33  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_07,       // GPIO_EMC_07
-    /* 34  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B1_13,        // GPIO_B1_13
-    /* 35  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B1_12,        // GPIO_B1_12
-    /* 36  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B1_02,        // GPIO_B1_02
-    /* 37  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_B1_03,        // GPIO_B1_03
-    /* 38  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_12,     // GPIO_AD_B1_12
-    /* 39  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_13,     // GPIO_AD_B1_13
-    /* 40  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_04,     // GPIO_AD_B1_04
-    /* 41  */  IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_05      // GPIO_AD_B1_05
-};
+#define GPIO_PIN_COUNT 42
 
-static IOMUXC_SW_PAD_CTL_PAD_t* gpio_pin_pad_map[] = {
-    /*  0  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_03,     // GPIO_AD_B0_03
-    /*  1  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_02,     // GPIO_AD_B0_02
-    /*  2  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_04,       // GPIO_EMC_04
-    /*  3  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_05,       // GPIO_EMC_05
-    /*  4  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_06,       // GPIO_EMC_06
-    /*  5  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_08,       // GPIO_EMC_08
-    /*  6  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B0_10,        // GPIO_B0_10
-    /*  7  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B1_01,        // GPIO_B1_01
-    /*  8  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B1_00,        // GPIO_B1_00
-    /*  9  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B0_11,        // GPIO_B0_11
-    /* 10  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B0_00,        // GPIO_B0_00
-    /* 11  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B0_02,        // GPIO_B0_02
-    /* 12  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B0_01,        // GPIO_B0_01
-    /* 13  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B0_03,        // GPIO_B0_03
-    /* 14  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_02,     // GPIO_AD_B1_02
-    /* 15  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_03,     // GPIO_AD_B1_03
-    /* 16  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_07,     // GPIO_AD_B1_07
-    /* 17  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_06,     // GPIO_AD_B1_06
-    /* 18  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_01,     // GPIO_AD_B1_01
-    /* 19  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_00,     // GPIO_AD_B1_00
-    /* 20  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_10,     // GPIO_AD_B1_10
-    /* 21  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_11,     // GPIO_AD_B1_11
-    /* 22  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_08,     // GPIO_AD_B1_08
-    /* 23  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_09,     // GPIO_AD_B1_09
-    /* 24  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_12,     // GPIO_AD_B0_12
-    /* 25  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_13,     // GPIO_AD_B0_13
-    /* 26  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_14,     // GPIO_AD_B1_14
-    /* 27  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_15,     // GPIO_AD_B1_15
-    /* 28  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_32,       // GPIO_EMC_32
-    /* 29  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_31,       // GPIO_EMC_31
-    /* 30  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_37,       // GPIO_EMC_37
-    /* 31  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_36,       // GPIO_EMC_36
-    /* 32  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B0_12,        // GPIO_B0_12
-    /* 33  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_07,       // GPIO_EMC_07
-    /* 34  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B1_13,        // GPIO_B1_13
-    /* 35  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B1_12,        // GPIO_B1_12
-    /* 36  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B1_02,        // GPIO_B1_02
-    /* 37  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_B1_03,        // GPIO_B1_03
-    /* 38  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_12,     // GPIO_AD_B1_12
-    /* 39  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_13,     // GPIO_AD_B1_13
-    /* 40  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_04,     // GPIO_AD_B1_04
-    /* 41  */  IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_05      // GPIO_AD_B1_05
-};
+/**
+ * @brief Initialize the GPIO pins and set them to use fast GPIO. On system startup, the GPIO pins are disabled.
+ * @note This function must be called before using any GPIO pins otherwise it is undefined behavior.
+ * @return 0 if successful, otherwise an error code.
+ */
+int gpio_init(void);
 
+// GPIO pin modes
+typedef enum {
+    INPUT = 0,
+    INPUT_PULLUP,
+    INPUT_PULLDOWN,
+    OUTPUT,
+    OUTPUT_OPENDRAIN,
+    INPUT_DISABLE
+} gpio_pin_mode_t;
+
+/**
+ * @brief Set the mode of a GPIO pin.
+ * @param pin The GPIO pin number.
+ * @param mode The mode to set the pin to.
+ * @note Using a pin without setting the mode is undefined behavior.
+ */
+void pinMode(uint8_t pin, gpio_pin_mode_t mode);
+
+/**
+ * @brief Write a value to a GPIO pin.
+ * @param pin The GPIO pin number.
+ * @param value The value to write to the pin (0/LOW or 1/HIGH).
+ * @note The pin must be set to some OUTPUT mode.
+ */
+void digitalWrite(uint8_t pin, uint8_t value);
+
+/**
+ * @brief Read the value of a GPIO pin.
+ * @param pin The GPIO pin number.
+ * @return The value of the pin (0/LOW or 1/HIGH).
+ * @note The pin must be set to some INPUT mode.
+ */
+uint8_t digitalRead(uint8_t pin);
+
+/**
+ * @brief Toggle the value of a GPIO pin.
+ * @param pin The GPIO pin number.
+ * @note The pin must be set to some OUTPUT mode.
+ */
+void digitalToggle(uint8_t pin);
+
+/**
+ * @brief Set the pin to 0/LOW.
+ * @param pin The GPIO pin number.
+ * @note The pin must be set to some OUTPUT mode.
+ */
+void digitalClear(uint8_t pin);
 
 #endif // TYCORE_GPIO_H

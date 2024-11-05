@@ -2,6 +2,7 @@
 
 // TODO remake the register map file
 #include "imxrt_regmap.h"
+#include "connectivity/gpio.h"
 
 extern uint32_t __ld_flexram_config;
 extern uint32_t __ld_stack_start;
@@ -15,6 +16,7 @@ extern uint32_t __ld_dtcm_load;
 extern uint32_t __ld_dtcm_size;
 
 extern int main(void);
+// TODO: figure out how to call c++ constructors 
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	// enable ITCM/DTCM/OCRAM config
@@ -42,8 +44,7 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	len = (uint32_t)&__ld_dtcm_size;
 	while (len--) *dst++ = *src++;
 
-	// enable GPIO7 rather GPIO2
-	IOMUXC_GPR_GPR27->GPIO_MUX2_GPIO_SEL = 0xffffffff;
+	gpio_init();
 
 	main();
 
