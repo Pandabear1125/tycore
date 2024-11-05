@@ -50,7 +50,7 @@ SECTION(".dcd") const uint8_t dcd[1768] = {
 // the Command Sequence File used by the High-Assurance Boot
 // RM 9.12
 // currently unused
-SECTION(".csf") const uint32_t csf[128] = {};
+SECTION(".csf") const uint32_t csf[128] = { 0 };
 
 // the Serial NOR FlexSPI configuration entry
 // RM 9.6.3

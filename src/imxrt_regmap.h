@@ -49,7 +49,7 @@ typedef volatile struct {
 #pragma region IOMUXC_GPR
 
 typedef volatile struct {
-    reg_t : 32; 
+    reg_t reserved : 32; 
 } IOMUXC_GPR_GPR0_t;
 #define IOMUXC_GPR_GPR0 ((IOMUXC_GPR_GPR0_t*)0x400AC000)
 
@@ -276,7 +276,7 @@ typedef volatile struct {
 #define IOMUXC_GPR_GPR8 ((IOMUXC_GPR_GPR8_t*)0x400AC020)
 
 typedef volatile struct {
-    reg_t : 32;
+    reg_t reserved : 32;
 } IOMUXC_GPR_GPR9_t;
 #define IOMUXC_GPR_GPR9 ((IOMUXC_GPR_GPR9_t*)0x400AC024)
 
@@ -355,7 +355,7 @@ typedef volatile struct {
 #define IOMUXC_GPR_GPR14 ((IOMUXC_GPR_GPR14_t*)0x400AC038)
 
 typedef volatile struct {
-    reg_t : 32;
+    reg_t reserved : 32;
 } IOMUXC_GPR_GPR15_t;
 #define IOMUXC_GPR_GPR15 ((IOMUXC_GPR_GPR15_t*)0x400AC03C)
 
@@ -509,17 +509,17 @@ typedef volatile struct {
 #pragma region IOMUXC_SNVS_GPR
 
 typedef volatile struct {
-    reg_t : 32;
+    reg_t reserved : 32;
 } IOMUXC_SNVS_GPR_GPR0_t;
 #define IOMUXC_SNVS_GPR_GPR0 ((IOMUXC_SNVS_GPR_GPR0_t*)0x401A4000)
 
 typedef volatile struct {
-    reg_t : 32;
+    reg_t reserved : 32;
 } IOMUXC_SNVS_GPR_GPR1_t;
 #define IOMUXC_SNVS_GPR_GPR1 ((IOMUXC_SNVS_GPR_GPR1_t*)0x401A4004)
 
 typedef volatile struct {
-    reg_t : 32;
+    reg_t reserved : 32;
 } IOMUXC_SNVS_GPR_GPR2_t;
 #define IOMUXC_SNVS_GPR_GPR2 ((IOMUXC_SNVS_GPR_GPR2_t*)0x401A4008)
 

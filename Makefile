@@ -22,8 +22,9 @@ READELF			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-readelf
 ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
-COMPILER_FLAGS  = -nostartfiles		# TODO remove this
-COMPILER_FLAGS += -fno-exceptions	# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
+COMPILER_FLAGS  = -nostartfiles			# TODO remove this
+COMPILER_FLAGS += -fno-exceptions		# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
+COMPILER_FLAGS += -Wall -Wextra -Werror # enable all warnings and treat them as errors. Can't do -Wpedantic because we call main manually and that is against the standard
 
 CPU_FLAGS = -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 
