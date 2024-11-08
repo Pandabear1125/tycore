@@ -1,8 +1,12 @@
 #include "gpio.h"
 
+#include "../utils/memory.h"
+
+// TODO: determine if FLASH_DATA reduces performance too much
+
 // GPIO pin to MUX register mapping
 // This specifies which MUX register the pin corresponds to
-static IOMUXC_SW_MUX_CTL_PAD_t* gpio_pin_mux_map[GPIO_PIN_COUNT] = {
+FLASH_DATA static IOMUXC_SW_MUX_CTL_PAD_t* gpio_pin_mux_map[GPIO_PIN_COUNT] = {
     /*  0  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_03,     // GPIO_AD_B0_03    | GPIO1_IO03
     /*  1  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_02,     // GPIO_AD_B0_02    | GPIO1_IO02
     /*  2  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_04,       // GPIO_EMC_04      | GPIO4_IO04
@@ -49,7 +53,7 @@ static IOMUXC_SW_MUX_CTL_PAD_t* gpio_pin_mux_map[GPIO_PIN_COUNT] = {
 
 // GPIO pin to PAD register mapping
 // This specifies which PAD register the pin corresponds to
-static IOMUXC_SW_PAD_CTL_PAD_t* gpio_pin_pad_map[GPIO_PIN_COUNT] = {
+FLASH_DATA static IOMUXC_SW_PAD_CTL_PAD_t* gpio_pin_pad_map[GPIO_PIN_COUNT] = {
     /*  0  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_03,     // GPIO_AD_B0_03    | GPIO1_IO03
     /*  1  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_02,     // GPIO_AD_B0_02    | GPIO1_IO02
     /*  2  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_04,       // GPIO_EMC_04      | GPIO4_IO04
@@ -96,7 +100,7 @@ static IOMUXC_SW_PAD_CTL_PAD_t* gpio_pin_pad_map[GPIO_PIN_COUNT] = {
 
 // GPIO pin to GPIO register mapping
 // This specifies which GPIO register the pin is in
-static GPIO_t* gpio_pin_gpio_map[GPIO_PIN_COUNT] = {
+FLASH_DATA static GPIO_t* gpio_pin_gpio_map[GPIO_PIN_COUNT] = {
     /*  0  */   GPIO6,  // GPIO1_IO03 -> GPIO6
     /*  1  */   GPIO6,  // GPIO1_IO02 -> GPIO6
     /*  2  */   GPIO9,  // GPIO4_IO04 -> GPIO9
@@ -143,7 +147,7 @@ static GPIO_t* gpio_pin_gpio_map[GPIO_PIN_COUNT] = {
 
 // GPIO pin to GPIO register bitmask mapping
 // This specifies which bit corresponds to the pin in the GPIO register
-static uint32_t gpio_pin_gpio_mask_map[GPIO_PIN_COUNT] = {
+FLASH_DATA static uint32_t gpio_pin_gpio_mask_map[GPIO_PIN_COUNT] = {
     /*  0  */   1u << 3u,  // GPIO1_IO03
     /*  1  */   1u << 2u,  // GPIO1_IO02
     /*  2  */   1u << 4u,  // GPIO4_IO04
@@ -188,7 +192,7 @@ static uint32_t gpio_pin_gpio_mask_map[GPIO_PIN_COUNT] = {
     /* 41  */   1u << 21u  // GPIO1_IO21
 };
 
-int gpio_init(void) {
+FLASH_CODE int gpio_init(void) {
     // enable use of fast GPIO
     // this switches the normal GPIO1/2/3/4 to use GPIO6/7/8/9
 

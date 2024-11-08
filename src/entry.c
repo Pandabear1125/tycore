@@ -1,4 +1,4 @@
-#include "macros.h"
+#include "utils/macros.h"
 
 // TODO remake the register map file
 #include "imxrt_regmap.h"
@@ -18,7 +18,7 @@ extern uint32_t __ld_dtcm_size;
 volatile int x = 0;
 
 extern int main(void);
-void __libc_init_array(void);
+extern void __libc_init_array(void);
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	// enable ITCM/DTCM/OCRAM config
@@ -52,9 +52,5 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 
 	main();
 
-	// pinMode(13, OUTPUT);
-	// digitalWrite(13, 1);
-
 	while (1) asm("wfi");
-
 }
