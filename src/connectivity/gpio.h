@@ -5,6 +5,10 @@
 
 #define GPIO_PIN_COUNT 42
 
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
+
 /**
  * @brief Initialize the GPIO pins and set them to use fast GPIO. On system startup, the GPIO pins are disabled.
  * @note This function must be called before using any GPIO pins otherwise it is undefined behavior.
@@ -59,5 +63,9 @@ void digitalToggle(uint8_t pin);
  * @note The pin must be set to some OUTPUT mode.
  */
 void digitalClear(uint8_t pin);
+
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
 
 #endif // TYCORE_GPIO_H

@@ -40,7 +40,7 @@ SECTIONS {
     } > FLEXSPI
 
     /* All sections required for C/C++ initialization */
-    .init : {
+    .init (READONLY) : {
         KEEP(*(.init*))
         __ld_preinit_array_start = .;
         KEEP(*(.preinit_array*))

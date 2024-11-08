@@ -4,9 +4,9 @@ SOURCE_DIR = src
 BUILD_DIR = build
 TOOLS_DIR = tools
 
-SOURCE = $(shell find $(SOURCE_DIR) -name '*.c')
+SOURCE = $(shell find $(SOURCE_DIR) -name '*.cpp' -or -name '*.c')
 
-SOURCE_OBJS = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SOURCE))
+SOURCE_OBJS = $(SOURCE:%=$(BUILD_DIR)/%.o)
 
 # Base arm-none-eabi and Teensyduino tool paths
 COMPILER_TOOLS_PATH = $(TOOLS_DIR)/compiler/arm-gnu-toolchain/bin
@@ -22,9 +22,9 @@ READELF			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-readelf
 ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
-COMPILER_FLAGS  = -nostartfiles			# TODO remove this
 COMPILER_FLAGS += -fno-exceptions		# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
 COMPILER_FLAGS += -Wall -Wextra -Werror # enable all warnings and treat them as errors. Can't do -Wpedantic because we call main manually and that is against the standard
+# COMPILER_FLAGS += -std=gnu++17
 
 CPU_FLAGS = -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 
@@ -36,10 +36,18 @@ all: clean $(OUTPUT).hex
 	@$(OBJDUMP) -dstz  $(OUTPUT).elf > $(OUTPUT).dump
 
 
-$(BUILD_DIR)/%.o : %.c
+$(BUILD_DIR)/%.c.o : %.c
+	@echo [Building $<]
+	@mkdir -p $(dir $@)
+	@$(COMPILER_C) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
+	@$(OBJDUMP) -dstz $@ > $@.dump
+
+
+$(BUILD_DIR)/%.cpp.o : %.cpp
 	@echo [Building $<]
 	@mkdir -p $(dir $@)
 	@$(COMPILER_CPP) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
+	@$(OBJDUMP) -dstz $@ > $@.dump
 
 
 $(OUTPUT).elf : $(SOURCE_OBJS)

@@ -15,7 +15,10 @@ extern uint32_t __ld_dtcm_start;
 extern uint32_t __ld_dtcm_load;
 extern uint32_t __ld_dtcm_size;
 
+volatile int x = 0;
+
 extern int main(void);
+void __libc_init_array(void);
 // TODO: figure out how to call c++ constructors 
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
@@ -46,7 +49,17 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 
 	gpio_init();
 
+	__libc_init_array();
+
 	main();
+
+	if (x == 100) {
+		pinMode(13, OUTPUT);
+		digitalWrite(13, 1);
+	}
+
+	// pinMode(13, OUTPUT);
+	// digitalWrite(13, 1);
 
 	while (1) asm("wfi");
 
