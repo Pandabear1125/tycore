@@ -22,13 +22,17 @@ READELF			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-readelf
 ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
-COMPILER_FLAGS += -fno-exceptions		# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
-COMPILER_FLAGS += -Wall -Wextra -Werror # enable all warnings and treat them as errors. Can't do -Wpedantic because we call main manually and that is against the standard
-# COMPILER_FLAGS += -std=gnu++17
+COMPILER_FLAGS += -fno-exceptions						# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
+COMPILER_FLAGS += -Wall -Wextra -Werror 				# enable all warnings and treat them as errors. Can't do -Wpedantic because we call main manually and that is against the standard
+COMPILER_FLAGS += --specs=nano.specs					# use the newlib nano library, significantly reduces binary size
+COMPILER_FLAGS += -ffunction-sections -fdata-sections 	# put functions and data in separate sections
 
-CPU_FLAGS = -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
+CXX_FLAGS 		= -std=gnu++17							# use C++17 standard with GNU extensions. Extensions are needed for various things like asm and inline
+C_FLAGS 		= -std=gnu11							# use C11 standard with GNU extensions. Extensions are needed for various things like asm and inline
 
-LINKER_FLAGS = -Wl,--gc-sections,--relax,--print-memory-usage,-T$(SOURCE_DIR)/linker.ld,-Map=$(OUTPUT).map,--cref
+CPU_FLAGS 		= -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
+
+LINKER_FLAGS 	= -Wl,--gc-sections,--relax,--print-memory-usage,-T$(SOURCE_DIR)/linker.ld,-Map=$(OUTPUT).map,--cref
 
 
 all: clean $(OUTPUT).hex
@@ -39,20 +43,20 @@ all: clean $(OUTPUT).hex
 $(BUILD_DIR)/%.c.o : %.c
 	@echo [Building $<]
 	@mkdir -p $(dir $@)
-	@$(COMPILER_C) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
+	@$(COMPILER_C) $(C_FLAGS) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 	@$(OBJDUMP) -dstz $@ > $@.dump
 
 
 $(BUILD_DIR)/%.cpp.o : %.cpp
 	@echo [Building $<]
 	@mkdir -p $(dir $@)
-	@$(COMPILER_CPP) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
+	@$(COMPILER_CPP) $(CXX_FLAGS) $(CPU_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 	@$(OBJDUMP) -dstz $@ > $@.dump
 
 
 $(OUTPUT).elf : $(SOURCE_OBJS)
 	@rm -f $(OUTPUT).map
-	$(COMPILER_CPP) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
+	$(COMPILER_CPP) $(CXX_FLAGS) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
 
 
 $(OUTPUT).hex : $(OUTPUT).elf
