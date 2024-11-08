@@ -41,14 +41,14 @@ SECTIONS {
 
     /* All sections required for C/C++ initialization */
     .init (READONLY) : {
-        KEEP(*(.init*))
-        __ld_preinit_array_start = .;
-        KEEP(*(.preinit_array*))
-        __ld_preinit_array_end = .;
-        __ld_init_array_start = .;
-        KEEP(*(.init_array*))
-        __ld_init_array_end = .;
-        KEEP(*(.fini*))
+        KEEP(*(.init))
+        __preinit_array_start = .;
+        KEEP(*(.preinit_array))
+        __preinit_array_end = .;
+        __init_array_start = .;
+        KEEP(*(.init_array))
+        __init_array_end = .;
+        KEEP(*(.fini))
         . = ALIGN(0x10);
     } > FLEXSPI
 

@@ -19,7 +19,6 @@ volatile int x = 0;
 
 extern int main(void);
 void __libc_init_array(void);
-// TODO: figure out how to call c++ constructors 
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	// enable ITCM/DTCM/OCRAM config
@@ -52,11 +51,6 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	__libc_init_array();
 
 	main();
-
-	if (x == 100) {
-		pinMode(13, OUTPUT);
-		digitalWrite(13, 1);
-	}
 
 	// pinMode(13, OUTPUT);
 	// digitalWrite(13, 1);

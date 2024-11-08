@@ -8,7 +8,7 @@ public:
 	Test() {
 		gpio_init();
 		pinMode(13, OUTPUT);
-		x = 100;
+		x = 50;
 		digitalWrite(13, 1);
 	}
 
