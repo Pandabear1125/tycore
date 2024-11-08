@@ -48,12 +48,23 @@ SECTIONS {
         __init_array_start = .;
         KEEP(*(.init_array))
         __init_array_end = .;
+        /* TODO: actually use fini_array */
         KEEP(*(.fini))
+        __fini_array_start = .;
+        KEEP(*(.fini_array))
+        __fini_array_end = .;
         . = ALIGN(0x10);
     } > FLEXSPI
 
-    /* All code to be placed into the I-TCM */
+    /* All "flash" sections */
+    .flash : {
+        *(.flash_code)
+        *(.flash_data)
+    } > FLEXSPI
+
+    /* All code to be placed into the ITCM */
     .itcm (READONLY) : {
+        *(.itcm_code)
         *(.text*)
         . = ALIGN(0x10);
     } > ITCM AT > FLEXSPI
@@ -62,12 +73,14 @@ SECTIONS {
     __ld_itcm_load = LOADADDR(.itcm);
     __ld_itcm_size = SIZEOF(.itcm);
 
-    /* All data to be placed into the D-TCM */
+    /* All data to be placed into the DTCM */
     .dtcm : {
+        *(.dtcm_data)
         *(.data*)
         *(.rodata*)
-        *(.bss*)
-        *(COMMON*)   /* this might be useless since COMMON only exists in .o files */
+        /* TODO: these probably should be placed in FLEXSPI */
+        *(.bss*)        
+        *(COMMON*)      /* this might be useless since COMMON only exists in .o files */
         . = ALIGN(0x10);
     } > DTCM AT > FLEXSPI
 
@@ -84,7 +97,7 @@ SECTIONS {
     /* All ARM symbol information */
     .ARM : {
         *(.ARM.*)
-    } > FLEXSPI
+    } > ITCM AT > FLEXSPI   /* must go in ITCM since most functions will be called in this "area" */
 
     /* All debug symbol information */
     .debug : {
