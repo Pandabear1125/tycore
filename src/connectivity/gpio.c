@@ -254,7 +254,19 @@ uint8_t digitalRead(uint8_t pin) {
     return !!(gpio_pin_gpio_map[pin]->PSR.PSR & gpio_pin_gpio_mask_map[pin]);
 }
 
-void digitalToggle(uint8_t pin);
+void digitalToggle(uint8_t pin) {
+    // Configure GPIO direction register to output (GDIR[GDIR] = 1b) 
+    gpio_pin_gpio_map[pin]->GDIR.GDIR |= gpio_pin_gpio_mask_map[pin];
+    
+    // Toggle value in GPIO data register
+    gpio_pin_gpio_map[pin]->DR_TOGGLE.DR_TOGGLE |= gpio_pin_gpio_mask_map[pin];
+}
 
-void digitalClear(uint8_t pin);
+void digitalClear(uint8_t pin) {
+    // Configure GPIO direction register to output (GDIR[GDIR] = 1b) 
+    gpio_pin_gpio_map[pin]->GDIR.GDIR |= gpio_pin_gpio_mask_map[pin];
+    
+    // Clear value in GPIO data register
+    gpio_pin_gpio_map[pin]->DR_CLEAR.DR_CLEAR |= gpio_pin_gpio_mask_map[pin];
+}
 
