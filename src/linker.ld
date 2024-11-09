@@ -90,7 +90,6 @@ SECTIONS {
 
     /* All data pre-allocated to exist within the OCRAM */
     .ocram : {
-        __ld_stack_start = .;
         . = ALIGN(0x10);
     } > OCRAM1 AT > FLEXSPI
 
@@ -124,6 +123,7 @@ SECTIONS {
     __ld_itcm_blocks = ((__ld_itcm_size) >> 15) + 1;
     __ld_dtcm_blocks = ((__ld_dtcm_size) >> 15) + 1;
     __ld_ocram_blocks = 16 - __ld_itcm_blocks - __ld_dtcm_blocks;
+    __ld_stack_start = ORIGIN(OCRAM1) + (__ld_ocram_blocks << 15);  /* TODO: find out if this is correct */
     ASSERT(__ld_ocram_blocks >= 2, "Not enough memory allocated to OCRAM. Too much allocated to ITCM/DTCM")
 
     /* Now we construct the block masks */
