@@ -27,7 +27,7 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	IOMUXC_GPR_GPR17->FLEXRAM_BANK_CFG = (uint32_t)&__ld_flexram_config;
 
 	// set the stack pointer
-	asm volatile (
+	__asm__ volatile (
 		"mov sp, %0"
 		: 
 		: "r" ((uint32_t)&__ld_stack_start)
@@ -52,5 +52,5 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 
 	main();
 
-	while (1) asm("wfi");
+	while (1) __asm__("wfi");
 }

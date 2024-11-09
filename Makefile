@@ -22,16 +22,18 @@ READELF			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-readelf
 ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
-COMPILER_FLAGS += -fno-exceptions						# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
-COMPILER_FLAGS += -Wall -Wextra -Werror 				# enable all warnings and treat them as errors. Can't do -Wpedantic because we call main manually and that is against the standard
-COMPILER_FLAGS += --specs=nano.specs					# use the newlib nano library, significantly reduces binary size
-COMPILER_FLAGS += -ffunction-sections -fdata-sections 	# put functions and data in separate sections
+COMPILER_FLAGS += -fno-exceptions -Wpedantic						# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
+COMPILER_FLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors 	# enable all warnings and treat them as errors
+COMPILER_FLAGS += --specs=nano.specs								# use the newlib nano library, significantly reduces binary size
+COMPILER_FLAGS += -ffunction-sections -fdata-sections 				# put functions and data in separate sections
 
 CXX_FLAGS 		= -std=gnu++17							# use C++17 standard with GNU extensions. Extensions are needed for various things like asm and inline
 C_FLAGS 		= -std=gnu11							# use C11 standard with GNU extensions. Extensions are needed for various things like asm and inline
 
+# Cortex-M7 specific flags
 CPU_FLAGS 		= -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 
+# Linker flags, --gc-sections removes unused sections, --relax allows for smaller instruction sizes where possible. Others are for debugging
 LINKER_FLAGS 	= -Wl,--gc-sections,--relax,--print-memory-usage,-T$(SOURCE_DIR)/linker.ld,-Map=$(OUTPUT).map,--cref
 
 
