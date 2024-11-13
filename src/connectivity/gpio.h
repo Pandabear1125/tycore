@@ -7,7 +7,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif  // __cplusplus extern "C"
 
 /**
  * @brief Initialize the GPIO pins and set them to use fast GPIO. On system startup, the GPIO pins are disabled.
@@ -66,6 +66,6 @@ void digitalClear(uint8_t pin);
 
 #ifdef __cplusplus
 }
-#endif  // __cplusplus
+#endif  // __cplusplus extern "C"
 
 #endif // TYCORE_GPIO_H

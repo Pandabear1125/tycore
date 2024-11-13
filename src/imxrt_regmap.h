@@ -13,6 +13,9 @@
 // #define REGISTER_NAME ((REGISTER_NAME_t*)0xADDRESS)
 // The define is required to keep the compiler from placing these in the DTCM and in memory in general
 
+// References of the form RM 11.2.3 refer to the reference manual for the IMXRT1062, revision 11, section 2.3
+// Reference manual can be found in the doc folder
+
 #include <stdint.h>
 
 typedef volatile uint32_t reg_t;
@@ -23,22 +26,31 @@ typedef volatile uint32_t reg_t;
 #pragma region IOMUXC
 
 typedef volatile struct {
-    reg_t MUX_MODE : 4;
-    reg_t SION : 1;
+    reg_t MUX_MODE : 4;     // what ALT mode this pin is set to, determines functionality
+    reg_t SION : 1;         // software input on/off, allows software to control input
     reg_t : 27;
 } IOMUXC_SW_MUX_CTL_PAD_t;
 
+#define ALT1 (0x01)
+#define ALT2 (0x02)
+#define ALT3 (0x03)
+#define ALT4 (0x04)
+#define ALT5 (0x05)
+#define ALT6 (0x06)
+#define ALT7 (0x07)
+#define ALT8 (0x08)
+
 typedef volatile struct {
-    reg_t SRE : 1;
+    reg_t SRE : 1;          // slew rate enable
     reg_t : 2;
-    reg_t DSE :3;
-    reg_t SPEED : 2;
+    reg_t DSE : 3;          // drive strength
+    reg_t SPEED : 2;        // drive speed
     reg_t : 3;
-    reg_t ODE : 1;
-    reg_t PKE : 1;
-    reg_t PUE : 1;
-    reg_t PUS : 2;
-    reg_t HYS : 1;
+    reg_t ODE : 1;          // open drain enable
+    reg_t PKE : 1;          // pull / keep enable
+    reg_t PUE : 1;          // pull / keep select
+    reg_t PUS : 2;          // pull / keep config
+    reg_t HYS : 1;          // hysteresis enable
     reg_t : 15;
 } IOMUXC_SW_PAD_CTL_PAD_t;
 
@@ -49,7 +61,7 @@ typedef volatile struct {
 #pragma region IOMUXC_GPR
 
 typedef volatile struct {
-    reg_t reserved : 32; 
+    reg_t reserved : 32;
 } IOMUXC_GPR_GPR0_t;
 #define IOMUXC_GPR_GPR0 ((IOMUXC_GPR_GPR0_t*)0x400AC000)
 
@@ -199,7 +211,7 @@ typedef volatile struct {
     reg_t IOMUXC_XBAR_DIR_SEL_16 : 1;
     reg_t IOMUXC_XBAR_DIR_SEL_17 : 1;
     reg_t IOMUXC_XBAR_DIR_SEL_18 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_19 : 1;    
+    reg_t IOMUXC_XBAR_DIR_SEL_19 : 1;
 } IOMUXC_GPR_GPR6_t;
 #define IOMUXC_GPR_GPR6 ((IOMUXC_GPR_GPR6_t*)0x400AC018)
 
