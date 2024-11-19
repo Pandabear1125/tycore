@@ -2,7 +2,6 @@
 
 // TODO remake the register map file
 #include "imxrt_regmap.h"
-#include "connectivity/gpio.h"
 
 extern uint32_t __ld_flexram_config;
 extern uint32_t __ld_stack_start;
@@ -15,10 +14,8 @@ extern uint32_t __ld_dtcm_start;
 extern uint32_t __ld_dtcm_load;
 extern uint32_t __ld_dtcm_size;
 
-volatile int x = 0;
-
-extern int main(void);
-extern void __libc_init_array(void);
+extern int main(void);					// main function
+extern void __libc_init_array(void);	// c++ initialization
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	// enable ITCM/DTCM/OCRAM config
@@ -26,7 +23,7 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	// set the ITCM/DTCM/OCRAM config
 	IOMUXC_GPR_GPR17->FLEXRAM_BANK_CFG = (uint32_t)&__ld_flexram_config;
 
-	// set the stack pointer
+	// set the stack pointer to enable function calling
 	__asm__ volatile (
 		"mov sp, %0"
 		: 
@@ -46,11 +43,12 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	len = (uint32_t)&__ld_dtcm_size;
 	while (len--) *dst++ = *src++;
 
-	gpio_init();
-
+	// initialize c++ statics and global constructors
 	__libc_init_array();
 
+	// call main
 	main();
 
+	// if main returns, enter infinite loop maintaining interrupts
 	while (1) __asm__("wfi");
 }

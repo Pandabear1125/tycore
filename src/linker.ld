@@ -42,12 +42,12 @@ SECTIONS {
     /* All sections required for C/C++ initialization */
     .init (READONLY) : {
         KEEP(*(.init))
-        __preinit_array_start = .;
+        __preinit_array_start = .;  /* must be called this for libc_init_array() to work */
         KEEP(*(.preinit_array))
-        __preinit_array_end = .;
-        __init_array_start = .;
+        __preinit_array_end = .;    /* must be called this for libc_init_array() to work */
+        __init_array_start = .;     /* must be called this for libc_init_array() to work */
         KEEP(*(.init_array))
-        __init_array_end = .;
+        __init_array_end = .;       /* must be called this for libc_init_array() to work */
         /* TODO: actually use fini_array */
         KEEP(*(.fini))
         __fini_array_start = .;
