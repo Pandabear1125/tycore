@@ -19,9 +19,9 @@ extern void __libc_init_array(void);	// c++ initialization
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	// enable ITCM/DTCM/OCRAM config
-	IOMUXC_GPR_GPR16->FLEXRAM_BANK_CFG_SEL = 1;
+	IOMUXC_GPR_GPR16->flexram_bank_cfg_sel = 1;
 	// set the ITCM/DTCM/OCRAM config
-	IOMUXC_GPR_GPR17->FLEXRAM_BANK_CFG = (uint32_t)&__ld_flexram_config;
+	IOMUXC_GPR_GPR17->flexram_bank_cfg = (uint32_t)&__ld_flexram_config;
 
 	// set the stack pointer to enable function calling
 	__asm__ volatile (
