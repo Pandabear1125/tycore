@@ -13,8 +13,8 @@
 // #define REGISTER_NAME ((REGISTER_NAME_t*)0xADDRESS)
 // The define is required to keep the compiler from placing these in the DTCM and in memory in general
 
-// References of the form RM 11.2.3 refer to the reference manual for the IMXRT1062, revision 11, section 2.3
-// Reference manual can be found in the doc folder
+// References of the form RM 11.2.3 refer to the reference manual for the IMXRT1062, chapter 11, section 2, subsection 3
+// Reference manual can be found in the doc folder: IMXRT1060ReferenceManual.pdf
 
 #include <stdint.h>
 
@@ -23,14 +23,15 @@ typedef volatile uint32_t reg_t;
 // IOMUXC Memory Map/Register Definition
 // RM 11
 
-#pragma region IOMUXC
+#pragma region IOMUXC_MODULE
 
 typedef volatile struct {
-    reg_t MUX_MODE : 4;     // what ALT mode this pin is set to, determines functionality
-    reg_t SION : 1;         // software input on/off, allows software to control input
+    reg_t mux_mode : 4;     // what ALT mode this pin is set to, determines functionality
+    reg_t sion : 1;         // software input on/off, allows software to control input
     reg_t : 27;
 } IOMUXC_SW_MUX_CTL_PAD_t;
 
+// ALT mode macros for GPIO muxing
 #define ALT1 (0x01)
 #define ALT2 (0x02)
 #define ALT3 (0x03)
@@ -41,16 +42,16 @@ typedef volatile struct {
 #define ALT8 (0x08)
 
 typedef volatile struct {
-    reg_t SRE : 1;          // slew rate enable
+    reg_t sre : 1;          // slew rate enable
     reg_t : 2;
-    reg_t DSE : 3;          // drive strength
-    reg_t SPEED : 2;        // drive speed
+    reg_t dse : 3;          // drive strength
+    reg_t speed : 2;        // drive speed
     reg_t : 3;
-    reg_t ODE : 1;          // open drain enable
-    reg_t PKE : 1;          // pull / keep enable
-    reg_t PUE : 1;          // pull / keep select
-    reg_t PUS : 2;          // pull / keep config
-    reg_t HYS : 1;          // hysteresis enable
+    reg_t ode : 1;          // open drain enable
+    reg_t pke : 1;          // pull / keep enable
+    reg_t pue : 1;          // pull / keep select
+    reg_t pus : 2;          // pull / keep config
+    reg_t hys : 1;          // hysteresis enable
     reg_t : 15;
 } IOMUXC_SW_PAD_CTL_PAD_t;
 
@@ -66,224 +67,224 @@ typedef volatile struct {
 #define IOMUXC_GPR_GPR0 ((IOMUXC_GPR_GPR0_t*)0x400AC000)
 
 typedef volatile struct {
-    reg_t SAI1_MCLK1_SEL : 3;
-    reg_t SAI1_MCLK2_SEL : 3;
-    reg_t SAI1_MCLK3_SEL : 2;
-    reg_t SAI2_MCLK3_SEL : 2;
-    reg_t SAI3_MCLK4_SEL : 2;
-    reg_t GINT : 1;
-    reg_t ENET1_CLK_SEL : 1;
-    reg_t ENET2_CLK_SEL : 1;
+    reg_t sai1_mclk1_sel : 3;
+    reg_t sai1_mclk2_sel : 3;
+    reg_t sai1_mclk3_sel : 2;
+    reg_t sai2_mclk3_sel : 2;
+    reg_t sai3_mclk4_sel : 2;
+    reg_t gint : 1;
+    reg_t enet1_clk_sel : 1;
+    reg_t enet2_clk_sel : 1;
     reg_t : 2;
-    reg_t ENET1_TX_CLK_DIR : 1;
-    reg_t ENET2_TX_CLK_DIR : 1;
-    reg_t SAI1_MCLK_DIR : 1;
-    reg_t SAI2_MCLK_DIR : 1;
-    reg_t SAI3_MCLK_DIR : 1;
-    reg_t EXC_MON : 1;
-    reg_t ENET_IPG_CLK_S_EN : 1;
+    reg_t enet1_tx_clk_dir : 1;
+    reg_t enet2_tx_clk_dir : 1;
+    reg_t sai1_mclk_dir : 1;
+    reg_t sai2_mclk_dir : 1;
+    reg_t sai3_mclk_dir : 1;
+    reg_t exc_mon : 1;
+    reg_t enet_ipg_clk_s_en : 1;
     reg_t : 7;
-    reg_t CM7_FORCE_HCLK_EN : 1;
+    reg_t cm7_force_hclk_en : 1;
 } IOMUXC_GPR_GPR1_t;
 #define IOMUXC_GPR_GPR1 ((IOMUXC_GPR_GPR1_t*)0x400AC004)
 
 typedef volatile struct {
-    reg_t AXBS_L_AXBXL_HIGH_PRIORITY : 1;
-    reg_t AXBS_L_DMA_HIGH_PRIORITY : 1;
-    reg_t AXBS_L_FORCE_ROUND_ROBIN : 1;
-    reg_t AXBS_P_M0_HIGH_PRIORITY : 1;
-    reg_t AXBS_P_M1_HIGH_PRIORITY : 1;
-    reg_t AXBS_P_FORCE_ROUND_ROBIN : 1;
-    reg_t CANFD_FILTER_BYPASS : 1;
+    reg_t axbs_l_axbxl_high_priority : 1;
+    reg_t axbs_l_dma_high_priority : 1;
+    reg_t axbs_l_force_round_robin : 1;
+    reg_t axbs_p_m0_high_priority : 1;
+    reg_t axbs_p_m1_high_priority : 1;
+    reg_t axbs_p_force_round_robin : 1;
+    reg_t canfd_filter_bypass : 1;
     reg_t : 5;
-    reg_t L2_MEM_EN_POWERSAVING : 1;
-    reg_t RAM_AUTO_CLK_GATING_EN : 1;
-    reg_t L2_MEM_DEEPSLEEP : 1;
+    reg_t l2_mem_en_powersaving : 1;
+    reg_t ram_auto_clk_gating_en : 1;
+    reg_t l2_mem_deepsleep : 1;
     reg_t : 1;
-    reg_t MQS_CLK_DIV : 8;
-    reg_t MQS_SW_RST : 1;
-    reg_t MQS_EN : 1;
-    reg_t MQS_OVERSAMPLE : 1;
+    reg_t mqs_clk_div : 8;
+    reg_t mqs_sw_rst : 1;
+    reg_t mqs_en : 1;
+    reg_t mqs_oversample : 1;
     reg_t : 1;
-    reg_t QTIMER1_TMR_CNTS_FREEZE : 1;
-    reg_t QTIMER2_TMR_CNTS_FREEZE : 1;
-    reg_t QTIMER3_TMR_CNTS_FREEZE : 1;
-    reg_t QTIMER4_TMR_CNTS_FREEZE : 1;
+    reg_t qtimer1_tmr_cnts_freeze : 1;
+    reg_t qtimer2_tmr_cnts_freeze : 1;
+    reg_t qtimer3_tmr_cnts_freeze : 1;
+    reg_t qtimer4_tmr_cnts_freeze : 1;
 } IOMUXC_GPR_GPR2_t;
 #define IOMUXC_GPR_GPR2 ((IOMUXC_GPR_GPR2_t*)0x400AC008)
 
 typedef volatile struct {
-    reg_t OCRAM_CTL : 4;
-    reg_t DCP_KEY_SEL : 1;
+    reg_t ocram_ctl : 4;
+    reg_t dcp_key_sel : 1;
     reg_t : 3;
-    reg_t OCRAM2_CTL : 4;
+    reg_t ocram2_ctl : 4;
     reg_t : 3;
-    reg_t AXBS_L_HALT_REQ : 1;
-    reg_t OCRAM_STATUS : 4;
+    reg_t axbs_l_halt_req : 1;
+    reg_t ocram_status : 4;
     reg_t : 4;
-    reg_t OCRAM2_STATUS : 4;
+    reg_t ocram2_status : 4;
     reg_t : 3;
-    reg_t AXBS_L_HALTED : 1;
+    reg_t axbs_l_halted : 1;
 } IOMUXC_GPR_GPR3_t;
 #define IOMUXC_GPR_GPR3 ((IOMUXC_GPR_GPR3_t*)0x400AC00C)
 
 typedef volatile struct {
-    reg_t EDMA_STOP_REQ : 1;
-    reg_t CAN1_STOP_REQ : 1;
-    reg_t CAN2_STOP_REQ : 1;
-    reg_t TRNG_STOP_REQ : 1;
-    reg_t ENET_STOP_REQ : 1;
-    reg_t SAI1_STOP_REQ : 1;
-    reg_t SAI2_STOP_REQ : 1;
-    reg_t SAI3_STOP_REQ : 1;
-    reg_t ENET2_STOP_REQ : 1;
-    reg_t SEMC_STOP_REQ : 1;
-    reg_t PIT_STOP_REQ : 1;
-    reg_t FLEXSPI_STOP_REQ : 1;
-    reg_t FLEXIO1_STOP_REQ : 1;
-    reg_t FLEXIO2_STOP_REQ : 1;
-    reg_t FLEXIO3_STOP_REQ : 1;
-    reg_t FLEXIO4_STOP_REQ : 1;
-    reg_t EDMA_STOP_ACK : 1;
-    reg_t CAN1_STOP_ACK : 1;
-    reg_t CAN2_STOP_ACK : 1;
-    reg_t TRNG_STOP_ACK : 1;
-    reg_t ENET_STOP_ACK : 1;
-    reg_t SAI1_STOP_ACK : 1;
-    reg_t SAI2_STOP_ACK : 1;
-    reg_t SAI3_STOP_ACK : 1;
-    reg_t ENET2_STOP_ACK : 1;
-    reg_t SEMC_STOP_ACK : 1;
-    reg_t PIT_STOP_ACK : 1;
-    reg_t FLEXSPI_STOP_ACK : 1;
-    reg_t FLEXIO1_STOP_ACK : 1;
-    reg_t FLEXIO2_STOP_ACK : 1;
-    reg_t FLEXIO3_STOP_ACK : 1;
-    reg_t FLEXIO4_STOP_ACK : 1;
+    reg_t edma_stop_req : 1;
+    reg_t can1_stop_req : 1;
+    reg_t can2_stop_req : 1;
+    reg_t trng_stop_req : 1;
+    reg_t enet_stop_req : 1;
+    reg_t sai1_stop_req : 1;
+    reg_t sai2_stop_req : 1;
+    reg_t sai3_stop_req : 1;
+    reg_t enet2_stop_req : 1;
+    reg_t semc_stop_req : 1;
+    reg_t pit_stop_req : 1;
+    reg_t flexspi_stop_req : 1;
+    reg_t flexio1_stop_req : 1;
+    reg_t flexio2_stop_req : 1;
+    reg_t flexio3_stop_req : 1;
+    reg_t flexio4_stop_req : 1;
+    reg_t edma_stop_ack : 1;
+    reg_t can1_stop_ack : 1;
+    reg_t can2_stop_ack : 1;
+    reg_t trng_stop_ack : 1;
+    reg_t enet_stop_ack : 1;
+    reg_t sai1_stop_ack : 1;
+    reg_t sai2_stop_ack : 1;
+    reg_t sai3_stop_ack : 1;
+    reg_t enet2_stop_ack : 1;
+    reg_t semc_stop_ack : 1;
+    reg_t pit_stop_ack : 1;
+    reg_t flexspi_stop_ack : 1;
+    reg_t flexio1_stop_ack : 1;
+    reg_t flexio2_stop_ack : 1;
+    reg_t flexio3_stop_ack : 1;
+    reg_t flexio4_stop_ack : 1;
 } IOMUXC_GPR_GPR4_t;
 #define IOMUXC_GPR_GPR4 ((IOMUXC_GPR_GPR4_t*)0x400AC010)
 
 typedef volatile struct {
     reg_t : 6;
-    reg_t WDOG1_MASK : 1;
-    reg_t WDOG2_MASK : 1;
+    reg_t wdog1_mask : 1;
+    reg_t wdog2_mask : 1;
     reg_t : 15;
-    reg_t GPT2_CAPIN1_SEL : 1;
-    reg_t GPT2_CAPIN2_SEL : 1;
-    reg_t ENET_EVENT3IN_SEL : 1;
-    reg_t ENET2_EVENT3IN_SEL : 1;
+    reg_t gpt2_capin1_sel : 1;
+    reg_t gpt2_capin2_sel : 1;
+    reg_t enet_event3in_sel : 1;
+    reg_t enet2_event3in_sel : 1;
     reg_t : 1;
-    reg_t VREF_1M_CLK_GPT1 : 1;
-    reg_t VREF_1M_CLK_GPT2 : 1;
+    reg_t vref_1m_clk_gpt1 : 1;
+    reg_t vref_1m_clk_gpt2 : 1;
     reg_t : 2;
 } IOMUXC_GPR_GPR5_t;
 #define IOMUXC_GPR_GPR5 ((IOMUXC_GPR_GPR5_t*)0x400AC014)
 
 typedef volatile struct {
-    reg_t QTIMER1_TRM0_INPUT_SEL : 1;
-    reg_t QTIMER1_TRM1_INPUT_SEL : 1;
-    reg_t QTIMER1_TRM2_INPUT_SEL : 1;
-    reg_t QTIMER1_TRM3_INPUT_SEL : 1;
-    reg_t QTIMER2_TRM0_INPUT_SEL : 1;
-    reg_t QTIMER2_TRM1_INPUT_SEL : 1;
-    reg_t QTIMER2_TRM2_INPUT_SEL : 1;
-    reg_t QTIMER2_TRM3_INPUT_SEL : 1;
-    reg_t QTIMER3_TRM0_INPUT_SEL : 1;
-    reg_t QTIMER3_TRM1_INPUT_SEL : 1;
-    reg_t QTIMER3_TRM2_INPUT_SEL : 1;
-    reg_t QTIMER3_TRM3_INPUT_SEL : 1;
-    reg_t QTIMER4_TRM0_INPUT_SEL : 1;
-    reg_t QTIMER4_TRM1_INPUT_SEL : 1;
-    reg_t QTIMER4_TRM2_INPUT_SEL : 1;
-    reg_t QTIMER4_TRM3_INPUT_SEL : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_4 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_5 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_6 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_7 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_8 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_9 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_10 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_11 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_12 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_13 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_14 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_15 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_16 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_17 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_18 : 1;
-    reg_t IOMUXC_XBAR_DIR_SEL_19 : 1;
+    reg_t qtimer1_trm0_input_sel : 1;
+    reg_t qtimer1_trm1_input_sel : 1;
+    reg_t qtimer1_trm2_input_sel : 1;
+    reg_t qtimer1_trm3_input_sel : 1;
+    reg_t qtimer2_trm0_input_sel : 1;
+    reg_t qtimer2_trm1_input_sel : 1;
+    reg_t qtimer2_trm2_input_sel : 1;
+    reg_t qtimer2_trm3_input_sel : 1;
+    reg_t qtimer3_trm0_input_sel : 1;
+    reg_t qtimer3_trm1_input_sel : 1;
+    reg_t qtimer3_trm2_input_sel : 1;
+    reg_t qtimer3_trm3_input_sel : 1;
+    reg_t qtimer4_trm0_input_sel : 1;
+    reg_t qtimer4_trm1_input_sel : 1;
+    reg_t qtimer4_trm2_input_sel : 1;
+    reg_t qtimer4_trm3_input_sel : 1;
+    reg_t iomuxc_xbar_dir_sel_4 : 1;
+    reg_t iomuxc_xbar_dir_sel_5 : 1;
+    reg_t iomuxc_xbar_dir_sel_6 : 1;
+    reg_t iomuxc_xbar_dir_sel_7 : 1;
+    reg_t iomuxc_xbar_dir_sel_8 : 1;
+    reg_t iomuxc_xbar_dir_sel_9 : 1;
+    reg_t iomuxc_xbar_dir_sel_10 : 1;
+    reg_t iomuxc_xbar_dir_sel_11 : 1;
+    reg_t iomuxc_xbar_dir_sel_12 : 1;
+    reg_t iomuxc_xbar_dir_sel_13 : 1;
+    reg_t iomuxc_xbar_dir_sel_14 : 1;
+    reg_t iomuxc_xbar_dir_sel_15 : 1;
+    reg_t iomuxc_xbar_dir_sel_16 : 1;
+    reg_t iomuxc_xbar_dir_sel_17 : 1;
+    reg_t iomuxc_xbar_dir_sel_18 : 1;
+    reg_t iomuxc_xbar_dir_sel_19 : 1;
 } IOMUXC_GPR_GPR6_t;
 #define IOMUXC_GPR_GPR6 ((IOMUXC_GPR_GPR6_t*)0x400AC018)
 
 typedef volatile struct {
-    reg_t LPI2C1_STOP_REQ : 1;
-    reg_t LPI2C2_STOP_REQ : 1;
-    reg_t LPI2C3_STOP_REQ : 1;
-    reg_t LPI2C4_STOP_REQ : 1;
-    reg_t LPSPI1_STOP_REQ : 1;
-    reg_t LPSPI2_STOP_REQ : 1;
-    reg_t LPSPI3_STOP_REQ : 1;
-    reg_t LPSPI4_STOP_REQ : 1;
-    reg_t LPUART1_STOP_REQ : 1;
-    reg_t LPUART2_STOP_REQ : 1;
-    reg_t LPUART3_STOP_REQ : 1;
-    reg_t LPUART4_STOP_REQ : 1;
-    reg_t LPUART5_STOP_REQ : 1;
-    reg_t LPUART6_STOP_REQ : 1;
-    reg_t LPUART7_STOP_REQ : 1;
-    reg_t LPUART8_STOP_REQ : 1;
-    reg_t LPI2C1_STOP_ACK : 1;
-    reg_t LPI2C2_STOP_ACK : 1;
-    reg_t LPI2C3_STOP_ACK : 1;
-    reg_t LPI2C4_STOP_ACK : 1;
-    reg_t LPSPI1_STOP_ACK : 1;
-    reg_t LPSPI2_STOP_ACK : 1;
-    reg_t LPSPI3_STOP_ACK : 1;
-    reg_t LPSPI4_STOP_ACK : 1;
-    reg_t LPUART1_STOP_ACK : 1;
-    reg_t LPUART2_STOP_ACK : 1;
-    reg_t LPUART3_STOP_ACK : 1;
-    reg_t LPUART4_STOP_ACK : 1;
-    reg_t LPUART5_STOP_ACK : 1;
-    reg_t LPUART6_STOP_ACK : 1;
-    reg_t LPUART7_STOP_ACK : 1;
-    reg_t LPUART8_STOP_ACK : 1;
+    reg_t lpi2c1_stop_req : 1;
+    reg_t lpi2c2_stop_req : 1;
+    reg_t lpi2c3_stop_req : 1;
+    reg_t lpi2c4_stop_req : 1;
+    reg_t lpspi1_stop_req : 1;
+    reg_t lpspi2_stop_req : 1;
+    reg_t lpspi3_stop_req : 1;
+    reg_t lpspi4_stop_req : 1;
+    reg_t lpuart1_stop_req : 1;
+    reg_t lpuart2_stop_req : 1;
+    reg_t lpuart3_stop_req : 1;
+    reg_t lpuart4_stop_req : 1;
+    reg_t lpuart5_stop_req : 1;
+    reg_t lpuart6_stop_req : 1;
+    reg_t lpuart7_stop_req : 1;
+    reg_t lpuart8_stop_req : 1;
+    reg_t lpi2c1_stop_ack : 1;
+    reg_t lpi2c2_stop_ack : 1;
+    reg_t lpi2c3_stop_ack : 1;
+    reg_t lpi2c4_stop_ack : 1;
+    reg_t lpspi1_stop_ack : 1;
+    reg_t lpspi2_stop_ack : 1;
+    reg_t lpspi3_stop_ack : 1;
+    reg_t lpspi4_stop_ack : 1;
+    reg_t lpuart1_stop_ack : 1;
+    reg_t lpuart2_stop_ack : 1;
+    reg_t lpuart3_stop_ack : 1;
+    reg_t lpuart4_stop_ack : 1;
+    reg_t lpuart5_stop_ack : 1;
+    reg_t lpuart6_stop_ack : 1;
+    reg_t lpuart7_stop_ack : 1;
+    reg_t lpuart8_stop_ack : 1;
 } IOMUXC_GPR_GPR7_t;
 #define IOMUXC_GPR_GPR7 ((IOMUXC_GPR_GPR7_t*)0x400AC01C)
 
 typedef volatile struct {
-    reg_t LPI2C1_IPG_STOP_MODE : 1;
-    reg_t LP12C1_IPG_DOZE : 1;
-    reg_t LPI2C2_IPG_STOP_MODE : 1;
-    reg_t LPI2C2_IPG_DOZE : 1;
-    reg_t LPI2C3_IPG_STOP_MODE : 1;
-    reg_t LPI2C3_IPG_DOZE : 1;
-    reg_t LPI2C4_IPG_STOP_MODE : 1;
-    reg_t LPI2C4_IPG_DOZE : 1;
-    reg_t LPSPI1_IPG_STOP_MODE : 1;
-    reg_t LPSPI1_IPG_DOZE : 1;
-    reg_t LPSPI2_IPG_STOP_MODE : 1;
-    reg_t LPSPI2_IPG_DOZE : 1;
-    reg_t LPSPI3_IPG_STOP_MODE : 1;
-    reg_t LPSPI3_IPG_DOZE : 1;
-    reg_t LPSPI4_IPG_STOP_MODE : 1;
-    reg_t LPSPI4_IPG_DOZE : 1;
-    reg_t LPUART1_IPG_STOP_MODE : 1;
-    reg_t LPUART1_IPG_DOZE : 1;
-    reg_t LPUART2_IPG_STOP_MODE : 1;
-    reg_t LPUART2_IPG_DOZE : 1;
-    reg_t LPUART3_IPG_STOP_MODE : 1;
-    reg_t LPUART3_IPG_DOZE : 1;
-    reg_t LPUART4_IPG_STOP_MODE : 1;
-    reg_t LPUART4_IPG_DOZE : 1;
-    reg_t LPUART5_IPG_STOP_MODE : 1;
-    reg_t LPUART5_IPG_DOZE : 1;
-    reg_t LPUART6_IPG_STOP_MODE : 1;
-    reg_t LPUART6_IPG_DOZE : 1;
-    reg_t LPUART7_IPG_STOP_MODE : 1;
-    reg_t LPUART7_IPG_DOZE : 1;
-    reg_t LPUART8_IPG_STOP_MODE : 1;
-    reg_t LPUART8_IPG_DOZE : 1;
+    reg_t lpi2c1_ipg_stop_mode : 1;
+    reg_t lp12c1_ipg_doze : 1;
+    reg_t lpi2c2_ipg_stop_mode : 1;
+    reg_t lpi2c2_ipg_doze : 1;
+    reg_t lpi2c3_ipg_stop_mode : 1;
+    reg_t lpi2c3_ipg_doze : 1;
+    reg_t lpi2c4_ipg_stop_mode : 1;
+    reg_t lpi2c4_ipg_doze : 1;
+    reg_t lpspi1_ipg_stop_mode : 1;
+    reg_t lpspi1_ipg_doze : 1;
+    reg_t lpspi2_ipg_stop_mode : 1;
+    reg_t lpspi2_ipg_doze : 1;
+    reg_t lpspi3_ipg_stop_mode : 1;
+    reg_t lpspi3_ipg_doze : 1;
+    reg_t lpspi4_ipg_stop_mode : 1;
+    reg_t lpspi4_ipg_doze : 1;
+    reg_t lpuart1_ipg_stop_mode : 1;
+    reg_t lpuart1_ipg_doze : 1;
+    reg_t lpuart2_ipg_stop_mode : 1;
+    reg_t lpuart2_ipg_doze : 1;
+    reg_t lpuart3_ipg_stop_mode : 1;
+    reg_t lpuart3_ipg_doze : 1;
+    reg_t lpuart4_ipg_stop_mode : 1;
+    reg_t lpuart4_ipg_doze : 1;
+    reg_t lpuart5_ipg_stop_mode : 1;
+    reg_t lpuart5_ipg_doze : 1;
+    reg_t lpuart6_ipg_stop_mode : 1;
+    reg_t lpuart6_ipg_doze : 1;
+    reg_t lpuart7_ipg_stop_mode : 1;
+    reg_t lpuart7_ipg_doze : 1;
+    reg_t lpuart8_ipg_stop_mode : 1;
+    reg_t lpuart8_ipg_doze : 1;
 } IOMUXC_GPR_GPR8_t;
 #define IOMUXC_GPR_GPR8 ((IOMUXC_GPR_GPR8_t*)0x400AC020)
 
@@ -293,75 +294,75 @@ typedef volatile struct {
 #define IOMUXC_GPR_GPR9 ((IOMUXC_GPR_GPR9_t*)0x400AC024)
 
 typedef volatile struct {
-    reg_t NIDEN : 1;
-    reg_t DBG_EN : 1;
-    reg_t SEC_ERR_RESP : 1;
+    reg_t niden : 1;
+    reg_t dbg_en : 1;
+    reg_t sec_err_resp : 1;
     reg_t : 1;
-    reg_t DCPKEY_OCOTP_OR_KEYMUX : 1;
+    reg_t dcpkey_ocotp_or_keymux : 1;
     reg_t : 3;
-    reg_t OCRAM_TZ_EN : 1;
-    reg_t OCRAM_TZ_ADDR : 7;
-    reg_t LOCK_NIDEN : 1;
-    reg_t LOCK_DBG_EN : 1;
-    reg_t LOCK_SEC_ERR_RESP : 1;
+    reg_t ocram_tz_en : 1;
+    reg_t ocram_tz_addr : 7;
+    reg_t lock_niden : 1;
+    reg_t lock_dbg_en : 1;
+    reg_t lock_sec_err_resp : 1;
     reg_t : 1;
-    reg_t LOCK_DCPKEY_OCOTP_OR_KEYMUX : 1;
+    reg_t lock_dcpkey_ocotp_or_keymux : 1;
     reg_t : 3;
-    reg_t LOCK_OCRAM_TZ_EN : 1;
-    reg_t LOCK_OCRAM_TZ_ADDR : 7;
+    reg_t lock_ocram_tz_en : 1;
+    reg_t lock_ocram_tz_addr : 7;
 } IOMUXC_GPR_GPR10_t;
 #define IOMUXC_GPR_GPR10 ((IOMUXC_GPR_GPR10_t*)0x400AC028)
 
 typedef volatile struct {
-    reg_t M7_APC_AR_R0_CTRL : 2;
-    reg_t M7_APC_AR_R1_CTRL : 2;
-    reg_t M7_APC_AR_R2_CTRL : 2;
-    reg_t M7_APC_AR_R3_CTRL : 2;
-    reg_t BEE_DE_RX_EN : 4;
+    reg_t m7_apc_ar_r0_ctrl : 2;
+    reg_t m7_apc_ar_r1_ctrl : 2;
+    reg_t m7_apc_ar_r2_ctrl : 2;
+    reg_t m7_apc_ar_r3_ctrl : 2;
+    reg_t bee_de_rx_en : 4;
     reg_t : 20;
 } IOMUXC_GPR_GPR11_t;
 #define IOMUXC_GPR_GPR11 ((IOMUXC_GPR_GPR11_t*)0x400AC02C)
 
 typedef volatile struct {
-    reg_t FLEXIO1_IPG_STOP_MODE : 1;
-    reg_t FLEXIO1_IPG_DOZE : 1;
-    reg_t FLEXIO2_IPG_STOP_MODE : 1;
-    reg_t FLEXIO2_IPG_DOZE : 1;
-    reg_t ACMP_IPG_STOP_MODE : 1;
-    reg_t FLEXIO3_IPG_STOP_MODE : 1;
-    reg_t FLEXIO3_IPG_DOZE : 1;
+    reg_t flexio1_ipg_stop_mode : 1;
+    reg_t flexio1_ipg_doze : 1;
+    reg_t flexio2_ipg_stop_mode : 1;
+    reg_t flexio2_ipg_doze : 1;
+    reg_t acmp_ipg_stop_mode : 1;
+    reg_t flexio3_ipg_stop_mode : 1;
+    reg_t flexio3_ipg_doze : 1;
     reg_t : 25;
 } IOMUXC_GPR_GPR12_t;
 #define IOMUXC_GPR_GPR12 ((IOMUXC_GPR_GPR12_t*)0x400AC030)
 
 typedef volatile struct {
-    reg_t ARCACHE_USDHC : 1;
-    reg_t AWCACHE_USDHC : 1;
+    reg_t arcache_usdhc : 1;
+    reg_t awcache_usdhc : 1;
     reg_t : 2;
-    reg_t CANFD_STOP_REQ : 1;
+    reg_t canfd_stop_req : 1;
     reg_t : 2;
-    reg_t CACHE_ENET : 1;
+    reg_t cache_enet : 1;
     reg_t : 5;
-    reg_t CACHE_USB : 1;
+    reg_t cache_usb : 1;
     reg_t : 6;
-    reg_t CANFD_STOP_ACK : 1;
+    reg_t canfd_stop_ack : 1;
     reg_t : 11;
 } IOMUXC_GPR_GPR13_t;
 #define IOMUXC_GPR_GPR13 ((IOMUXC_GPR_GPR13_t*)0x400AC034)
 
 typedef volatile struct {
-    reg_t ACMP1_CMP_IGEN_TRIM_DN : 1;
-    reg_t ACMP2_CMP_IGEN_TRIM_DN : 1;
-    reg_t ACMP3_CMP_IGEN_TRIM_DN : 1;
-    reg_t ACMP4_CMP_IGEN_TRIM_DN : 1;
-    reg_t ACMP1_CMP_IGEN_TRIM_UP : 1;
-    reg_t ACMP2_CMP_IGEN_TRIM_UP : 1;
-    reg_t ACMP3_CMP_IGEN_TRIM_UP : 1;
-    reg_t ACMP4_CMP_IGEN_TRIM_UP : 1;
-    reg_t ACMP1_SAMPLE_SYNC_EN : 1;
-    reg_t ACMP2_SAMPLE_SYNC_EN : 1;
-    reg_t ACMP3_SAMPLE_SYNC_EN : 1;
-    reg_t ACMP4_SAMPLE_SYNC_EN : 1;
+    reg_t acmp1_cmp_igen_trim_dn : 1;
+    reg_t acmp2_cmp_igen_trim_dn : 1;
+    reg_t acmp3_cmp_igen_trim_dn : 1;
+    reg_t acmp4_cmp_igen_trim_dn : 1;
+    reg_t acmp1_cmp_igen_trim_up : 1;
+    reg_t acmp2_cmp_igen_trim_up : 1;
+    reg_t acmp3_cmp_igen_trim_up : 1;
+    reg_t acmp4_cmp_igen_trim_up : 1;
+    reg_t acmp1_sample_sync_en : 1;
+    reg_t acmp2_sample_sync_en : 1;
+    reg_t acmp3_sample_sync_en : 1;
+    reg_t acmp4_sample_sync_en : 1;
     reg_t : 20;
 } IOMUXC_GPR_GPR14_t;
 #define IOMUXC_GPR_GPR14 ((IOMUXC_GPR_GPR14_t*)0x400AC038)
@@ -373,124 +374,124 @@ typedef volatile struct {
 
 typedef volatile struct {
     reg_t : 2;
-    reg_t FLEXRAM_BANK_CFG_SEL : 1;
+    reg_t flexram_bank_cfg_sel : 1;
     reg_t : 4;
-    reg_t CM7_INIT_VTOR : 25;
+    reg_t cm7_init_vtor : 25;
 } IOMUXC_GPR_GPR16_t;
 #define IOMUXC_GPR_GPR16 ((IOMUXC_GPR_GPR16_t*)0x400AC040)
 
 typedef volatile struct {
-    reg_t FLEXRAM_BANK_CFG : 32;
+    reg_t flexram_bank_cfg : 32;
 } IOMUXC_GPR_GPR17_t;
 #define IOMUXC_GPR_GPR17 ((IOMUXC_GPR_GPR17_t*)0x400AC044)
 
 typedef volatile struct {
-    reg_t LOCK_M7_APC_AC_R0_BOT : 1;
+    reg_t lock_m7_apc_ac_r0_bot : 1;
     reg_t : 2;
-    reg_t M7_APC_AC_R0_BOT : 29;
+    reg_t m7_apc_ac_r0_bot : 29;
 } IOMUXC_GPR_GPR18_t;
 #define IOMUXC_GPR_GPR18 ((IOMUXC_GPR_GPR18_t*)0x400AC048)
 
 typedef volatile struct {
-    reg_t LOCK_M7_APC_AC_R0_TOP : 1;
+    reg_t lock_m7_apc_ac_r0_top : 1;
     reg_t : 2;
-    reg_t M7_APC_AC_R0_TOP : 29;
+    reg_t m7_apc_ac_r0_top : 29;
 } IOMUXC_GPR_GPR19_t;
 #define IOMUXC_GPR_GPR19 ((IOMUXC_GPR_GPR19_t*)0x400AC04C)
 
 typedef volatile struct {
-    reg_t LOCK_M7_APC_AC_R1_BOT : 1;
+    reg_t lock_m7_apc_ac_r1_bot : 1;
     reg_t : 2;
-    reg_t M7_APC_AC_R1_BOT : 29;
+    reg_t m7_apc_ac_r1_bot : 29;
 } IOMUXC_GPR_GPR20_t;
 #define IOMUXC_GPR_GPR20 ((IOMUXC_GPR_GPR20_t*)0x400AC050)
 
 typedef volatile struct {
-    reg_t LOCK_M7_APC_AC_R1_TOP : 1;
+    reg_t lock_m7_apc_ac_r1_top : 1;
     reg_t : 2;
-    reg_t M7_APC_AC_R1_TOP : 29;
+    reg_t m7_apc_ac_r1_top : 29;
 } IOMUXC_GPR_GPR21_t;
 #define IOMUXC_GPR_GPR21 ((IOMUXC_GPR_GPR21_t*)0x400AC054)
 
 typedef volatile struct {
-    reg_t LOCK_M7_APC_AC_R2_BOT : 1;
+    reg_t lock_m7_apc_ac_r2_bot : 1;
     reg_t : 2;
-    reg_t M7_APC_AC_R2_BOT : 29;
+    reg_t m7_apc_ac_r2_bot : 29;
 } IOMUXC_GPR_GPR22_t;
 #define IOMUXC_GPR_GPR22 ((IOMUXC_GPR_GPR22_t*)0x400AC058)
 
 typedef volatile struct {
-    reg_t LOCK_M7_APC_AC_R2_TOP : 1;
+    reg_t lock_m7_apc_ac_r2_top : 1;
     reg_t : 2;
-    reg_t M7_APC_AC_R2_TOP : 29;
+    reg_t m7_apc_ac_r2_top : 29;
 } IOMUXC_GPR_GPR23_t;
 #define IOMUXC_GPR_GPR23 ((IOMUXC_GPR_GPR23_t*)0x400AC05C)
 
 typedef volatile struct {
-    reg_t LOCK_M7_APC_AC_R3_BOT : 1;
+    reg_t lock_m7_apc_ac_r3_bot : 1;
     reg_t : 2;
-    reg_t M7_APC_AC_R3_BOT : 29;
+    reg_t m7_apc_ac_r3_bot : 29;
 } IOMUXC_GPR_GPR24_t;
 #define IOMUXC_GPR_GPR24 ((IOMUXC_GPR_GPR24_t*)0x400AC060)
 
 typedef volatile struct {
-    reg_t LOCK_M7_APC_AC_R3_TOP : 1;
+    reg_t lock_m7_apc_ac_r3_top : 1;
     reg_t : 2;
-    reg_t M7_APC_AC_R3_TOP : 29;
+    reg_t m7_apc_ac_r3_top : 29;
 } IOMUXC_GPR_GPR25_t;
 #define IOMUXC_GPR_GPR25 ((IOMUXC_GPR_GPR25_t*)0x400AC064)
 
 typedef volatile struct {
-    reg_t GPIO_MUX1_GPIO_SEL : 32;
+    reg_t gpio_mux1_gpio_sel : 32;
 } IOMUXC_GPR_GPR26_t;
 #define IOMUXC_GPR_GPR26 ((IOMUXC_GPR_GPR26_t*)0x400AC068)
 
 typedef volatile struct {
-    reg_t GPIO_MUX2_GPIO_SEL : 32;
+    reg_t gpio_mux2_gpio_sel : 32;
 } IOMUXC_GPR_GPR27_t;
 #define IOMUXC_GPR_GPR27 ((IOMUXC_GPR_GPR27_t*)0x400AC06C)
 
 typedef volatile struct {
-    reg_t GPIO_MUX3_GPIO_SEL : 32;
+    reg_t gpio_mux3_gpio_sel : 32;
 } IOMUXC_GPR_GPR28_t;
 #define IOMUXC_GPR_GPR28 ((IOMUXC_GPR_GPR28_t*)0x400AC070)
 
 typedef volatile struct {
-    reg_t GPIO_MUX4_GPIO_SEL : 32;
+    reg_t gpio_mux4_gpio_sel : 32;
 } IOMUXC_GPR_GPR29_t;
 #define IOMUXC_GPR_GPR29 ((IOMUXC_GPR_GPR29_t*)0x400AC074)
 
 typedef volatile struct {
     reg_t : 12;
-    reg_t FLEXSPI_REMAP_ADDR_START : 20;
+    reg_t flexspi_remap_addr_start : 20;
 } IOMUXC_GPR_GPR30_t;
 #define IOMUXC_GPR_GPR30 ((IOMUXC_GPR_GPR30_t*)0x400AC078)
 
 typedef volatile struct {
     reg_t : 12;
-    reg_t FLEXSPI_REMAP_ADDR_END : 20;
+    reg_t flexspi_remap_addr_end : 20;
 } IOMUXC_GPR_GPR31_t;
 #define IOMUXC_GPR_GPR31 ((IOMUXC_GPR_GPR31_t*)0x400AC07C)
 
 typedef volatile struct {
     reg_t : 12;
-    reg_t FLEXSPI_REMAP_ADDR_OFFSET : 20;
+    reg_t flexspi_remap_addr_offset : 20;
 } IOMUXC_GPR_GPR32_t;
 #define IOMUXC_GPR_GPR32 ((IOMUXC_GPR_GPR32_t*)0x400AC080)
 
 typedef volatile struct {
-    reg_t OCRAM2_TZ_EN : 1;
-    reg_t OCRAM2_TZ_ADDR : 7;
+    reg_t ocram2_tz_en : 1;
+    reg_t ocram2_tz_addr : 7;
     reg_t : 8;
-    reg_t LOCK_OCRAM2_TZ_EN : 1;
-    reg_t LOCK_OCRAM2_TZ_ADDR : 7;
+    reg_t lock_ocram2_tz_en : 1;
+    reg_t lock_ocram2_tz_addr : 7;
     reg_t : 8;
 } IOMUXC_GPR_GPR33_t;
 #define IOMUXC_GPR_GPR33 ((IOMUXC_GPR_GPR33_t*)0x400AC084)
 
 typedef volatile struct {
-    reg_t SIP_TEST_MUX_BOOT_PIN_SEL : 8;
-    reg_t SIP_TEST_MUX_QSPI_SIP_EN : 1;
+    reg_t sip_test_mux_boot_pin_sel : 8;
+    reg_t sip_test_mux_qspi_sip_en : 1;
     reg_t : 23;
 } IOMUXC_GPR_GPR34_t;
 #define IOMUXC_GPR_GPR34 ((IOMUXC_GPR_GPR34_t*)0x400AC088)
@@ -536,14 +537,14 @@ typedef volatile struct {
 #define IOMUXC_SNVS_GPR_GPR2 ((IOMUXC_SNVS_GPR_GPR2_t*)0x401A4008)
 
 typedef volatile struct {
-    reg_t LPSR_MODE_ENABLE : 1;
-    reg_t DCDC_STATUS_CAPT_CLR : 1;
-    reg_t POR_PULL_TYPE : 2;
+    reg_t lpsr_mode_enable : 1;
+    reg_t dcdc_status_capt_clr : 1;
+    reg_t por_pull_type : 2;
     reg_t : 12;
-    reg_t DCDC_IN_LOW_VOL : 1;
-    reg_t DCDC_OVER_CUR : 1;
-    reg_t DCDC_OVER_VOL : 1;
-    reg_t DCDC_STS_DC_OK : 1;
+    reg_t dcdc_in_low_vol : 1;
+    reg_t dcdc_over_cur : 1;
+    reg_t dcdc_over_vol : 1;
+    reg_t dcdc_sts_dc_ok : 1;
     reg_t : 12;
 } IOMUXC_SNVS_GPR_GPR3_t;
 #define IOMUXC_SNVS_GPR_GPR3 ((IOMUXC_SNVS_GPR_GPR3_t*)0x401A400C)
@@ -832,7 +833,7 @@ typedef volatile struct {
 #pragma region IOMUXC_SELECT_INPUT_DAISY
 
 typedef volatile struct {
-    reg_t DAISY : 3;
+    reg_t daisy : 3;
     reg_t : 29;
 } IOMUXC_SELECT_INPUT_DAISY_t;
 
@@ -1032,98 +1033,98 @@ typedef volatile struct {
 #pragma region GPIO
 
 typedef volatile struct {
-    reg_t DR : 32;
+    reg_t dr : 32;
 } GPIO_DR_t;
 
 typedef volatile struct {
-    reg_t GDIR : 32;
+    reg_t gdir : 32;
 } GPIO_GDIR_t;
 
 typedef volatile struct {
-    reg_t PSR : 32;
+    reg_t psr : 32;
 } GPIO_PSR_t;
 
 typedef volatile struct {
-    reg_t ICR0 : 2;
-    reg_t ICR1 : 2;
-    reg_t ICR2 : 2;
-    reg_t ICR3 : 2;
-    reg_t ICR4 : 2;
-    reg_t ICR5 : 2;
-    reg_t ICR6 : 2;
-    reg_t ICR7 : 2;
-    reg_t ICR8 : 2;
-    reg_t ICR9 : 2;
-    reg_t ICR10 : 2;
-    reg_t ICR11 : 2;
-    reg_t ICR12 : 2;
-    reg_t ICR13 : 2;
-    reg_t ICR14 : 2;
-    reg_t ICR15 : 2;
+    reg_t icr0 : 2;
+    reg_t icr1 : 2;
+    reg_t icr2 : 2;
+    reg_t icr3 : 2;
+    reg_t icr4 : 2;
+    reg_t icr5 : 2;
+    reg_t icr6 : 2;
+    reg_t icr7 : 2;
+    reg_t icr8 : 2;
+    reg_t icr9 : 2;
+    reg_t icr10 : 2;
+    reg_t icr11 : 2;
+    reg_t icr12 : 2;
+    reg_t icr13 : 2;
+    reg_t icr14 : 2;
+    reg_t icr15 : 2;
 } GPIO_ICR1_t;
 
 typedef volatile struct {
-    reg_t ICR16 : 2;
-    reg_t ICR17 : 2;
-    reg_t ICR18 : 2;
-    reg_t ICR19 : 2;
-    reg_t ICR20 : 2;
-    reg_t ICR21 : 2;
-    reg_t ICR22 : 2;
-    reg_t ICR23 : 2;
-    reg_t ICR24 : 2;
-    reg_t ICR25 : 2;
-    reg_t ICR26 : 2;
-    reg_t ICR27 : 2;
-    reg_t ICR28 : 2;
-    reg_t ICR29 : 2;
-    reg_t ICR30 : 2;
-    reg_t ICR31 : 2;
+    reg_t icr16 : 2;
+    reg_t icr17 : 2;
+    reg_t icr18 : 2;
+    reg_t icr19 : 2;
+    reg_t icr20 : 2;
+    reg_t icr21 : 2;
+    reg_t icr22 : 2;
+    reg_t icr23 : 2;
+    reg_t icr24 : 2;
+    reg_t icr25 : 2;
+    reg_t icr26 : 2;
+    reg_t icr27 : 2;
+    reg_t icr28 : 2;
+    reg_t icr29 : 2;
+    reg_t icr30 : 2;
+    reg_t icr31 : 2;
 } GPIO_ICR2_t;
 
 typedef volatile struct {
-    reg_t IMR : 32;
+    reg_t imr : 32;
 } GPIO_IMR_t;
 
 typedef volatile struct {
-    reg_t ISR : 32;
+    reg_t isr : 32;
 } GPIO_ISR_t;
 
 typedef volatile struct {
-    reg_t EDGE_SEL : 32;
+    reg_t edge_sel : 32;
 } GPIO_EDGE_SEL_t;
 
 typedef volatile struct {
-    reg_t DR_SET : 32;
+    reg_t dr_set : 32;
 } GPIO_DR_SET_t;
 
 typedef volatile struct {
-    reg_t DR_CLEAR : 32;
+    reg_t dr_clear : 32;
 } GPIO_DR_CLEAR_t;
 
 typedef volatile struct {
-    reg_t DR_TOGGLE : 32;
+    reg_t dr_toggle : 32;
 } GPIO_DR_TOGGLE_t;
 
 typedef volatile struct {
-    /* 0x0  */ GPIO_DR_t DR;
-    /* 0x4  */ GPIO_GDIR_t GDIR;
-    /* 0x8  */ GPIO_PSR_t PSR;
-    /* 0xC  */ GPIO_ICR1_t ICR1;
-    /* 0x10 */ GPIO_ICR2_t ICR2;
-    /* 0x14 */ GPIO_IMR_t IMR;
-    /* 0x18 */ GPIO_ISR_t ISR;
-    /* 0x1C */ GPIO_EDGE_SEL_t EDGE_SEL;
+    /* 0x0  */ GPIO_DR_t dr;
+    /* 0x4  */ GPIO_GDIR_t gdir;
+    /* 0x8  */ GPIO_PSR_t psr;
+    /* 0xC  */ GPIO_ICR1_t icr1;
+    /* 0x10 */ GPIO_ICR2_t icr2;
+    /* 0x14 */ GPIO_IMR_t imr;
+    /* 0x18 */ GPIO_ISR_t isr;
+    /* 0x1C */ GPIO_EDGE_SEL_t edge_sel;
     /*      */ uint32_t reserved[25];
-    /* 0x84 */ GPIO_DR_SET_t DR_SET;
-    /* 0x88 */ GPIO_DR_CLEAR_t DR_CLEAR;
-    /* 0x8C */ GPIO_DR_TOGGLE_t DR_TOGGLE;
+    /* 0x84 */ GPIO_DR_SET_t dr_set;
+    /* 0x88 */ GPIO_DR_CLEAR_t dr_clear;
+    /* 0x8C */ GPIO_DR_TOGGLE_t dr_toggle;
 } GPIO_t;
 
-#define GPIO1 ((GPIO_t*)0x401B8000)
-#define GPIO2 ((GPIO_t*)0x401BC000)
-#define GPIO3 ((GPIO_t*)0x401C0000)
-#define GPIO4 ((GPIO_t*)0x401C4000)
+#define GPIO1 ((GPIO_t*)0x401B8000) // not used, set to gpio 6-9
+#define GPIO2 ((GPIO_t*)0x401BC000) // not used, set to gpio 6-9
+#define GPIO3 ((GPIO_t*)0x401C0000) // not used, set to gpio 6-9
+#define GPIO4 ((GPIO_t*)0x401C4000) // not used, set to gpio 6-9
 #define GPIO5 ((GPIO_t*)0x400C0000)
 #define GPIO6 ((GPIO_t*)0x42000000)
 #define GPIO7 ((GPIO_t*)0x42004000)
@@ -1132,6 +1133,727 @@ typedef volatile struct {
 
 #pragma endregion // GPIO
 
-#pragma endregion // IOMUXC
+#pragma endregion // IOMUXC_MODULE
+
+// Clock Controller Module (CCM)
+// RM 14
+
+#pragma region CCM_MODULE
+
+// Clock Controller Module (CCM) Memory Map/Register Definition
+// RM 14.7
+
+#pragma region CCM
+
+typedef volatile struct {
+    reg_t oscnt : 8;
+    reg_t : 4;
+    reg_t cosc_en : 1;
+    reg_t : 8;
+    reg_t reg_bypass_count : 6;
+    reg_t rbc_en : 1;
+    reg_t : 4;
+} CCM_CCR_t;
+#define CCM_CCR     ((CCM_CCR_t*)0x400FC000u)
+
+typedef volatile struct {
+    reg_t ref_en_b : 1;
+    reg_t : 2;
+    reg_t camp2_ready : 1;
+    reg_t : 1;
+    reg_t cosc_ready : 1;
+    reg_t : 26;
+} CCM_CSR_t;
+#define CCM_CSR     ((CCM_CSR_t*)0x400FC008u)
+
+typedef volatile struct {
+    reg_t pll3_sw_clk_sel : 1;
+    reg_t : 31;
+} CCM_CCSR_t;
+#define CCM_CCSR    ((CCM_CCSR_t*)0x400FC00Cu)
+
+typedef volatile struct {
+    reg_t arm_podf : 3;
+    reg_t : 29;
+} CCM_CACRR_t;
+#define CCM_CACRR   ((CCM_CACRR_t*)0x400FC010u)
+
+typedef volatile struct {
+    reg_t : 6;
+    reg_t semc_clk_sel : 1;
+    reg_t semc_alt_clk_sel : 1;
+    reg_t ipg_podf : 2;
+    reg_t ahb_podf : 3;
+    reg_t : 3;
+    reg_t semc_podf : 3;
+    reg_t : 6;
+    reg_t periph_clk_sel : 1;
+    reg_t : 1;
+    reg_t periph_clk2_podf : 3;
+    reg_t : 2;
+} CCM_CBCDR_t;
+#define CCM_CBCDR   ((CCM_CBCDR_t*)0x400FC014u)
+
+typedef volatile struct {
+    reg_t : 4;
+    reg_t lpspi_clk_sel : 2;
+    reg_t : 2;
+    reg_t flexspi2_clk_sel : 2;
+    reg_t : 2;
+    reg_t periph_clk2_sel : 2;
+    reg_t trace_clk_sel : 2;
+    reg_t : 2;
+    reg_t pre_periph_clk_sel : 2;
+    reg_t : 2;
+    reg_t lcdif_podf : 3;
+    reg_t lpspi_podf : 3;
+    reg_t flexspi2_podf : 3;
+} CCM_CBCMR_t;
+#define CCM_CBCMR   ((CCM_CBCMR_t*)0x400FC018u)
+
+typedef volatile struct {
+    reg_t perclk_podf : 6;
+    reg_t perclk_clk_sel : 1;
+    reg_t : 3;
+    reg_t sai1_clk_sel : 2;
+    reg_t sai2_clk_sel : 2;
+    reg_t sai3_clk_sel : 2;
+    reg_t usdhc1_clk_sel : 1;
+    reg_t usdhc2_clk_sel : 1;
+    reg_t : 5;
+    reg_t flexspi_podf : 3;
+    reg_t : 3;
+    reg_t flexspi_clk_sel : 2;
+    reg_t : 1;
+} CCM_CSCMR1_t;
+#define CCM_CSCMR1  ((CCM_CSCMR1_t*)0x400FC01Cu)
+
+typedef volatile struct {
+    reg_t : 2;
+    reg_t can_clk_podf : 6;
+    reg_t can_clk_sel : 2;
+    reg_t : 9;
+    reg_t flexio2_clk_sel : 2;
+    reg_t : 11;
+} CCM_CSCMR2_t;
+#define CCM_CSCMR2  ((CCM_CSCMR2_t*)0x400FC020u)
+
+typedef volatile struct {
+    reg_t uart_clk_podf : 6;
+    reg_t uart_clk_sel : 2;
+    reg_t : 4;
+    reg_t usdhc1_podf : 3;
+    reg_t : 2;
+    reg_t usdhc2_podf : 3;
+    reg_t : 6;
+    reg_t trace_podf : 16;
+    reg_t : 1;
+} CCM_CSCDR1_t;
+#define CCM_CSCDR1  ((CCM_CSCDR1_t*)0x400FC024u)
+
+typedef volatile struct {
+    reg_t sai1_clk_podf : 6;
+    reg_t sai1_clk_pred : 3;
+    reg_t flexio2_clk_pred : 3;
+    reg_t : 4;
+    reg_t sai3_clk_podf : 6;
+    reg_t sai3_clk_pred : 3;
+    reg_t flexio2_clk_podf : 3;
+    reg_t : 4;
+} CCM_CS1CDR_t;
+#define CCM_CS1CDR  ((CCM_CS1CDR_t*)0x400FC028u)
+
+typedef volatile struct {
+    reg_t sai2_clk_podf : 6;
+    reg_t sai2_clk_pred : 3;
+    reg_t : 23;
+} CCM_CS2CDR_t;
+#define CCM_CS2CDR  ((CCM_CS2CDR_t*)0x400FC02Cu)
+
+typedef volatile struct {
+    reg_t : 7;
+    reg_t flexio1_clk_sel : 2;
+    reg_t flexio1_clk_podf : 3;
+    reg_t flexio1_clk_pred : 3;
+    reg_t : 5;
+    reg_t spdif0_clk_sel : 2;
+    reg_t spdif0_clk_podf : 3;
+    reg_t spdif0_clk_pred : 3;
+    reg_t : 4;
+} CCM_CDCDR_t;
+#define CCM_CDCDR   ((CCM_CDCDR_t*)0x400FC030u)
+
+typedef volatile struct {
+    reg_t : 12;
+    reg_t lcdif_pred : 3;
+    reg_t lcdif_pre_clk_sel : 3;
+    reg_t lpi2c_clk_sel : 1;
+    reg_t lpi2c_clk_podf : 6;
+    reg_t : 7;
+} CCM_CSCDR2_t;
+#define CCM_CSCDR2  ((CCM_CSCDR2_t*)0x400FC038u)
+
+typedef volatile struct {
+    reg_t : 9;
+    reg_t csi_clk_sel : 2;
+    reg_t csi_podf : 3;
+    reg_t : 18;
+} CCM_CSCDR3_t;
+#define CCM_CSCDR3  ((CCM_CSCDR3_t*)0x400FC03Cu)
+
+typedef volatile struct {
+    reg_t semc_podf_busy : 1;
+    reg_t ahb_podf_busy : 1;
+    reg_t : 1;
+    reg_t periph2_clk_sel_busy : 1;
+    reg_t : 1;
+    reg_t periph_clk_sel_busy : 1;
+    reg_t : 10;
+    reg_t arm_podf_busy : 1;
+    reg_t : 15;
+} CCM_CDHIPR_t;
+#define CCM_CDHIPR  ((CCM_CDHIPR_t*)0x400FC048u)
+
+typedef volatile struct {
+    reg_t lpm : 2;
+    reg_t : 3;
+    reg_t arm_clk_dis_on_lpm : 1;
+    reg_t sbyos : 1;
+    reg_t dis_ref_osc : 1;
+    reg_t vstby : 1;
+    reg_t stby_count : 2;
+    reg_t cosc_pwrdown : 1;
+    reg_t : 7;
+    reg_t bypass_lpm_hs1 : 1;
+    reg_t : 1;
+    reg_t bypass_lpm_hs0 : 1;
+    reg_t mask_core0_wfi : 1;
+    reg_t : 3;
+    reg_t mask_scu_idle : 1;
+    reg_t mask_l2cc_idle : 1;
+    reg_t : 4;
+} CCM_CLPCR_t;
+#define CCM_CLPCR   ((CCM_CLPCR_t*)0x400FC054u)
+
+typedef volatile struct {
+    reg_t lrf_pll : 1;
+    reg_t : 5;
+    reg_t cosc_ready : 1;
+    reg_t : 10;
+    reg_t semc_podf_loaded : 1;
+    reg_t : 1;
+    reg_t periph2_clk_sel_loaded : 1;
+    reg_t ahb_podf_loaded : 1;
+    reg_t : 1;
+    reg_t periph_clk_sel_loaded : 1;
+    reg_t : 3;
+    reg_t arm_podf_loaded : 1;
+    reg_t : 5;
+} CCM_CISR_t;
+#define CCM_CISR    ((CCM_CISR_t*)0x400FC058u)
+
+typedef volatile struct {
+    reg_t mask_lrf_pll : 1;
+    reg_t : 5;
+    reg_t mask_cosc_ready : 1;
+    reg_t : 10;
+    reg_t mask_semc_podf_loaded : 1;
+    reg_t : 1;
+    reg_t mask_periph2_clk_sel_loaded : 1;
+    reg_t mask_ahb_podf_loaded : 1;
+    reg_t : 1;
+    reg_t mask_periph_clk_sel_loaded : 1;
+    reg_t : 3;
+    reg_t arm_podf_loaded : 1;
+    reg_t : 5;
+} CCM_CIMR_t;
+#define CCM_CIMR    ((CCM_CIMR_t*)0x400FC05Cu)
+
+typedef volatile struct {
+    reg_t clko1_sel : 4;
+    reg_t clko1_div : 4;
+    reg_t clko1_en : 1;
+    reg_t : 7;
+    reg_t clko2_sel : 5;
+    reg_t clko2_div : 3;
+    reg_t clko2_en : 1;
+    reg_t : 7;
+} CCM_CCOSR_t;
+#define CCM_CCOSR   ((CCM_CCOSR_t*)0x400FC060u)
+
+typedef volatile struct {
+    reg_t pmic_delay_scalar : 1;
+    reg_t : 3;
+    reg_t efuse_prog_supply_gate : 1;
+    reg_t : 9;
+    reg_t sys_mem_ds_ctrl : 2;
+    reg_t fpl : 1;
+    reg_t int_mem_clk_lpm : 1;
+    reg_t : 14;
+} CCM_CGPR_t;
+#define CCM_CGPR    ((CCM_CGPR_t*)0x400FC064u)
+
+// Clock is off during all modes. Stop enter hardware handshake is disabled.
+#define CGR_OFF (0x0u)
+// Clock is on during run mode, but off in WAIT and STOP modes.
+#define CGR_RUN (0x1u)
+// 0x2 is reserved.
+// Clock is on during all modes, except STOP mode.
+#define CGR_ON  (0x3u)
+
+typedef volatile struct {
+    reg_t aips_tz1_clk_enable : 2;
+    reg_t aips_tz2_clk_enable : 2;
+    reg_t mqs_hmclk_clock_enable : 2;
+    reg_t : 2;
+    reg_t sim_m_mainclk_r_enable : 2;
+    reg_t dcp_clk_enable : 2;
+    reg_t lpuart3_clk_enable : 2;
+    reg_t can1_clk_enable : 2;
+    reg_t can1_serial_clk_enable : 2;
+    reg_t can2_clk_enable : 2;
+    reg_t can2_serial_clk_enable : 2;
+    reg_t trace_clk_enable : 2;
+    reg_t gpt2_bus_clk_enable : 2;
+    reg_t gpt2_serial_clk_enable : 2;
+    reg_t lpuart2_clk_enable : 2;
+    reg_t gpio2_clk_enable : 2;
+} CCM_CCGR0_t;
+#define CCM_CCGR0   ((CCM_CCGR0_t*)0x400FC068u)
+
+typedef volatile struct {
+    reg_t lpspi1_clk_enable : 2;
+    reg_t lpspi2_clk_enable : 2;
+    reg_t lpspi3_clk_enable : 2;
+    reg_t lpspi4_clk_enable : 2;
+    reg_t adc2_clk_enable : 2;
+    reg_t enet_clk_enable : 2;
+    reg_t pit_clk_enable : 2;
+    reg_t aoi2_clk_enable : 2;
+    reg_t adc1_clk_enable : 2;
+    reg_t semc_exsc_clk_enable : 2;
+    reg_t gpt_clk_enable : 2;
+    reg_t gpt_serial_clk_enable : 2;
+    reg_t lpuart4_clk_enable : 2;
+    reg_t gpio1_clk_enable : 2;
+    reg_t csu_clk_enable : 2;
+    reg_t gpio5_clk_enable : 2;
+} CCM_CCGR1_t;
+#define CCM_CCGR1   ((CCM_CCGR1_t*)0x400FC06Cu)
+
+typedef volatile struct {
+    reg_t ocram_exsc_clk_enable : 2;
+    reg_t csi_clk_enable : 2;
+    reg_t iomuxc_snvs_clk_enable : 2;
+    reg_t lpi2c1_clk_enable : 2;
+    reg_t lpi2c2_clk_enable : 2;
+    reg_t lpi2c3_clk_enable : 2;
+    reg_t ocotp_clk_enable : 2;
+    reg_t xbar3_clk_enable : 2;
+    reg_t ipmux1_clk_enable : 2;
+    reg_t ipmux2_clk_enable : 2;
+    reg_t ipmux3_clk_enable : 2;
+    reg_t xbar1_clk_enable : 2;
+    reg_t xbar2_clk_enable : 2;
+    reg_t gpio3_clk_enable : 2;
+    reg_t lcd_clk_enable : 2;
+    reg_t pxp_clk_enable : 2;
+} CCM_CCGR2_t;
+#define CCM_CCGR2   ((CCM_CCGR2_t*)0x400FC070u)
+
+typedef volatile struct {
+    reg_t flexio2_clk_enable : 2;
+    reg_t lpuart5_clk_enable : 2;
+    reg_t semc_clk_enable : 2;
+    reg_t lpuart6_clk_enable : 2;
+    reg_t aoi1_clk_enable : 2;
+    reg_t lcdif_pix_clk_enable : 2;
+    reg_t gpio4_clk_enable : 2;
+    reg_t ewm_clk_enable : 2;
+    reg_t wdog1_clk_enable : 2;
+    reg_t flexram_clk_enable : 2;
+    reg_t acmp1_clk_enable : 2;
+    reg_t acmp2_clk_enable : 2;
+    reg_t acmp3_clk_enable : 2;
+    reg_t acmp4_clk_enable : 2;
+    reg_t ocram_clk_enable : 2;
+    reg_t iomuxc_snvs_gpr_clk_enable : 2;
+} CCM_CCGR3_t;
+#define CCM_CCGR3   ((CCM_CCGR3_t*)0x400FC074u)
+
+typedef volatile struct {
+    reg_t sim_m7_mainclk_r_enable : 2;
+    reg_t iomuxc_clk_enable : 2;
+    reg_t iomuxc_gpr_clk_enable : 2;
+    reg_t bee_clk_enable : 2;
+    reg_t sim_m7_clk_enable : 2;
+    reg_t tsc_clk_enable : 2;
+    reg_t sim_m_clk_enable : 2;
+    reg_t sim_ems_clk_enable : 2;
+    reg_t pwm1_clk_enable : 2;
+    reg_t pwm2_clk_enable : 2;
+    reg_t pwm3_clk_enable : 2;
+    reg_t pwm4_clk_enable : 2;
+    reg_t qdc1_clk_enable : 2;
+    reg_t qdc2_clk_enable : 2;
+    reg_t qdc3_clk_enable : 2;
+    reg_t qdc4_clk_enable : 2;
+} CCM_CCGR4_t;
+#define CCM_CCGR4   ((CCM_CCGR4_t*)0x400FC078u)
+
+typedef volatile struct {
+    reg_t rom_clk_enable : 2;
+    reg_t flexio1_clk_enable : 2;
+    reg_t wdog3_clk_enable : 2;
+    reg_t dma_clk_enable : 2;
+    reg_t kpp_clk_enable : 2;
+    reg_t wdog2_clk_enable : 2;
+    reg_t aips_tz4_clk_enable : 2;
+    reg_t spdif_clk_enable : 2;
+    reg_t sim_main_clk_enable : 2;
+    reg_t sai1_clk_enable : 2;
+    reg_t sai2_clk_enable : 2;
+    reg_t sai3_clk_enable : 2;
+    reg_t lpuart1_clk_enable : 2;
+    reg_t lpuart7_clk_enable : 2;
+    reg_t snvs_hp_clk_enable : 2;
+    reg_t snvs_lp_clk_enable : 2;
+} CCM_CCGR5_t;
+#define CCM_CCGR5   ((CCM_CCGR5_t*)0x400FC07Cu)
+
+typedef volatile struct {
+    reg_t usboh3_clk_enable : 2;
+    reg_t usdhc1_clk_enable : 2;
+    reg_t usdhc2_clk_enable : 2;
+    reg_t dcdc_clk_enable : 2;
+    reg_t ipmux4_clk_enable : 2;
+    reg_t flexspi_clk_enable : 2;
+    reg_t trng_clk_enable : 2;
+    reg_t lpuart8_clk_enable : 2;
+    reg_t timer4_clk_enable : 2;
+    reg_t aips_tz3_clk_enable : 2;
+    reg_t sim_per_clk_enable : 2;
+    reg_t anadig_clk_enable : 2;
+    reg_t lpi2c4_clk_enable : 2;
+    reg_t timer1_clk_enable : 2;
+    reg_t timer2_clk_enable : 2;
+    reg_t timer3_clk_enable : 2;
+} CCM_CCGR6_t;
+#define CCM_CCGR6   ((CCM_CCGR6_t*)0x400FC080u)
+
+typedef volatile struct {
+    reg_t enet2_clk_enable : 2;
+    reg_t flexspi2_clk_enable : 2;
+    reg_t axbs_l_clk_enable : 2;
+    reg_t can3_clk_enable : 2;
+    reg_t can3_serial_clk_enable : 2;
+    reg_t apis_lite_clk_enable : 2;
+    reg_t flexio3_clk_enable : 2;
+    reg_t : 18;
+} CCM_CCGR7_t;
+#define CCM_CCGR7   ((CCM_CCGR7_t*)0x400FC084u)
+
+typedef volatile struct {
+    reg_t : 5;
+    reg_t mod_en_ov_gpt : 1;
+    reg_t mod_em_ov_pit : 1;
+    reg_t mod_en_usdhc : 1;
+    reg_t : 1;
+    reg_t mod_en_ov_trng : 1;
+    reg_t mod_en_ov_canfd_cpi : 1;
+    reg_t : 17;
+    reg_t mod_en_ov_can2_cpi : 1;
+    reg_t : 1;
+    reg_t mod_en_ov_can1_cpi : 1;
+    reg_t : 1;
+} CCM_CMEOR_t;
+#define CCM_CMEOR   ((CCM_CMEOR_t*)0x400FC088u)
+
+#pragma endregion // CCM
+
+// CCM Analog Memory Map/Register Definition
+// RM 14.8
+
+#pragma region CCM_ANALOG
+
+typedef volatile struct {
+    reg_t div_select : 7;
+    reg_t : 5;
+    reg_t powerdown : 1;
+    reg_t enable : 1;
+    reg_t bypass_clk_src : 2;
+    reg_t bypass : 1;
+    reg_t : 2;
+    reg_t pll_sel : 1;
+    reg_t : 11;
+    reg_t lock : 1;
+} CCM_ANALOG_PLL_ARM_t;
+#define CCM_ANALOG_PLL_ARM          ((CCM_ANALOG_PLL_ARM_t*)0x400D8000u)
+#define CCM_ANALOG_PLL_ARM_SET      ((CCM_ANALOG_PLL_ARM_t*)0x400D8004u)
+#define CCM_ANALOG_PLL_ARM_CLR      ((CCM_ANALOG_PLL_ARM_t*)0x400D8008u)
+#define CCM_ANALOG_PLL_ARM_TOG      ((CCM_ANALOG_PLL_ARM_t*)0x400D800Cu)
+
+typedef volatile struct {
+    reg_t : 1;
+    reg_t div_select : 1;
+    reg_t : 4;
+    reg_t en_usb_clks : 1;
+    reg_t : 5;
+    reg_t power : 1;
+    reg_t enable : 1;
+    reg_t bypass_clk_src : 2;
+    reg_t bypass : 1;
+    reg_t : 14;
+    reg_t lock : 1;
+} CCM_ANALOG_PLL_USB1_t;
+#define CCM_ANALOG_PLL_USB1         ((CCM_ANALOG_PLL_USB1_t*)0x400D8010u)
+#define CCM_ANALOG_PLL_USB1_SET     ((CCM_ANALOG_PLL_USB1_t*)0x400D8014u)
+#define CCM_ANALOG_PLL_USB1_CLR     ((CCM_ANALOG_PLL_USB1_t*)0x400D8018u)
+#define CCM_ANALOG_PLL_USB1_TOG     ((CCM_ANALOG_PLL_USB1_t*)0x400D801Cu)
+
+typedef volatile struct {
+    reg_t : 1;
+    reg_t div_select : 1;
+    reg_t : 4;
+    reg_t en_usb_clks : 1;
+    reg_t : 5;
+    reg_t power : 1;
+    reg_t enable : 1;
+    reg_t bypass_clk_src : 2;
+    reg_t bypass : 1;
+    reg_t : 14;
+    reg_t lock : 1;
+} CCM_ANALOG_PLL_USB2_t;
+#define CCM_ANALOG_PLL_USB2         ((CCM_ANALOG_PLL_USB2_t*)0x400D8020u)
+#define CCM_ANALOG_PLL_USB2_SET     ((CCM_ANALOG_PLL_USB2_t*)0x400D8024u)
+#define CCM_ANALOG_PLL_USB2_CLR     ((CCM_ANALOG_PLL_USB2_t*)0x400D8028u)
+#define CCM_ANALOG_PLL_USB2_TOG     ((CCM_ANALOG_PLL_USB2_t*)0x400D802Cu)
+
+typedef volatile struct {
+    reg_t div_select : 1;
+    reg_t : 11;
+    reg_t powerdown : 1;
+    reg_t enable : 1;
+    reg_t bypass_clk_src : 2;
+    reg_t bypass : 1;
+    reg_t : 14;
+    reg_t lock : 1;
+} CCM_ANALOG_PLL_SYS_t;
+#define CCM_ANALOG_PLL_SYS          ((CCM_ANALOG_PLL_SYS_t*)0x400D8030u)
+#define CCM_ANALOG_PLL_SYS_SET      ((CCM_ANALOG_PLL_SYS_t*)0x400D8034u)
+#define CCM_ANALOG_PLL_SYS_CLR      ((CCM_ANALOG_PLL_SYS_t*)0x400D8038u)
+#define CCM_ANALOG_PLL_SYS_TOG      ((CCM_ANALOG_PLL_SYS_t*)0x400D803Cu)
+
+typedef volatile struct {
+    reg_t step : 15;
+    reg_t enable : 1;
+    reg_t stop : 16;
+} CCM_ANALOG_PLL_SYS_SS_t;
+#define CCM_ANALOG_PLL_SYS_SS       ((CCM_ANALOG_PLL_SYS_SS_t*)0x400D8040u)
+
+typedef volatile struct {
+    reg_t numerator : 30;   // signed
+    reg_t : 2;
+} CCM_ANALOG_PLL_SYS_NUM_t;
+#define CCM_ANALOG_PLL_SYS_NUM      ((CCM_ANALOG_PLL_SYS_NUM_t*)0x400D8050u)
+
+typedef volatile struct {
+    reg_t denominator : 30; // signed
+    reg_t : 2;
+} CCM_ANALOG_PLL_SYS_DENOM_t;
+#define CCM_ANALOG_PLL_SYS_DENOM    ((CCM_ANALOG_PLL_SYS_DENOM_t*)0x400D8060u)
+
+typedef volatile struct {
+    reg_t div_select : 7;
+    reg_t : 5;
+    reg_t powerdown : 1;
+    reg_t enable : 1;
+    reg_t bypass_clk_src : 2;
+    reg_t bypass : 1;
+    reg_t : 2;
+    reg_t post_div_select : 2;
+    reg_t : 10;
+    reg_t lock : 1;
+} CCM_ANALOG_PLL_AUDIO_t;
+#define CCM_ANALOG_PLL_AUDIO        ((CCM_ANALOG_PLL_AUDIO_t*)0x400D8070u)
+#define CCM_ANALOG_PLL_AUDIO_SET    ((CCM_ANALOG_PLL_AUDIO_t*)0x400D8074u)
+#define CCM_ANALOG_PLL_AUDIO_CLR    ((CCM_ANALOG_PLL_AUDIO_t*)0x400D8078u)
+#define CCM_ANALOG_PLL_AUDIO_TOG    ((CCM_ANALOG_PLL_AUDIO_t*)0x400D807Cu)
+
+typedef volatile struct {
+    reg_t numerator : 30;   // signed
+    reg_t : 2;
+} CCM_ANALOG_PLL_AUDIO_NUM_t;
+#define CCM_ANALOG_PLL_AUDIO_NUM    ((CCM_ANALOG_PLL_AUDIO_NUM_t*)0x400D8080u)
+
+typedef volatile struct {
+    reg_t denominator : 30; // signed
+    reg_t : 2;
+} CCM_ANALOG_PLL_AUDIO_DENOM_t;
+#define CCM_ANALOG_PLL_AUDIO_DENOM  ((CCM_ANALOG_PLL_AUDIO_DENOM_t*)0x400D8090u)
+
+typedef volatile struct {
+    reg_t div_select : 7;
+    reg_t : 5;
+    reg_t powerdown : 1;
+    reg_t enable : 1;
+    reg_t bypass_clk_src : 2;
+    reg_t bypass : 1;
+    reg_t : 2;
+    reg_t post_div_select : 2;
+    reg_t : 10;
+    reg_t lock : 1;
+} CCM_ANALOG_PLL_VIDEO_t;
+#define CCM_ANALOG_PLL_VIDEO        ((CCM_ANALOG_PLL_VIDEO_t*)0x400D80A0u)
+#define CCM_ANALOG_PLL_VIDEO_SET    ((CCM_ANALOG_PLL_VIDEO_t*)0x400D80A4u)
+#define CCM_ANALOG_PLL_VIDEO_CLR    ((CCM_ANALOG_PLL_VIDEO_t*)0x400D80A8u)
+#define CCM_ANALOG_PLL_VIDEO_TOG    ((CCM_ANALOG_PLL_VIDEO_t*)0x400D80ACu)
+
+typedef volatile struct {
+    reg_t numerator : 30;   // signed
+    reg_t : 2;
+} CCM_ANALOG_PLL_VIDEO_NUM_t;
+#define CCM_ANALOG_PLL_VIDEO_NUM    ((CCM_ANALOG_PLL_VIDEO_NUM_t*)0x400D80B0u)
+
+typedef volatile struct {
+    reg_t denominator : 30; // signed
+    reg_t : 2;
+} CCM_ANALOG_PLL_VIDEO_DENOM_t;
+#define CCM_ANALOG_PLL_VIDEO_DENOM  ((CCM_ANALOG_PLL_VIDEO_DENOM_t*)0x400D80C0u)
+
+typedef volatile struct {
+    reg_t div_select : 2;
+    reg_t enet2_div_select : 2;
+    reg_t : 8;
+    reg_t powerdown : 1;
+    reg_t enable : 1;
+    reg_t bypass_clk_src : 2;
+    reg_t bypass : 1;
+    reg_t : 3;
+    reg_t enet2_ref_en : 1;
+    reg_t enet_25m_ref_en : 1;
+    reg_t : 9;
+    reg_t lock : 1;
+} CCM_ANALOG_PLL_ENET_t;
+#define CCM_ANALOG_PLL_ENET         ((CCM_ANALOG_PLL_ENET_t*)0x400D80E0u)
+#define CCM_ANALOG_PLL_ENET_SET     ((CCM_ANALOG_PLL_ENET_t*)0x400D80E4u)
+#define CCM_ANALOG_PLL_ENET_CLR     ((CCM_ANALOG_PLL_ENET_t*)0x400D80E8u)
+#define CCM_ANALOG_PLL_ENET_TOG     ((CCM_ANALOG_PLL_ENET_t*)0x400D80ECu)
+
+typedef volatile struct {
+    reg_t pfd0_frac : 6;
+    reg_t pfd0_stable : 1;
+    reg_t pfd0_clkgate : 1;
+    reg_t pfd1_frac : 6;
+    reg_t pfd1_stable : 1;
+    reg_t pfd1_clkgate : 1;
+    reg_t pfd2_frac : 6;
+    reg_t pfd2_stable : 1;
+    reg_t pfd2_clkgate : 1;
+    reg_t pfd3_frac : 6;
+    reg_t pfd3_stable : 1;
+    reg_t pfd3_clkgate : 1;
+} CCM_ANALOG_PFD_480_t;
+#define CCM_ANALOG_PFD_480          ((CCM_ANALOG_PFD_480_t*)0x400D80F0u)
+#define CCM_ANALOG_PFD_480_SET      ((CCM_ANALOG_PFD_480_t*)0x400D80F4u)
+#define CCM_ANALOG_PFD_480_CLR      ((CCM_ANALOG_PFD_480_t*)0x400D80F8u)
+#define CCM_ANALOG_PFD_480_TOG      ((CCM_ANALOG_PFD_480_t*)0x400D80FCu)
+
+typedef volatile struct {
+    reg_t pfd0_frac : 6;
+    reg_t pfd0_stable : 1;
+    reg_t pfd0_clkgate : 1;
+    reg_t pfd1_frac : 6;
+    reg_t pfd1_stable : 1;
+    reg_t pfd1_clkgate : 1;
+    reg_t pfd2_frac : 6;
+    reg_t pfd2_stable : 1;
+    reg_t pfd2_clkgate : 1;
+    reg_t pfd3_frac : 6;
+    reg_t pfd3_stable : 1;
+    reg_t pfd3_clkgate : 1;
+} CCM_ANALOG_PFD_528_t;
+#define CCM_ANALOG_PFD_528          ((CCM_ANALOG_PFD_528_t*)0x400D8100u)
+#define CCM_ANALOG_PFD_528_SET      ((CCM_ANALOG_PFD_528_t*)0x400D8104u)
+#define CCM_ANALOG_PFD_528_CLR      ((CCM_ANALOG_PFD_528_t*)0x400D8108u)
+#define CCM_ANALOG_PFD_528_TOG      ((CCM_ANALOG_PFD_528_t*)0x400D810Cu)
+
+typedef volatile struct {
+    reg_t reftop_pwd : 1;
+    reg_t : 2;
+    reg_t reftop_selfbiasoff : 1;
+    reg_t reftop_vbgadj : 3;
+    reg_t reftop_vbgup : 1;
+    reg_t : 2;
+    reg_t stop_mod_config : 2;
+    reg_t discon_high_snvs : 1;
+    reg_t osc_i : 2;
+    reg_t osc_xtalok : 1;
+    reg_t osc_xtalox_en : 1;
+    reg_t : 8;
+    reg_t clkgate_ctrl : 1;
+    reg_t clkgate_delay : 3;
+    reg_t rtc_xtal_source : 1;
+    reg_t xtal_24m_pwd : 1;
+    reg_t : 1;
+} CCM_ANALOG_MISC0_t;
+#define CCM_ANALOG_MISC0            ((CCM_ANALOG_MISC0_t*)0x400D8150u)
+#define CCM_ANALOG_MISC0_SET        ((CCM_ANALOG_MISC0_t*)0x400D8154u)
+#define CCM_ANALOG_MISC0_CLR        ((CCM_ANALOG_MISC0_t*)0x400D8158u)
+#define CCM_ANALOG_MISC0_TOG        ((CCM_ANALOG_MISC0_t*)0x400D815Cu)
+
+typedef volatile struct {
+    reg_t lvds1_clk_sel : 5;
+    reg_t : 5;
+    reg_t lvdsclk1_oben : 1;
+    reg_t : 1;
+    reg_t lvdsclk1_iben : 1;
+    reg_t : 3;
+    reg_t pfd_480_autogate_en : 1;
+    reg_t pfd_528_autogate_en : 1;
+    reg_t : 9;
+    reg_t irq_temppanic : 1;
+    reg_t irq_templow : 1;
+    reg_t irq_temphigh : 1;
+    reg_t irq_ana_bo : 1;
+    reg_t irq_dig_bo : 1;
+} CCM_ANALOG_MISC1_t;
+#define CCM_ANALOG_MISC1            ((CCM_ANALOG_MISC1_t*)0x400D8160u)
+#define CCM_ANALOG_MISC1_SET        ((CCM_ANALOG_MISC1_t*)0x400D8164u)
+#define CCM_ANALOG_MISC1_CLR        ((CCM_ANALOG_MISC1_t*)0x400D8168u)
+#define CCM_ANALOG_MISC1_TOG        ((CCM_ANALOG_MISC1_t*)0x400D816Cu)
+
+typedef volatile struct {
+    reg_t reg0_bo_offset : 3;
+    reg_t reg0_bo_status : 1;
+    reg_t : 1;
+    reg_t reg0_enable_bo : 1;
+    reg_t reg0_ok : 1;
+    reg_t pll3_disable : 1;
+    reg_t reg1_bo_offset : 3;
+    reg_t reg1_bo_status : 1;
+    reg_t : 1;
+    reg_t reg1_enable_bo : 1;
+    reg_t reg1_ok : 1;
+    reg_t audio_div_lsb : 1;
+    reg_t reg2_bo_offset : 3;
+    reg_t reg2_bo_status : 1;
+    reg_t : 1;
+    reg_t reg2_enable_bo : 1;
+    reg_t reg2_ok : 1;
+    reg_t audio_div_msb : 1;
+    reg_t reg0_step_time : 2;
+    reg_t reg1_step_time : 2;
+    reg_t reg2_step_time : 2;
+    reg_t video_div : 2;
+} CCM_ANALOG_MISC2_t;
+#define CCM_ANALOG_MISC2            ((CCM_ANALOG_MISC2_t*)0x400D8170u)
+#define CCM_ANALOG_MISC2_SET        ((CCM_ANALOG_MISC2_t*)0x400D8174u)
+#define CCM_ANALOG_MISC2_CLR        ((CCM_ANALOG_MISC2_t*)0x400D8178u)
+#define CCM_ANALOG_MISC2_TOG        ((CCM_ANALOG_MISC2_t*)0x400D817Cu)
+
+#pragma endregion // CCM_ANALOG
+
+#pragma endregion // CCM_MODULE
 
 #endif // IMXRT_REGMAP_H
