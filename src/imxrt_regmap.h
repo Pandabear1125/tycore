@@ -1856,4 +1856,80 @@ typedef volatile struct {
 
 #pragma endregion // CCM_MODULE
 
+// DCDC Converter Module
+// RM 18
+
+#pragma region DCDC_MODULE
+
+// DCDC Memory Map/Register Descriptions
+// RM 18.5.1
+
+typedef volatile struct {
+    reg_t pwd_zcd : 1;
+    reg_t disable_auto_clk_switch : 1;
+    reg_t sel_clk : 1;
+    reg_t pwd_osc_int : 1;
+    reg_t pwd_cur_sns_cmp : 1;
+    reg_t cur_sns_thrsh : 3;
+    reg_t pwd_overcur_det : 1;
+    reg_t overcur_trig_adj : 2;
+    reg_t pwd_cmp_batt_det : 1;
+    reg_t : 4;
+    reg_t en_lp_overload_sns : 1;
+    reg_t pwd_high_volt_det : 1;
+    reg_t lp_overload_thrsh : 2;
+    reg_t lp_overload_freq_sel : 1;
+    reg_t lp_high_hys : 1;
+    reg_t : 4;
+    reg_t pwd_cmp_offset : 1;
+    reg_t xtalok_disable : 1;
+    reg_t current_alert_reset : 1;
+    reg_t xtal_24m_ok : 1;
+    reg_t : 1;
+    reg_t sts_dc_ok : 1;
+} DCDC_REG0_t;
+#define DCDC_REG0   ((DCDC_REG0_t*)0x40080000u)
+
+typedef volatile struct {
+    reg_t : 7;
+    reg_t reg_fbk_sel : 2;
+    reg_t reg_rload_sw : 1;
+    reg_t : 2;
+    reg_t lp_cmp_isrc_sel : 2;
+    reg_t : 7;
+    reg_t loopctrl_hst_thresh : 1;
+    reg_t : 1;
+    reg_t loopctrl_en_hyst : 1;
+    reg_t vbg_trim : 5;
+    reg_t : 3;
+} DCDC_REG1_t;
+#define DCDC_REG0   ((DCDC_REG1_t*)0x40080004u)
+
+typedef volatile struct {
+    reg_t : 6;
+    reg_t loopctrl_dc_ff : 3;
+    reg_t loopctrl_en_rcscale : 3;
+    reg_t loopctrl_rscale_thrsh : 1;
+    reg_t loopctrl_hyst_sign : 1;
+    reg_t : 13;
+    reg_t disable_pulse_skip : 1;
+    reg_t dcm_set_ctrl : 1;
+    reg_t : 3;
+} DCDC_REG2_t;
+#define DCDC_REG2   ((DCDC_REG2_t*)0x40080008u)
+
+typedef volatile struct {
+    reg_t trg : 5;
+    reg_t : 3;
+    reg_t target_lp : 3;
+    reg_t : 13;
+    reg_t minpwr_dc_halfclk : 1;
+    reg_t : 5;
+    reg_t disable_step : 1;
+    reg_t : 1;
+} DCDC_REG3_t;
+#define DCDC_REG3   ((DCDC_REG3_t*)0x4008000Cu)
+
+#pragma endregion   // DCDC_MODULE
+
 #endif // IMXRT_REGMAP_H
