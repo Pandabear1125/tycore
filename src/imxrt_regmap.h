@@ -2059,7 +2059,7 @@ typedef volatile struct {
     reg_t vbg_trim : 5;
     reg_t : 3;
 } DCDC_REG1_t;
-#define DCDC_REG0   ((DCDC_REG1_t*)0x40080004u)
+#define DCDC_REG1   ((DCDC_REG1_t*)0x40080004u)
 
 typedef volatile struct {
     reg_t : 6;
