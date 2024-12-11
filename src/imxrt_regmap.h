@@ -1856,4 +1856,236 @@ typedef volatile struct {
 
 #pragma endregion // CCM_MODULE
 
+// Power Management Unit (PMU) Module
+// RM 16
+
+#pragma region PMU_MODULE
+
+typedef volatile struct {
+    reg_t enable_linreg : 1;
+    reg_t enable_bo : 1;
+    reg_t enable_ilimit : 1;
+    reg_t enable_pulldown : 1;
+    reg_t bo_offset : 3;
+    reg_t : 1;
+    reg_t output_trg : 5;
+    reg_t : 3;
+    reg_t bo_vdd1p1 : 1;
+    reg_t ok_vdd1p1 : 1;
+    reg_t enable_weak_linreg : 1;
+    reg_t selref_weak_linreg : 1;
+    reg_t : 12;
+} PMU_REG_1P1_t;
+#define PMU_REG_1P1         ((PMU_REG_1P1_t*)0x400D8110u)
+#define PMU_REG_1P1_SET     ((PMU_REG_1P1_t*)0x400D8114u)
+#define PMU_REG_1P1_CLR     ((PMU_REG_1P1_t*)0x400D8118u)
+#define PMU_REG_1P1_TOG     ((PMU_REG_1P1_t*)0x400D811Cu)
+
+typedef volatile struct {
+    reg_t enable_linreg : 1;
+    reg_t enable_bo : 1;
+    reg_t enable_ilimit : 1;
+    reg_t : 1;
+    reg_t bo_offset : 3;
+    reg_t vbus_sel : 1;
+    reg_t output_trg : 5;
+    reg_t : 3;
+    reg_t bo_vdd3p0 : 1;
+    reg_t ok_vdd3p0 : 1;
+    reg_t : 14;
+} PMU_REG_3P0_t;
+#define PMU_REG_3P0         ((PMU_REG_3P0_t*)0x400D8120u)
+#define PMU_REG_3P0_SET     ((PMU_REG_3P0_t*)0x400D8124u)
+#define PMU_REG_3P0_CLR     ((PMU_REG_3P0_t*)0x400D8128u)
+#define PMU_REG_3P0_TOG     ((PMU_REG_3P0_t*)0x400D812Cu)
+
+typedef volatile struct {
+    reg_t enable_linreg : 1;
+    reg_t enable_bo : 1;
+    reg_t enable_ilimit : 1;
+    reg_t enable_pulldown : 1;
+    reg_t bo_offset : 3;
+    reg_t : 1;
+    reg_t output_trg : 5;
+    reg_t : 3;
+    reg_t bo_vdd2p5 : 1;
+    reg_t ok_vdd2p5 : 1;
+    reg_t enable_weak_linreg : 1;
+    reg_t : 13;
+} PMU_REG_2P5_t;
+#define PMU_REG_2P5         ((PMU_REG_2P5_t*)0x400D8130u)
+#define PMU_REG_2P5_SET     ((PMU_REG_2P5_t*)0x400D8134u)
+#define PMU_REG_2P5_CLR     ((PMU_REG_2P5_t*)0x400D8138u)
+#define PMU_REG_2P5_TOG     ((PMU_REG_2P5_t*)0x400D813Cu)
+
+typedef volatile struct {
+    reg_t reg0_targ : 5;
+    reg_t reg0_adj : 4;
+    reg_t reg1_targ : 5;
+    reg_t reg1_adj : 4;
+    reg_t reg2_targ : 5;
+    reg_t reg2_adj : 4;
+    reg_t ramp_rate : 2;
+    reg_t fet_odrive : 1;
+    reg_t : 2;
+} PMU_REG_CORE_t;
+#define PMU_REG_CORE        ((PMU_REG_CORE_t*)0x400D8140u)
+#define PMU_REG_CORE_SET    ((PMU_REG_CORE_t*)0x400D8144u)
+#define PMU_REG_CORE_CLR    ((PMU_REG_CORE_t*)0x400D8148u)
+#define PMU_REG_CORE_TOG    ((PMU_REG_CORE_t*)0x400D814Cu)
+
+typedef volatile struct {
+    reg_t reftop_pwd : 1;
+    reg_t reftop_pwdvbgup : 1;
+    reg_t reftop_lowpower : 1;
+    reg_t reftop_selfbiasoff : 1;
+    reg_t reftop_vbgadj : 3;
+    reg_t reftop_vbgup : 1;
+    reg_t : 2;
+    reg_t stop_mode_config : 2;
+    reg_t discon_high_snvs : 1;
+    reg_t osc_i : 2;
+    reg_t osc_xtalok : 1;
+    reg_t osc_xtalok_en : 1;
+    reg_t : 8;
+    reg_t clkgate_ctrl : 1;
+    reg_t clkgate_delay : 3;
+    reg_t rtc_xtal_source : 1;
+    reg_t xtal_24m_pwd : 1;
+    reg_t vid_pll_prediv : 1;
+} PMU_MISC0_t;
+#define PMU_MISC0           ((PMU_MISC0_t*)0x400D8150u)
+#define PMU_MISC0_SET       ((PMU_MISC0_t*)0x400D8154u)
+#define PMU_MISC0_CLR       ((PMU_MISC0_t*)0x400D8158u)
+#define PMU_MISC0_TOG       ((PMU_MISC0_t*)0x400D815Cu)
+
+typedef volatile struct {
+    reg_t lvds1_clk_sel : 5;
+    reg_t lvds2_clk_sel : 5;
+    reg_t lvdsclk1_oben : 1;
+    reg_t lvdsclk2_oben : 1;
+    reg_t lvdsclk1_iben : 1;
+    reg_t lvdsclk2_iben : 1;
+    reg_t : 2;
+    reg_t pfd_480_autogate_en : 1;
+    reg_t pfd_528_autogate_en : 1;
+    reg_t : 9;
+    reg_t irq_temppanic : 1;
+    reg_t irq_templow : 1;
+    reg_t irq_temphigh : 1;
+    reg_t irq_ana_bo : 1;
+    reg_t irq_dig_bo : 1;
+} PMU_MISC1_t;
+#define PMU_MISC1           ((PMU_MISC1_t*)0x400D8160u)
+#define PMU_MISC1_SET       ((PMU_MISC1_t*)0x400D8164u)
+#define PMU_MISC1_CLR       ((PMU_MISC1_t*)0x400D8168u)
+#define PMU_MISC1_TOG       ((PMU_MISC1_t*)0x400D816Cu)
+
+typedef volatile struct {
+    reg_t reg0_bo_offset : 3;
+    reg_t reg0_bo_status : 1;
+    reg_t : 1;
+    reg_t reg0_enable_bo : 1;
+    reg_t : 1; 
+    reg_t pll3_disable : 1;
+    reg_t reg1_bo_offset : 3;
+    reg_t reg1_bo_status : 1;
+    reg_t : 1;
+    reg_t reg1_enable_bo : 1;
+    reg_t : 1;
+    reg_t audio_div_lsb : 1;
+    reg_t reg2_bo_offset : 3;
+    reg_t reg2_bo_status : 1;
+    reg_t : 1;
+    reg_t reg2_enable_bo : 1;
+    reg_t reg2_ok : 1;
+    reg_t audio_div_msb : 1;
+    reg_t reg0_step_time : 2;
+    reg_t reg1_step_time : 2;
+    reg_t reg2_step_time : 2;
+    reg_t video_div : 2;
+} PMU_MISC2_t;
+#define PMU_MISC2           ((PMU_MISC2_t*)0x400D8170u)
+#define PMU_MISC2_SET       ((PMU_MISC2_t*)0x400D8174u)
+#define PMU_MISC2_CLR       ((PMU_MISC2_t*)0x400D8178u)
+#define PMU_MISC2_TOG       ((PMU_MISC2_t*)0x400D817Cu)
+
+#pragma endregion // PMU_MODULE
+
+// DCDC Converter Module
+// RM 18
+
+#pragma region DCDC_MODULE
+
+// DCDC Memory Map/Register Descriptions
+// RM 18.5.1
+
+typedef volatile struct {
+    reg_t pwd_zcd : 1;
+    reg_t disable_auto_clk_switch : 1;
+    reg_t sel_clk : 1;
+    reg_t pwd_osc_int : 1;
+    reg_t pwd_cur_sns_cmp : 1;
+    reg_t cur_sns_thrsh : 3;
+    reg_t pwd_overcur_det : 1;
+    reg_t overcur_trig_adj : 2;
+    reg_t pwd_cmp_batt_det : 1;
+    reg_t : 4;
+    reg_t en_lp_overload_sns : 1;
+    reg_t pwd_high_volt_det : 1;
+    reg_t lp_overload_thrsh : 2;
+    reg_t lp_overload_freq_sel : 1;
+    reg_t lp_high_hys : 1;
+    reg_t : 4;
+    reg_t pwd_cmp_offset : 1;
+    reg_t xtalok_disable : 1;
+    reg_t current_alert_reset : 1;
+    reg_t xtal_24m_ok : 1;
+    reg_t : 1;
+    reg_t sts_dc_ok : 1;
+} DCDC_REG0_t;
+#define DCDC_REG0   ((DCDC_REG0_t*)0x40080000u)
+
+typedef volatile struct {
+    reg_t : 7;
+    reg_t reg_fbk_sel : 2;
+    reg_t reg_rload_sw : 1;
+    reg_t : 2;
+    reg_t lp_cmp_isrc_sel : 2;
+    reg_t : 7;
+    reg_t loopctrl_hst_thresh : 1;
+    reg_t : 1;
+    reg_t loopctrl_en_hyst : 1;
+    reg_t vbg_trim : 5;
+    reg_t : 3;
+} DCDC_REG1_t;
+#define DCDC_REG1   ((DCDC_REG1_t*)0x40080004u)
+
+typedef volatile struct {
+    reg_t : 6;
+    reg_t loopctrl_dc_ff : 3;
+    reg_t loopctrl_en_rcscale : 3;
+    reg_t loopctrl_rscale_thrsh : 1;
+    reg_t loopctrl_hyst_sign : 1;
+    reg_t : 13;
+    reg_t disable_pulse_skip : 1;
+    reg_t dcm_set_ctrl : 1;
+    reg_t : 3;
+} DCDC_REG2_t;
+#define DCDC_REG2   ((DCDC_REG2_t*)0x40080008u)
+
+typedef volatile struct {
+    reg_t trg : 5;
+    reg_t : 3;
+    reg_t target_lp : 3;
+    reg_t : 13;
+    reg_t minpwr_dc_halfclk : 1;
+    reg_t : 5;
+    reg_t disable_step : 1;
+    reg_t : 1;
+} DCDC_REG3_t;
+#define DCDC_REG3   ((DCDC_REG3_t*)0x4008000Cu)
+
+#pragma endregion   // DCDC_MODULE
+
 #endif // IMXRT_REGMAP_H
