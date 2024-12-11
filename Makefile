@@ -26,6 +26,7 @@ COMPILER_FLAGS += -fno-exceptions -Wpedantic						# disables exceptions, there i
 COMPILER_FLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors 	# enable all warnings and treat them as errors
 COMPILER_FLAGS += --specs=nano.specs								# use the newlib nano library, significantly reduces binary size
 COMPILER_FLAGS += -ffunction-sections -fdata-sections 				# put functions and data in separate sections
+COMPILER_FLAGS += -O3
 
 CXX_FLAGS 		= -std=gnu++17							# use C++17 standard with GNU extensions. Extensions are needed for various things like asm and inline
 C_FLAGS 		= -std=gnu11							# use C11 standard with GNU extensions. Extensions are needed for various things like asm and inline

@@ -2,6 +2,10 @@
 
 // TODO remake the register map file
 #include "imxrt_regmap.h"
+#include "connectivity/gpio.h"
+
+// prevent optimization since this is critical boot code
+#pragma GCC optimize("O0")
 
 extern uint32_t __ld_flexram_config;
 extern uint32_t __ld_stack_start;
@@ -42,6 +46,8 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	dst = &__ld_dtcm_start;
 	len = (uint32_t)&__ld_dtcm_size;
 	while (len--) *dst++ = *src++;
+
+	gpio_init();
 
 	// initialize c++ statics and global constructors
 	__libc_init_array();
