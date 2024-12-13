@@ -1,12 +1,10 @@
 #include "gpio.h"
 
-#include "../utils/memory.h"
-
 // TODO: determine if FLASH_DATA reduces performance too much
 
 // GPIO pin to MUX register mapping
 // This specifies which MUX register the pin corresponds to
-FLASH_DATA static IOMUXC_SW_MUX_CTL_PAD_t* gpio_pin_mux_map[GPIO_PIN_COUNT] = {
+DTCM static IOMUXC_SW_MUX_CTL_PAD_t* const gpio_pin_to_mux_map[GPIO_PIN_COUNT] = {
     /*  0  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_03,     // GPIO_AD_B0_03    | GPIO1_IO03
     /*  1  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_02,     // GPIO_AD_B0_02    | GPIO1_IO02
     /*  2  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_04,       // GPIO_EMC_04      | GPIO4_IO04
@@ -53,7 +51,7 @@ FLASH_DATA static IOMUXC_SW_MUX_CTL_PAD_t* gpio_pin_mux_map[GPIO_PIN_COUNT] = {
 
 // GPIO pin to PAD register mapping
 // This specifies which PAD register the pin corresponds to
-FLASH_DATA static IOMUXC_SW_PAD_CTL_PAD_t* gpio_pin_pad_map[GPIO_PIN_COUNT] = {
+DTCM static IOMUXC_SW_PAD_CTL_PAD_t* const gpio_pin_to_pad_map[GPIO_PIN_COUNT] = {
     /*  0  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_03,     // GPIO_AD_B0_03    | GPIO1_IO03
     /*  1  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_02,     // GPIO_AD_B0_02    | GPIO1_IO02
     /*  2  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_04,       // GPIO_EMC_04      | GPIO4_IO04
@@ -100,7 +98,7 @@ FLASH_DATA static IOMUXC_SW_PAD_CTL_PAD_t* gpio_pin_pad_map[GPIO_PIN_COUNT] = {
 
 // GPIO pin to GPIO register mapping
 // This specifies which GPIO register the pin is in
-FLASH_DATA static GPIO_t* gpio_pin_gpio_map[GPIO_PIN_COUNT] = {
+DTCM static GPIO_t* const gpio_pin_to_gpio_map[GPIO_PIN_COUNT] = {
     /*  0  */   GPIO6,  // GPIO1_IO03 -> GPIO6
     /*  1  */   GPIO6,  // GPIO1_IO02 -> GPIO6
     /*  2  */   GPIO9,  // GPIO4_IO04 -> GPIO9
@@ -147,7 +145,7 @@ FLASH_DATA static GPIO_t* gpio_pin_gpio_map[GPIO_PIN_COUNT] = {
 
 // GPIO pin to GPIO register bitmask mapping
 // This specifies which bit corresponds to the pin in the GPIO register
-FLASH_DATA static uint32_t gpio_pin_gpio_mask_map[GPIO_PIN_COUNT] = {
+DTCM static const uint32_t gpio_pin_to_gpio_mask_map[GPIO_PIN_COUNT] = {
     /*  0  */   1u << 3u,  // GPIO1_IO03
     /*  1  */   1u << 2u,  // GPIO1_IO02
     /*  2  */   1u << 4u,  // GPIO4_IO04
@@ -208,93 +206,89 @@ FLASH_CODE int gpio_init(void) {
     return 0;
 }
 
-void pinMode(uint8_t pin, gpio_pin_mode_t mode) {
-    // TODO: test each mode with ocilloscope to verify correct operation
+FLASH_CODE void pinMode(uint8_t pin, gpio_pin_mode_t mode) {
     switch (mode) {
     case INPUT:
         // set pin to input
         // disable input keeper in order to read the current value, rather than the last "set" value
-        gpio_pin_pad_map[pin]->pue = 1;
+        gpio_pin_to_pad_map[pin]->pue = 1;
 
         // set direction to input
-        gpio_pin_gpio_map[pin]->gdir.gdir &= ~gpio_pin_gpio_mask_map[pin];
+        gpio_pin_to_gpio_map[pin]->gdir.gdir &= ~gpio_pin_to_gpio_mask_map[pin];
         break;
     case INPUT_PULLUP:
         // set pin to input with pullup
-        gpio_pin_pad_map[pin]->pke = 1; // enable pullup
-        gpio_pin_pad_map[pin]->pue = 1; // enable pullup
-        gpio_pin_pad_map[pin]->pus = 3; // select 22kOhm pullup
-        gpio_pin_pad_map[pin]->hys = 1; // enable hysteresis
+        gpio_pin_to_pad_map[pin]->pke = 1; // enable pullup
+        gpio_pin_to_pad_map[pin]->pue = 1; // enable pullup
+        gpio_pin_to_pad_map[pin]->pus = 3; // select 22kOhm pullup
+        gpio_pin_to_pad_map[pin]->hys = 1; // enable hysteresis
 
         // set direction to input
-        gpio_pin_gpio_map[pin]->gdir.gdir &= ~gpio_pin_gpio_mask_map[pin];
+        gpio_pin_to_gpio_map[pin]->gdir.gdir &= ~gpio_pin_to_gpio_mask_map[pin];
         break;
     case INPUT_PULLDOWN:
         // set pin to input with pulldown
-        gpio_pin_pad_map[pin]->pke = 1; // enable pulldown
-        gpio_pin_pad_map[pin]->pue = 1; // enable pulldown
-        gpio_pin_pad_map[pin]->pus = 0; // select 100kOhm pulldown
-        gpio_pin_pad_map[pin]->hys = 1; // enable hysteresis
+        gpio_pin_to_pad_map[pin]->pke = 1; // enable pulldown
+        gpio_pin_to_pad_map[pin]->pue = 1; // enable pulldown
+        gpio_pin_to_pad_map[pin]->pus = 0; // select 100kOhm pulldown
+        gpio_pin_to_pad_map[pin]->hys = 1; // enable hysteresis
 
         // set direction to input
-        gpio_pin_gpio_map[pin]->gdir.gdir &= ~gpio_pin_gpio_mask_map[pin];
+        gpio_pin_to_gpio_map[pin]->gdir.gdir &= ~gpio_pin_to_gpio_mask_map[pin];
         break;
     case OUTPUT:
         // set direction to output
-        gpio_pin_gpio_map[pin]->gdir.gdir |= gpio_pin_gpio_mask_map[pin];
+        gpio_pin_to_gpio_map[pin]->gdir.gdir |= gpio_pin_to_gpio_mask_map[pin];
         break;
     case OUTPUT_OPENDRAIN:
         // set pin to output with open drain
-        gpio_pin_pad_map[pin]->ode = 1; // enable open drain
+        gpio_pin_to_pad_map[pin]->ode = 1; // enable open drain
 
         // set direction to output
-        gpio_pin_gpio_map[pin]->gdir.gdir |= gpio_pin_gpio_mask_map[pin];
+        gpio_pin_to_gpio_map[pin]->gdir.gdir |= gpio_pin_to_gpio_mask_map[pin];
         break;
     case INPUT_DISABLE:
         // disable pin
-        gpio_pin_pad_map[pin]->hys = 1;
+        gpio_pin_to_pad_map[pin]->hys = 1;
         break;
     }
 
     // set GPIO mode for this pin (ALT5)
-    gpio_pin_mux_map[pin]->mux_mode = ALT5;
+    gpio_pin_to_mux_map[pin]->mux_mode = ALT5;
     // set SION to allow software control of input, allows reading of output value
-    gpio_pin_mux_map[pin]->sion = 1;
+    gpio_pin_to_mux_map[pin]->sion = 1;
     // set GPIO drive strength for this pin (7)
-    gpio_pin_pad_map[pin]->dse = 7;
+    gpio_pin_to_pad_map[pin]->dse = 7;
 }
 
-void digitalWrite(uint8_t pin, uint8_t value) {
-    // Configure GPIO direction register to output (GDIR[GDIR] = 1b) 
-    gpio_pin_gpio_map[pin]->gdir.gdir |= gpio_pin_gpio_mask_map[pin];
+ITCM void digitalWrite(uint8_t pin, uint8_t value) {
+    // This assumes the pin is already set to some OUTPUT mode
 
     // Write value to GPIO data register
     if (value)
-        gpio_pin_gpio_map[pin]->dr.dr |= gpio_pin_gpio_mask_map[pin];
+        gpio_pin_to_gpio_map[pin]->dr.dr |= gpio_pin_to_gpio_mask_map[pin];
     else
-        gpio_pin_gpio_map[pin]->dr.dr &= ~gpio_pin_gpio_mask_map[pin];
+        gpio_pin_to_gpio_map[pin]->dr.dr &= ~gpio_pin_to_gpio_mask_map[pin];
 }
 
-uint8_t digitalRead(uint8_t pin) {
-    // Configure GPIO direction register to input (GDIR[GDIR] = 0b)
-    gpio_pin_gpio_map[pin]->gdir.gdir &= ~gpio_pin_gpio_mask_map[pin];
+ITCM uint8_t digitalRead(uint8_t pin) {
+    // This assumes the pin is already set to some INPUT mode
 
-    return !!(gpio_pin_gpio_map[pin]->psr.psr & gpio_pin_gpio_mask_map[pin]);
+    // Read value from GPIO data register
+    return !!(gpio_pin_to_gpio_map[pin]->psr.psr & gpio_pin_to_gpio_mask_map[pin]);
 }
 
-void digitalToggle(uint8_t pin) {
-    // Configure GPIO direction register to output (GDIR[GDIR] = 1b) 
-    // gpio_pin_gpio_map[pin]->gdir.gdir |= gpio_pin_gpio_mask_map[pin];
+ITCM void digitalToggle(uint8_t pin) {
+    // This assumes the pin is already set to some OUTPUT mode
 
     // Toggle value in GPIO data register
-    gpio_pin_gpio_map[pin]->dr_toggle.dr_toggle |= gpio_pin_gpio_mask_map[pin];
+    gpio_pin_to_gpio_map[pin]->dr_toggle.dr_toggle = gpio_pin_to_gpio_mask_map[pin];
 }
 
-void digitalClear(uint8_t pin) {
-    // Configure GPIO direction register to output (GDIR[GDIR] = 1b) 
-    gpio_pin_gpio_map[pin]->gdir.gdir |= gpio_pin_gpio_mask_map[pin];
+ITCM void digitalClear(uint8_t pin) {
+    // This assumes the pin is already set to some OUTPUT mode
 
     // Clear value in GPIO data register
-    gpio_pin_gpio_map[pin]->dr_clear.dr_clear |= gpio_pin_gpio_mask_map[pin];
+    gpio_pin_to_gpio_map[pin]->dr_clear.dr_clear = gpio_pin_to_gpio_mask_map[pin];
 }
 

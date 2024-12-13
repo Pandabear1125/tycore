@@ -2,6 +2,7 @@
 #define TYCORE_GPIO_H
 
 #include "../imxrt_regmap.h"
+#include "../utils/memory.h"
 
 #define GPIO_PIN_COUNT 42
 
@@ -14,7 +15,7 @@ extern "C" {
  * @note This function must be called before using any GPIO pins otherwise it is undefined behavior.
  * @return 0 if successful, otherwise an error code.
  */
-int gpio_init(void);
+FLASH_CODE int gpio_init(void);
 
 // GPIO pin modes
 typedef enum {
@@ -32,7 +33,7 @@ typedef enum {
  * @param mode The mode to set the pin to.
  * @note Using a pin without setting the mode is undefined behavior.
  */
-void pinMode(uint8_t pin, gpio_pin_mode_t mode);
+FLASH_CODE void pinMode(uint8_t pin, gpio_pin_mode_t mode);
 
 /**
  * @brief Write a value to a GPIO pin.
@@ -40,7 +41,7 @@ void pinMode(uint8_t pin, gpio_pin_mode_t mode);
  * @param value The value to write to the pin (0/LOW or 1/HIGH).
  * @note The pin must be set to some OUTPUT mode.
  */
-void digitalWrite(uint8_t pin, uint8_t value);
+ITCM void digitalWrite(uint8_t pin, uint8_t value);
 
 /**
  * @brief Read the value of a GPIO pin.
@@ -48,21 +49,21 @@ void digitalWrite(uint8_t pin, uint8_t value);
  * @return The value of the pin (0/LOW or 1/HIGH).
  * @note The pin must be set to some INPUT mode.
  */
-uint8_t digitalRead(uint8_t pin);
+ITCM uint8_t digitalRead(uint8_t pin);
 
 /**
  * @brief Toggle the value of a GPIO pin.
  * @param pin The GPIO pin number.
  * @note The pin must be set to some OUTPUT mode.
  */
-void digitalToggle(uint8_t pin);
+ITCM void digitalToggle(uint8_t pin);
 
 /**
  * @brief Set the pin to 0/LOW.
  * @param pin The GPIO pin number.
  * @note The pin must be set to some OUTPUT mode.
  */
-void digitalClear(uint8_t pin);
+ITCM void digitalClear(uint8_t pin);
 
 #ifdef __cplusplus
 }
