@@ -2197,4 +2197,202 @@ typedef volatile struct {
 
 #pragma endregion   // DCDC_MODULE
 
+// Low Power UART (LPUART) Module
+// RM 49
+
+#pragma region LPUART_MODULE
+
+typedef volatile struct {
+    reg_t feature : 16;
+    reg_t minor: 8;
+    reg_t major: 8;
+} LPUART_VERID_t;
+
+typedef volatile struct {
+    reg_t txfifo : 8;
+    reg_t rxfifo : 8;
+    reg_t : 16;
+} LPUART_PARAM_t;
+
+typedef volatile struct {
+    reg_t : 1;
+    reg_t rst : 1;
+    reg_t : 30;
+} LPUART_GLOBAL_t;
+
+typedef volatile struct {
+    reg_t trgsel : 2;
+    reg_t : 30;
+} LPUART_PINCFG_t;
+
+typedef volatile struct {
+    reg_t sbr : 13;
+    reg_t sbns : 1;
+    reg_t rxedgie : 1;
+    reg_t lbkdie : 1;
+    reg_t resyncdis : 1;
+    reg_t bothedge : 1;
+    reg_t matcfg : 2;
+    reg_t : 1;
+    reg_t rdmae : 1;
+    reg_t : 1;
+    reg_t tdmae : 1;
+    reg_t osr : 5;
+    reg_t m10 : 1;
+    reg_t maen2 : 1;
+    reg_t maen1 : 1;
+} LPUART_BAUD_t;
+
+typedef volatile struct {
+    reg_t : 14;
+    reg_t ma2f : 1;
+    reg_t ma1f : 1;
+    reg_t pf : 1;
+    reg_t fe : 1;
+    reg_t nf : 1;
+    reg_t OR : 1;   // C/C++ moment, cant be 'or' since thats a keyword
+    reg_t idle : 1;
+    reg_t rdrf : 1;
+    reg_t tc : 1;
+    reg_t tdre : 1;
+    reg_t raf : 1;
+    reg_t lbkde : 1;
+    reg_t brk13 : 1;
+    reg_t rwuid : 1;
+    reg_t rxinv : 1;
+    reg_t msbf : 1;
+    reg_t rxedgif : 1;
+    reg_t lbkdif : 1;
+} LPUART_STAT_t;
+
+typedef volatile struct {
+    reg_t pt : 1;
+    reg_t pe : 1;
+    reg_t ilt : 1;
+    reg_t wake : 1;
+    reg_t m : 1;
+    reg_t rsrc : 1;
+    reg_t dozeen : 1;
+    reg_t loops : 1;
+    reg_t idlecfg : 3;
+    reg_t m7 : 1;
+    reg_t : 2;
+    reg_t ma2ie : 1;
+    reg_t ma1ie : 1;
+    reg_t sbk : 1;
+    reg_t rwu : 1;
+    reg_t re : 1;
+    reg_t te : 1;
+    reg_t ilie : 1;
+    reg_t rie : 1;
+    reg_t tcie : 1;
+    reg_t tie : 1;
+    reg_t peie : 1;
+    reg_t feie : 1;
+    reg_t neie : 1;
+    reg_t orie : 1;
+    reg_t txinv : 1;
+    reg_t txdir : 1;
+    reg_t r9t8 : 1;
+    reg_t r8t9 : 1;
+} LPUART_CTRL_t;
+
+typedef volatile struct {
+    reg_t r0t0 : 1;
+    reg_t r1t1 : 1;
+    reg_t r2t2 : 1;
+    reg_t r3t3 : 1;
+    reg_t r4t4 : 1;
+    reg_t r5t5 : 1;
+    reg_t r6t6 : 1;
+    reg_t r7t7 : 1;
+    reg_t r8t8 : 1;
+    reg_t r9t9 : 1;
+    reg_t : 1;
+    reg_t idline : 1;
+    reg_t rxempt : 1;
+    reg_t fretsc : 1;
+    reg_t paritye : 1;
+    reg_t noisy : 1;
+    reg_t : 16;
+} LPUART_DATA_t;
+
+typedef volatile struct {
+    reg_t ma1 : 10;
+    reg_t : 6;
+    reg_t ma2 : 10;
+    reg_t : 6;
+} LPUART_MATCH_t;
+
+typedef volatile struct {
+    reg_t txctse : 1;
+    reg_t txrtse : 1;
+    reg_t txrtspol : 1;
+    reg_t rxrtse : 1;
+    reg_t txctsc : 1;
+    reg_t txctssrc : 1;
+    reg_t : 2;
+    reg_t rtswater : 2;
+    reg_t : 6;
+    reg_t tnp : 2;
+    reg_t iren : 1;
+    reg_t : 13;
+} LPUART_MODIR_t;
+
+typedef volatile struct {
+    reg_t rxfifosize : 3;
+    reg_t rxfe : 1;
+    reg_t txfifosize : 3;
+    reg_t txfe : 1;
+    reg_t rxufe : 1;
+    reg_t txofe : 1;
+    reg_t rxiden : 3;
+    reg_t : 1;
+    reg_t rxflush : 1;
+    reg_t txflush : 1;
+    reg_t rxuf : 1;
+    reg_t txof : 1;
+    reg_t : 4;
+    reg_t rxempt : 1;
+    reg_t txempt : 1;
+    reg_t : 8;
+} LPUART_FIFO_t;
+
+typedef volatile struct {
+    reg_t txwater : 2;
+    reg_t : 6;
+    reg_t txcount : 3;
+    reg_t : 5;
+    reg_t rxwater : 2;
+    reg_t : 6;
+    reg_t rxcount : 3;
+    reg_t : 5;
+} LPUART_WATER_t;
+
+typedef volatile struct {
+    LPUART_VERID_t verid;
+    LPUART_PARAM_t param;
+    LPUART_GLOBAL_t global;
+    LPUART_PINCFG_t pincfg;
+    LPUART_BAUD_t baud;
+    LPUART_STAT_t stat;
+    LPUART_CTRL_t ctrl;
+    LPUART_DATA_t data;
+    LPUART_MATCH_t match;
+    LPUART_MODIR_t modir;
+    LPUART_FIFO_t fifo;
+    LPUART_WATER_t water;
+} LPUART_t;
+
+#define LPUART1     ((LPUART_t*)0x40184000u)
+#define LPUART2     ((LPUART_t*)0x40188000u)
+#define LPUART3     ((LPUART_t*)0x4018C000u)
+#define LPUART4     ((LPUART_t*)0x40190000u)
+#define LPUART5     ((LPUART_t*)0x40194000u)
+#define LPUART6     ((LPUART_t*)0x40198000u)
+#define LPUART7     ((LPUART_t*)0x4019C000u)
+#define LPUART8     ((LPUART_t*)0x401A0000u)
+
+#pragma endregion // LPUART_MODULE
+
 #endif // IMXRT_REGMAP_H
