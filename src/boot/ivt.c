@@ -7,6 +7,9 @@
 
 #include "../utils/macros.h"
 
+// prevent optimization since this is critical boot code
+#pragma GCC optimize("O0")
+
 CFUNC void reset_vector(void);
 
 extern const uint32_t image_vector_table[];

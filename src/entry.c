@@ -1,8 +1,10 @@
-#include "utils/macros.h"
+// prevent optimization since this is critical boot code
+#pragma GCC optimize("O0")
 
-// TODO remake the register map file
 #include "imxrt_regmap.h"
+#include "connectivity/gpio.h"
 
+// linker script symbols
 extern uint32_t __ld_flexram_config;
 extern uint32_t __ld_stack_start;
 
@@ -14,8 +16,9 @@ extern uint32_t __ld_dtcm_start;
 extern uint32_t __ld_dtcm_load;
 extern uint32_t __ld_dtcm_size;
 
-extern int main(void);					// main function
-extern void __libc_init_array(void);	// c++ initialization
+extern int main(void);								// main function
+extern void __libc_init_array(void);				// c++ initialization
+extern void set_core_frequency(uint32_t frequency);	// set the core frequency
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	// enable ITCM/DTCM/OCRAM config
@@ -42,6 +45,15 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	dst = &__ld_dtcm_start;
 	len = (uint32_t)&__ld_dtcm_size;
 	while (len--) *dst++ = *src++;
+
+	gpio_init();
+
+	// TODO map out systick
+	// (*(volatile uint32_t *)0xE000EDFC) |= (1u << 24u);
+	// (*(volatile uint32_t *)0xE0001000) |= (1u << 0u);
+
+	// set the core frequency
+	set_core_frequency(150000000);
 
 	// initialize c++ statics and global constructors
 	__libc_init_array();
