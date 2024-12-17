@@ -254,7 +254,7 @@ FLASH_CODE void pinMode(uint8_t pin, gpio_pin_mode_t mode) {
     }
 
     // set GPIO mode for this pin (ALT5)
-    gpio_pin_to_mux_map[pin]->mux_mode = ALT5;
+    gpio_pin_to_mux_map[pin]->mux_mode = IOMUXC_ALT5;
     // set SION to allow software control of input, allows reading of output value
     gpio_pin_to_mux_map[pin]->sion = 1;
     // set GPIO drive strength for this pin (7)

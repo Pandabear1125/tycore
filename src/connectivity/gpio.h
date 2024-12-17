@@ -3,6 +3,7 @@
 
 #include "../imxrt_regmap.h"
 #include "../utils/memory.h"
+#include "../utils/macros.h"
 
 #define GPIO_PIN_COUNT 42
 
