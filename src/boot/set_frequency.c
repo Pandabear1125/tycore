@@ -28,6 +28,11 @@ volatile uint32_t IPG_FREQUENCY = 0;
 #define OVERDRIVE_FREQ  (600000000u)
 #define LOW_POWER_FREQ  (24000000u)
 
+/**
+ * @brief Set the core frequency of the CPU.
+ * @param frequency The frequency to set the core to.
+ * @note This function will set the core frequency to the closest supported frequency.
+ */
 FLASH_CODE void set_core_frequency(uint32_t frequency) {
     // increase the voltage as required
 
