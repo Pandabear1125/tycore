@@ -3,6 +3,7 @@
 
 #include "imxrt_regmap.h"
 #include "connectivity/gpio.h"
+#include "connectivity/uart.h"
 
 // linker script symbols
 extern uint32_t __ld_flexram_config;
@@ -47,6 +48,8 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	while (len--) *dst++ = *src++;
 
 	gpio_init();
+
+	lpuart_init();
 
 	// TODO map out systick
 	// (*(volatile uint32_t *)0xE000EDFC) |= (1u << 24u);
