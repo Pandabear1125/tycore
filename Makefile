@@ -23,9 +23,9 @@ ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
 COMPILER_FLAGS += -fno-exceptions -Wpedantic						# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
-COMPILER_FLAGS += -Wall -Wextra -Wpedantic -Werror -Wfatal-errors 	# enable all warnings and treat them as errors
+COMPILER_FLAGS += -Wall -Wextra -Wpedantic -Werror					# enable all warnings and treat them as errors
 COMPILER_FLAGS += --specs=nano.specs								# use the newlib nano library, significantly reduces binary size
-COMPILER_FLAGS += -ffunction-sections -fdata-sections 				# put functions and data in separate sections
+COMPILER_FLAGS += -ffunction-sections -fdata-sections				# put functions and data in separate sections
 COMPILER_FLAGS += -O2												# optimize for speed
 
 CXX_FLAGS 		= -std=gnu++17										# use C++17 standard with GNU extensions. Extensions are needed for various things like asm and inline
@@ -59,7 +59,8 @@ $(BUILD_DIR)/%.cpp.o : %.cpp
 
 $(OUTPUT).elf : $(SOURCE_OBJS)
 	@rm -f $(OUTPUT).map
-	$(COMPILER_CPP) $(CXX_FLAGS) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
+	@echo "[Linking] $^\n"
+	@$(COMPILER_CPP) $(CXX_FLAGS) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
 
 
 $(OUTPUT).hex : $(OUTPUT).elf
