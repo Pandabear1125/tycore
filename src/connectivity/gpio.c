@@ -1,10 +1,8 @@
 #include "gpio.h"
 
-// TODO: determine if FLASH_DATA reduces performance too much
-
 // GPIO pin to MUX register mapping
 // This specifies which MUX register the pin corresponds to
-DTCM static IOMUXC_SW_MUX_CTL_PAD_t* const gpio_pin_to_mux_map[GPIO_PIN_COUNT] = {
+DTCM IOMUXC_SW_MUX_CTL_PAD_t* const gpio_pin_to_mux_map[GPIO_PIN_COUNT] = {
     /*  0  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_03,     // GPIO_AD_B0_03    | GPIO1_IO03
     /*  1  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_02,     // GPIO_AD_B0_02    | GPIO1_IO02
     /*  2  */   IOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_04,       // GPIO_EMC_04      | GPIO4_IO04
@@ -51,7 +49,7 @@ DTCM static IOMUXC_SW_MUX_CTL_PAD_t* const gpio_pin_to_mux_map[GPIO_PIN_COUNT] =
 
 // GPIO pin to PAD register mapping
 // This specifies which PAD register the pin corresponds to
-DTCM static IOMUXC_SW_PAD_CTL_PAD_t* const gpio_pin_to_pad_map[GPIO_PIN_COUNT] = {
+DTCM IOMUXC_SW_PAD_CTL_PAD_t* const gpio_pin_to_pad_map[GPIO_PIN_COUNT] = {
     /*  0  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_03,     // GPIO_AD_B0_03    | GPIO1_IO03
     /*  1  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_02,     // GPIO_AD_B0_02    | GPIO1_IO02
     /*  2  */   IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_04,       // GPIO_EMC_04      | GPIO4_IO04
@@ -98,7 +96,7 @@ DTCM static IOMUXC_SW_PAD_CTL_PAD_t* const gpio_pin_to_pad_map[GPIO_PIN_COUNT] =
 
 // GPIO pin to GPIO register mapping
 // This specifies which GPIO register the pin is in
-DTCM static GPIO_t* const gpio_pin_to_gpio_map[GPIO_PIN_COUNT] = {
+DTCM GPIO_t* const gpio_pin_to_gpio_map[GPIO_PIN_COUNT] = {
     /*  0  */   GPIO6,  // GPIO1_IO03 -> GPIO6
     /*  1  */   GPIO6,  // GPIO1_IO02 -> GPIO6
     /*  2  */   GPIO9,  // GPIO4_IO04 -> GPIO9
@@ -145,7 +143,7 @@ DTCM static GPIO_t* const gpio_pin_to_gpio_map[GPIO_PIN_COUNT] = {
 
 // GPIO pin to GPIO register bitmask mapping
 // This specifies which bit corresponds to the pin in the GPIO register
-DTCM static const uint32_t gpio_pin_to_gpio_mask_map[GPIO_PIN_COUNT] = {
+DTCM const uint32_t gpio_pin_to_gpio_mask_map[GPIO_PIN_COUNT] = {
     /*  0  */   1u << 3u,  // GPIO1_IO03
     /*  1  */   1u << 2u,  // GPIO1_IO02
     /*  2  */   1u << 4u,  // GPIO4_IO04
@@ -195,13 +193,13 @@ FLASH_CODE int gpio_init(void) {
     // this switches the normal GPIO1/2/3/4 to use GPIO6/7/8/9
 
     // swap GPIO1 to GPIO6
-    IOMUXC_GPR_GPR26->gpio_mux1_gpio_sel = 0xffffffff;
+    IOMUXC_GPR_GPR26->gpio_mux1_gpio_sel = 0xffffffffu;
     // swap GPIO2 to GPIO7
-    IOMUXC_GPR_GPR27->gpio_mux2_gpio_sel = 0xffffffff;
+    IOMUXC_GPR_GPR27->gpio_mux2_gpio_sel = 0xffffffffu;
     // swap GPIO3 to GPIO8
-    IOMUXC_GPR_GPR28->gpio_mux3_gpio_sel = 0xffffffff;
+    IOMUXC_GPR_GPR28->gpio_mux3_gpio_sel = 0xffffffffu;
     // swap GPIO4 to GPIO9
-    IOMUXC_GPR_GPR29->gpio_mux4_gpio_sel = 0xffffffff;
+    IOMUXC_GPR_GPR29->gpio_mux4_gpio_sel = 0xffffffffu;
 
     return 0;
 }
