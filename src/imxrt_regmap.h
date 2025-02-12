@@ -1471,6 +1471,9 @@ typedef volatile struct {
 // Clock is on during all modes, except STOP mode.
 #define CGR_ON  (0x3u)
 
+// Clock Gating Register (CCGR) Bit Masks
+#define CCM_CGn(n)  (0x3 << (n * 2))
+
 typedef volatile struct {
     reg_t aips_tz1_clk_enable : 2;
     reg_t aips_tz2_clk_enable : 2;
@@ -2298,16 +2301,7 @@ typedef volatile struct {
 } LPUART_CTRL_t;
 
 typedef volatile struct {
-    reg_t r0t0 : 1;
-    reg_t r1t1 : 1;
-    reg_t r2t2 : 1;
-    reg_t r3t3 : 1;
-    reg_t r4t4 : 1;
-    reg_t r5t5 : 1;
-    reg_t r6t6 : 1;
-    reg_t r7t7 : 1;
-    reg_t r8t8 : 1;
-    reg_t r9t9 : 1;
+    reg_t data : 10;
     reg_t : 1;
     reg_t idline : 1;
     reg_t rxempt : 1;

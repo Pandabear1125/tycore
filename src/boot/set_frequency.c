@@ -1,10 +1,6 @@
 #include <stdint.h>
 
 #include "../imxrt_regmap.h"
-
-#include "../connectivity/gpio.h"
-
-#include "../utils/macros.h"
 #include "../utils/memory.h"
 
 // Core CPU frequency
@@ -59,7 +55,6 @@ FLASH_CODE void set_core_frequency(uint32_t frequency) {
 		// low power run starts at 0.95V
 		voltage = 950;
 	}
-
 
     // enable the dcdc clock incase it was disabled
     CCM_CCGR6->dcdc_clk_enable = CGR_ON;
@@ -131,9 +126,7 @@ FLASH_CODE void set_core_frequency(uint32_t frequency) {
     // the address for the register is 0x400D8000
     // the enable bit is the 13th bit
     // the div_select is the 0-6 bits
-
-    // TODO declare "raw" pointers in the regmap
-    *(volatile uint32_t*)0x400D8000 = (1 << 13) | (pll1_scaler & 0x7Fu);
+    *CCM_ANALOG_PLL_ARM_RAW = (1 << 13) | (pll1_scaler & 0x7Fu);
         
     // wait while the pll configures
     while (!(CCM_ANALOG_PLL_ARM->lock));
