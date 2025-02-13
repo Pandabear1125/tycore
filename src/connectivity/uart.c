@@ -72,7 +72,7 @@ lpuart_config_t lpuart8_config = {
     .tx_pin = 20,
 };
 
-void lpuart_init() {
+void lpuart_init(void) {
     // enable the main LPUART clock
     // disabling the clock makes signal transfer garbage
 

@@ -45,7 +45,7 @@ extern lpuart_config_t lpuart8_config;
 /**
  * @brief Initialize the LPUART global clock
  */
-void lpuart_init();
+void lpuart_init(void);
 
 /**
  * @brief Begin a specific LPUART module

@@ -8,6 +8,9 @@ OUTPUT=tools/compiler
 
 TAR_NAME=arm-gnu-toolchain-13.2.rel1.tar.xz
 
+# remove the old compiler
+rm -rf $OUTPUT
+
 # create a directory to store the compiler
 mkdir -p $OUTPUT
 

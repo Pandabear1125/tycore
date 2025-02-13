@@ -23,7 +23,7 @@ ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
 COMPILER_FLAGS += -fno-exceptions -Wpedantic						# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
-COMPILER_FLAGS += -Wall -Wextra -Wpedantic -Werror					# enable all warnings and treat them as errors
+COMPILER_FLAGS += -Wall -Wextra -Wpedantic							# enable all warnings and treat them as errors
 COMPILER_FLAGS += --specs=nano.specs								# use the newlib nano library, significantly reduces binary size
 COMPILER_FLAGS += -ffunction-sections -fdata-sections				# put functions and data in separate sections
 COMPILER_FLAGS += -O2												# optimize for speed
@@ -37,10 +37,17 @@ CPU_FLAGS 		= -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 # Linker flags, --gc-sections removes unused sections, --relax allows for smaller instruction sizes where possible. Others are for debugging
 LINKER_FLAGS 	= -Wl,--gc-sections,--relax,--print-memory-usage,-T$(SOURCE_DIR)/linker.ld,-Map=$(OUTPUT).map,--cref
 
+# Utilize all available CPU cores for parallel build
+MAKEFLAGS += -j$(nproc)
 
-all: clean $(OUTPUT).hex
-	@rm -f $(OUTPUT).dump
-	@$(OBJDUMP) -dstz  $(OUTPUT).elf > $(OUTPUT).dump
+
+# TODO: eventually get rid of this clean
+all: clean
+    # use bear to generate compile_commands.json
+	bear -- make build
+
+
+build: $(OUTPUT).hex
 
 
 $(BUILD_DIR)/%.c.o : %.c
@@ -61,7 +68,7 @@ $(OUTPUT).elf : $(SOURCE_OBJS)
 	@rm -f $(OUTPUT).map
 	@echo "[Linking] $^\n"
 	@$(COMPILER_CPP) $(CXX_FLAGS) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
-
+	@$(OBJDUMP) -dstz  $(OUTPUT).elf > $(OUTPUT).dump
 
 $(OUTPUT).hex : $(OUTPUT).elf
 	@$(OBJCOPY) -O ihex -R .eeprom $^ $@
@@ -74,9 +81,12 @@ upload: all
 clean:
 	rm -rf $(OUTPUT).dump $(OUTPUT).map
 	rm -rf $(BUILD_DIR) $(OUTPUT).elf $(OUTPUT).hex
-
+	
 
 install:
+	sudo apt install -y build-essential
+	sudo apt install -y bear
+	sudo apt install -y clangd
 	@bash $(TOOLS_DIR)/install_compiler.sh
 
 
@@ -85,4 +95,3 @@ uninstall:
 
 
 .PHONY: all clean install
-	

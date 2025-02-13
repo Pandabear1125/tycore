@@ -30,8 +30,6 @@ typedef enum {
     OUTPUT,
     OUTPUT_OPENDRAIN,
     INPUT_DISABLE,
-    UART_TX,
-    UART_RX,
 } gpio_pin_mode_t;
 
 /**
