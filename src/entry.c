@@ -1,9 +1,9 @@
 // prevent optimization since this is critical boot code
 #pragma GCC optimize("O0")
 
-#include "imxrt_regmap.h"
 #include "connectivity/gpio.h"
 #include "connectivity/uart.h"
+#include "imxrt_regmap.h"
 
 // linker script symbols
 extern uint32_t __ld_flexram_config;
@@ -17,28 +17,28 @@ extern uint32_t __ld_dtcm_start;
 extern uint32_t __ld_dtcm_load;
 extern uint32_t __ld_dtcm_size;
 
-extern int main(void);								// main function
-extern void __libc_init_array(void);				// c++ initialization
-extern void set_core_frequency(uint32_t frequency);	// set the core frequency
+extern int	main(void);								 // main function
+extern void __libc_init_array(void);				 // c++ initialization
+extern void set_core_frequency(uint32_t frequency);	 // set the core frequency
 
 CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	// enable ITCM/DTCM/OCRAM config
 	IOMUXC_GPR_GPR16->flexram_bank_cfg_sel = 1;
 	// set the ITCM/DTCM/OCRAM config
-	IOMUXC_GPR_GPR17->flexram_bank_cfg = (uint32_t)&__ld_flexram_config;
+	IOMUXC_GPR_GPR17->flexram_bank_cfg	   = (uint32_t)&__ld_flexram_config;
 
 	// set the stack pointer to enable function calling
-	__asm__ volatile (
+	__asm__ volatile(
 		"mov sp, %0"
-		: 
-		: "r" ((uint32_t)&__ld_stack_start)
+		:
+		: "r"((uint32_t)&__ld_stack_start)
 		: "memory"
 	);
 
 	// copy ITCM section into ITCM memory
-	uint32_t *src = &__ld_itcm_load;
-	uint32_t *dst = &__ld_itcm_start;
-	uint32_t len = (uint32_t)&__ld_itcm_size;
+	uint32_t* src = &__ld_itcm_load;
+	uint32_t* dst = &__ld_itcm_start;
+	uint32_t  len = (uint32_t)&__ld_itcm_size;
 	while (len--) *dst++ = *src++;
 
 	// copy DTCM section into DTCM memory

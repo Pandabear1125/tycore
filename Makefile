@@ -87,6 +87,7 @@ install:
 	sudo apt install -y build-essential
 	sudo apt install -y bear
 	sudo apt install -y clangd
+	sudo apt install -y clang-format
 	@bash $(TOOLS_DIR)/install_compiler.sh
 
 

@@ -30,7 +30,7 @@ volatile uint32_t IPG_FREQUENCY = 0;
  * @note This function will set the core frequency to the closest supported frequency.
  */
 FLASH_CODE void set_core_frequency(uint32_t frequency) {
-    // increase the voltage as required
+	// increase the voltage as required
 
 	// compute required voltage
 	// Table 13-1. Low Power Mode Definition page 997
@@ -49,44 +49,44 @@ FLASH_CODE void set_core_frequency(uint32_t frequency) {
 			// but we cant increase too much since it has a max voltage
 			if (voltage > MAX_VOLTAGE) voltage = MAX_VOLTAGE;
 		}
-	} 
+	}
 	// if freq is at or less than low power run
 	else if (frequency <= LOW_POWER_FREQ) {
 		// low power run starts at 0.95V
 		voltage = 950;
 	}
 
-    // enable the dcdc clock incase it was disabled
-    CCM_CCGR6->dcdc_clk_enable = CGR_ON;
+	// enable the dcdc clock incase it was disabled
+	CCM_CCGR6->dcdc_clk_enable = CGR_ON;
 
-    // set the voltage setting, the value starts at 800mV and steps by 25mV
-    DCDC_REG3->trg = (voltage - 800) / 25;
-    // wait for the voltage to stabilize
-    while (!(DCDC_REG0->sts_dc_ok)) {}
+	// set the voltage setting, the value starts at 800mV and steps by 25mV
+	DCDC_REG3->trg = (voltage - 800) / 25;
+	// wait for the voltage to stabilize
+	while (!(DCDC_REG0->sts_dc_ok)) { }
 
 	// if the periph clock is derived from pre_periph_clk_sel (ARM PLL (pll1)) we need to switch to periph
-    if (!(CCM_CBCDR->periph_clk_sel)) {
-        const uint32_t select = 1;  // select the osc_clk source (24MHz)
-        const uint32_t divisor = 0; // divide by 1
+	if (!(CCM_CBCDR->periph_clk_sel)) {
+		const uint32_t select  = 1;	 // select the osc_clk source (24MHz)
+		const uint32_t divisor = 0;	 // divide by 1
 
-        // set the divisor first
-        CCM_CBCDR->periph_clk2_podf = divisor;
+		// set the divisor first
+		CCM_CBCDR->periph_clk2_podf = divisor;
 
-        // set the source next
-        CCM_CBCMR->periph_clk2_sel = select;
-        // wait for the switch to complete
-        while (CCM_CDHIPR->periph2_clk_sel_busy) {}
-    }
+		// set the source next
+		CCM_CBCMR->periph_clk2_sel = select;
+		// wait for the switch to complete
+		while (CCM_CDHIPR->periph2_clk_sel_busy) { }
+	}
 
-    // switch to periph_clk2
-    CCM_CBCDR->periph_clk_sel = 1;
-    // wait for the switch to complete
-    while (CCM_CDHIPR->periph_clk_sel_busy) {}
+	// switch to periph_clk2
+	CCM_CBCDR->periph_clk_sel = 1;
+	// wait for the switch to complete
+	while (CCM_CDHIPR->periph_clk_sel_busy) { }
 
-    // calculate the needed dividers to divide pll1's variable frequency down to the required frequency
+	// calculate the needed dividers to divide pll1's variable frequency down to the required frequency
 	// we need figure out how much to scale pll1 and then later divide it down
 	// https://www.cnblogs.com/henjay724/p/15581290.html
-    uint32_t div_arm = 1;
+	uint32_t div_arm = 1;
 	uint32_t div_ahb = 1;
 	while (frequency * div_arm * div_ahb < PLL1_MIN_FREQ) {
 		// try dividing the first divisor first
@@ -112,51 +112,51 @@ FLASH_CODE void set_core_frequency(uint32_t frequency) {
 	if (pll1_scaler < 54) pll1_scaler = 54;
 
 	// the final frequency is the scaled pll1 frequency divided by the dividers, this effectively rounds to the nearest 12MHz
-    // 12MHz comes from the /2 in div_select
+	// 12MHz comes from the /2 in div_select
 	frequency = pll1_scaler * 12000000 / div_arm / div_ahb;
 
-    // power down PLL1 and reconfigure the new scaler (pll1_scaler)
+	// power down PLL1 and reconfigure the new scaler (pll1_scaler)
 	// div_select is a bad name for this register since its a scaler, not a divider
-    CCM_ANALOG_PLL_ARM->powerdown = 1;
+	CCM_ANALOG_PLL_ARM->powerdown = 1;
 
-    // we need to clear the PPL_ARM register then set enable and the new pll1_scaler
-    // normal struct accesses do not work since the register expects an all or nothing access
-    // so we need to do a read modify write
+	// we need to clear the PPL_ARM register then set enable and the new pll1_scaler
+	// normal struct accesses do not work since the register expects an all or nothing access
+	// so we need to do a read modify write
 
-    // the address for the register is 0x400D8000
-    // the enable bit is the 13th bit
-    // the div_select is the 0-6 bits
-    *CCM_ANALOG_PLL_ARM_RAW = (1 << 13) | (pll1_scaler & 0x7Fu);
-        
-    // wait while the pll configures
-    while (!(CCM_ANALOG_PLL_ARM->lock));
-    
-    // set the dividers
+	// the address for the register is 0x400D8000
+	// the enable bit is the 13th bit
+	// the div_select is the 0-6 bits
+	*CCM_ANALOG_PLL_ARM_RAW = (1 << 13) | (pll1_scaler & 0x7Fu);
 
-    // set the arm podf
-    CCM_CACRR->arm_podf = div_arm - 1;
-    // wait for the divider to stabilize
-    while (CCM_CDHIPR->arm_podf_busy) {}
+	// wait while the pll configures
+	while (!(CCM_ANALOG_PLL_ARM->lock));
 
-    // set the ahb podf
-    CCM_CBCDR->ahb_podf = div_ahb - 1;
-    // wait for the divider to stabilize
-    while (CCM_CDHIPR->ahb_podf_busy) {}
+	// set the dividers
 
-    // figure our a good divisor for the ipg clock, it cant be more than 4 nor should it be more than 150MHz
-    // although it can be more than 150MHz if it is forced to be
-    uint32_t div_ipg = (frequency + (150000000 - 1)) / 150000000;
-    // divider is 2 bit so it cant be more than 4
-    if (div_ipg > 4) div_ipg = 4;
-    // set the ipg podf
-    CCM_CBCDR->ipg_podf = div_ipg - 1;
-    
-    // unset the periph_clk_sel to switch back to pll1
-    CCM_CBCDR->periph_clk_sel = 0;
-    // wait for the switch to complete
-    while (CCM_CDHIPR->periph_clk_sel_busy) {}
+	// set the arm podf
+	CCM_CACRR->arm_podf = div_arm - 1;
+	// wait for the divider to stabilize
+	while (CCM_CDHIPR->arm_podf_busy) { }
 
-    // set the global frequency variables
-    AHB_FREQUENCY = frequency;
-    IPG_FREQUENCY = frequency / div_ipg;
+	// set the ahb podf
+	CCM_CBCDR->ahb_podf = div_ahb - 1;
+	// wait for the divider to stabilize
+	while (CCM_CDHIPR->ahb_podf_busy) { }
+
+	// figure our a good divisor for the ipg clock, it cant be more than 4 nor should it be more than 150MHz
+	// although it can be more than 150MHz if it is forced to be
+	uint32_t div_ipg = (frequency + (150000000 - 1)) / 150000000;
+	// divider is 2 bit so it cant be more than 4
+	if (div_ipg > 4) div_ipg = 4;
+	// set the ipg podf
+	CCM_CBCDR->ipg_podf = div_ipg - 1;
+
+	// unset the periph_clk_sel to switch back to pll1
+	CCM_CBCDR->periph_clk_sel = 0;
+	// wait for the switch to complete
+	while (CCM_CDHIPR->periph_clk_sel_busy) { }
+
+	// set the global frequency variables
+	AHB_FREQUENCY = frequency;
+	IPG_FREQUENCY = frequency / div_ipg;
 }

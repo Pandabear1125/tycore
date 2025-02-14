@@ -7,9 +7,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus extern "C"
-
-
+#endif	// __cplusplus extern "C"
 
 // test OSR: 26
 // test DIV: 8
@@ -18,11 +16,11 @@ extern "C" {
 
 // Components required for a specific LPUART configuration
 typedef struct {
-    reg_t*    ccm_reg;
-    uint32_t  ccm_mask;
-    LPUART_t* lpuart_reg;
-    uint8_t   rx_pin;
-    uint8_t   tx_pin;
+	reg_t*	  ccm_reg;
+	uint32_t  ccm_mask;
+	LPUART_t* lpuart_reg;
+	uint8_t	  rx_pin;
+	uint8_t	  tx_pin;
 } lpuart_config_t;
 
 // Serial 6
@@ -57,10 +55,8 @@ void lpuart_begin(lpuart_config_t* config);
 // TODO: name this better
 void lpuart_write(lpuart_config_t* config, uint8_t c);
 
-
-
 #ifdef __cplusplus
 }
-#endif  // __cplusplus extern "C"
+#endif	// __cplusplus extern "C"
 
-#endif  // TYCORE_UART_H
+#endif	// TYCORE_UART_H

@@ -1,15 +1,13 @@
 #ifndef TYCORE_PIN_INFO_H
 #define TYCORE_PIN_INFO_H
 
+#include "../imxrt_regmap.h"
 #include "../utils/macros.h"
 #include "../utils/memory.h"
-#include "../imxrt_regmap.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus extern "C"
-
-
+#endif	// __cplusplus extern "C"
 
 #define GPIO_PIN_COUNT 42
 
@@ -18,9 +16,9 @@ extern IOMUXC_SW_MUX_CTL_PAD_t* const gpio_pin_to_mux_map[GPIO_PIN_COUNT];
 // GPIO pin to PAD register mapping
 extern IOMUXC_SW_PAD_CTL_PAD_t* const gpio_pin_to_pad_map[GPIO_PIN_COUNT];
 // GPIO pin to GPIO register mapping
-extern GPIO_t* const gpio_pin_to_gpio_map[GPIO_PIN_COUNT];
+extern GPIO_t* const				  gpio_pin_to_gpio_map[GPIO_PIN_COUNT];
 // GPIO pin to GPIO mask mapping
-extern const uint32_t gpio_pin_to_gpio_mask_map[GPIO_PIN_COUNT];
+extern const uint32_t				  gpio_pin_to_gpio_mask_map[GPIO_PIN_COUNT];
 
 /**
  * @brief Get the MUX register for a GPIO pin.
@@ -54,10 +52,8 @@ FLASH_CODE GPIO_t* get_pin_gpio(uint8_t pin);
  */
 FLASH_CODE uint32_t get_pin_gpio_mask(uint8_t pin);
 
-
-
 #ifdef __cplusplus
 }
-#endif  // __cplusplus extern "C"
+#endif	// __cplusplus extern "C"
 
-#endif  // TYCORE_PIN_INFO_H
+#endif	// TYCORE_PIN_INFO_H

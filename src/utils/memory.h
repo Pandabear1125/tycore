@@ -6,4 +6,4 @@
 #define ITCM        __attribute__((section(".itcm_code")))
 #define DTCM        __attribute__((section(".dtcm_data")))
 
-#endif // TYCORE_MEMORY_H
+#endif	// TYCORE_MEMORY_H
