@@ -1,6 +1,8 @@
 #ifndef TYCORE_UART_H
 #define TYCORE_UART_H
 
+#include <stdint.h>
+
 #include "../imxrt_regmap.h"
 #include "../utils/macros.h"
 #include "gpio.h"
@@ -16,11 +18,13 @@ extern "C" {
 
 // Components required for a specific LPUART configuration
 typedef struct {
-	reg_t*	  ccm_reg;
-	uint32_t  ccm_mask;
-	LPUART_t* lpuart_reg;
-	uint8_t	  rx_pin;
-	uint8_t	  tx_pin;
+	reg_t*	  ccm_reg;	   // the raw register for the clock module
+	uint32_t  ccm_mask;	   // the mask to enable the clock for the LPUART module
+	LPUART_t* lpuart_reg;  // the LPUART register
+	uint8_t	  rx_pin;	   // the RX pin
+	uint8_t	  rx_pin_mux;  // the RX pin mux (ALT mode)
+	uint8_t	  tx_pin;	   // the TX pin
+	uint8_t	  tx_pin_mux;  // the TX pin mux (ALT mode)
 } lpuart_config_t;
 
 // Serial 6

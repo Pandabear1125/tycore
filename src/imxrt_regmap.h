@@ -32,13 +32,13 @@ typedef volatile struct {
 } IOMUXC_SW_MUX_CTL_PAD_t;
 
 // ALT mode macros for GPIO muxing
-#define IOMUXC_ALT1 (0x01)
-#define IOMUXC_ALT2 (0x02)
-#define IOMUXC_ALT3 (0x03)
+#define IOMUXC_ALT1 (0x01u)
+#define IOMUXC_ALT2 (0x02u)
+#define IOMUXC_ALT3 (0x03u)
 #define IOMUXC_ALT4 (0x04u)
-#define IOMUXC_ALT5 (0x05)
-#define IOMUXC_ALT6 (0x06)
-#define IOMUXC_ALT7 (0x07)
+#define IOMUXC_ALT5 (0x05u)
+#define IOMUXC_ALT6 (0x06u)
+#define IOMUXC_ALT7 (0x07u)
 #define IOMUXC_ALT8 (0x08u)
 
 typedef volatile struct {

@@ -28,7 +28,8 @@ CDATA SECTION(".ivt") const uint32_t image_vector_table[8] = {
 	/* bootdata */ (uint32_t)boot_data,			  // the address of the boot data
 	/* self     */ (uint32_t)image_vector_table,  // the address of the Image Vector Table (itself)
 	/* CSF      */ 0x00000000,					  // the address of the Command Sequence File used by High-Assurance Boot
-	/* reserved */ 0x00000000};
+	/* reserved */ 0x00000000
+};
 
 // the length of the flash image, derrived form the linker
 extern uint32_t __ld_image_length;
@@ -200,4 +201,5 @@ CDATA SECTION(".serial_nor_fcfb") const uint32_t serial_nor_configuration[] = {
 	/*       :                          */ 0x00000000,
 	/*       :                          */ 0x00000000,
 	/*       :                          */ 0x00000000,
-	/*       :                          */ 0x00000000};
+	/*       :                          */ 0x00000000
+};

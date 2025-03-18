@@ -1,12 +1,16 @@
 #include "uart.h"
 
+// TODO: implement alt rx/tx pins
+
 // Serial 6
 lpuart_config_t lpuart1_config = {
 	.ccm_reg	= CCM_CCGR5_RAW,
 	.ccm_mask	= CCM_CGn(12),
 	.lpuart_reg = LPUART1,
 	.rx_pin		= 25,
+	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 24,
+	.tx_pin_mux = IOMUXC_ALT2,
 };
 
 // Serial 3
@@ -15,7 +19,9 @@ lpuart_config_t lpuart2_config = {
 	.ccm_mask	= CCM_CGn(14),
 	.lpuart_reg = LPUART2,
 	.rx_pin		= 15,
+	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 14,
+	.tx_pin_mux = IOMUXC_ALT2,
 };
 
 // Serial 4
@@ -24,7 +30,9 @@ lpuart_config_t lpuart3_config = {
 	.ccm_mask	= CCM_CGn(6),
 	.lpuart_reg = LPUART3,
 	.rx_pin		= 16,
+	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 17,
+	.tx_pin_mux = IOMUXC_ALT2,
 };
 
 // Serial 2
@@ -33,7 +41,9 @@ lpuart_config_t lpuart4_config = {
 	.ccm_mask	= CCM_CGn(12),
 	.lpuart_reg = LPUART4,
 	.rx_pin		= 7,
+	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 8,
+	.tx_pin_mux = IOMUXC_ALT2,
 };
 
 // Serial 8
@@ -42,7 +52,9 @@ lpuart_config_t lpuart5_config = {
 	.ccm_mask	= CCM_CGn(1),
 	.lpuart_reg = LPUART5,
 	.rx_pin		= 34,
+	.rx_pin_mux = IOMUXC_ALT1,
 	.tx_pin		= 35,
+	.tx_pin_mux = IOMUXC_ALT1,
 };
 
 // Serial 1
@@ -51,7 +63,9 @@ lpuart_config_t lpuart6_config = {
 	.ccm_mask	= CCM_CGn(3),
 	.lpuart_reg = LPUART6,
 	.rx_pin		= 0,
+	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 1,
+	.tx_pin_mux = IOMUXC_ALT2,
 };
 
 // Serial 7
@@ -60,7 +74,9 @@ lpuart_config_t lpuart7_config = {
 	.ccm_mask	= CCM_CGn(13),
 	.lpuart_reg = LPUART7,
 	.rx_pin		= 28,
+	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 29,
+	.tx_pin_mux = IOMUXC_ALT2,
 };
 
 // Serial 5
@@ -69,7 +85,9 @@ lpuart_config_t lpuart8_config = {
 	.ccm_mask	= CCM_CGn(7),
 	.lpuart_reg = LPUART8,
 	.rx_pin		= 21,
+	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 20,
+	.tx_pin_mux = IOMUXC_ALT2,
 };
 
 void lpuart_init(void) {
@@ -98,14 +116,14 @@ void lpuart_begin(lpuart_config_t* config) {
 	gpio_pin_to_pad_map[config->rx_pin]->pus	  = 3;
 	gpio_pin_to_pad_map[config->rx_pin]->hys	  = 1;
 	// set mux to LPUART
-	gpio_pin_to_mux_map[config->rx_pin]->mux_mode = 2;
+	gpio_pin_to_mux_map[config->rx_pin]->mux_mode = config->rx_pin_mux;
 
 	// configure the TX pin
 	gpio_pin_to_pad_map[config->tx_pin]->sre	  = 1;
 	gpio_pin_to_pad_map[config->tx_pin]->sre	  = 1;
 	gpio_pin_to_pad_map[config->tx_pin]->speed	  = 3;
 	// set mux to LPUART
-	gpio_pin_to_mux_map[config->tx_pin]->mux_mode = 2;
+	gpio_pin_to_mux_map[config->tx_pin]->mux_mode = config->tx_pin_mux;
 
 	/// if baud is not set correctly, data is uninterpretable
 	config->lpuart_reg->baud.osr = (OSR - 1);
