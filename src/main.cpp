@@ -6,9 +6,6 @@ int main(void) {
 
 	lpuart_begin(&lpuart6_config);
 
-	GPIO_t* gpio13 = get_pin_gpio(13);
-	(void)gpio13;
-
 	while (1) {
 		digitalWrite(13, 1);
 		for (volatile int i = 0; i < 5000000; i++);

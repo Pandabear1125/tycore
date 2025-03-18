@@ -27,6 +27,7 @@ COMPILER_FLAGS += -Wall -Wextra -Wpedantic							# enable all warnings and treat
 COMPILER_FLAGS += --specs=nano.specs								# use the newlib nano library, significantly reduces binary size
 COMPILER_FLAGS += -ffunction-sections -fdata-sections				# put functions and data in separate sections
 COMPILER_FLAGS += -O2												# optimize for speed
+COMPILER_FLAGS += -fdump-ipa-all									# dump interprocedural analysis, useful for debugging low-level performance
 
 CXX_FLAGS 		= -std=gnu++17										# use C++17 standard with GNU extensions. Extensions are needed for various things like asm and inline
 C_FLAGS 		= -std=gnu11										# use C11 standard with GNU extensions. Extensions are needed for various things like asm and inline

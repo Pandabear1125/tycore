@@ -10,3 +10,10 @@ Diagnostics:
 CompileFlags:
   # allow clang to not stop after some errors
   Add: -ferror-limit=0
+
+  Remove:
+  # remove IPA flags
+  - -fopt-info-all
+  - -fdump-tree-all
+  - -fdump-rtl-all
+  - -fdump-ipa-all

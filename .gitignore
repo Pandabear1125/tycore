@@ -17,3 +17,8 @@ tools/*.txt
 # Ignore any development files
 *.dump
 *.map
+
+# Ignore compiler optimization report files
+*.elf.*
+*.c.*
+*.cpp.*
