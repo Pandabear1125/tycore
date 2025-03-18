@@ -7,6 +7,7 @@ TOOLS_DIR = tools
 SOURCE = $(shell find $(SOURCE_DIR) -name '*.cpp' -or -name '*.c')
 
 SOURCE_OBJS = $(SOURCE:%=$(BUILD_DIR)/%.o)
+SOURCE_DEPS = $(SOURCE:%=$(BUILD_DIR)/%.d)
 
 # Base arm-none-eabi and Teensyduino tool paths
 COMPILER_TOOLS_PATH = $(TOOLS_DIR)/compiler/arm-gnu-toolchain/bin
@@ -28,8 +29,9 @@ COMPILER_FLAGS += --specs=nano.specs								# use the newlib nano library, signi
 COMPILER_FLAGS += -ffunction-sections -fdata-sections				# put functions and data in separate sections
 COMPILER_FLAGS += -O2												# optimize for speed
 COMPILER_FLAGS += -fdump-ipa-all									# dump interprocedural analysis, useful for debugging low-level performance
+COMPILER_FLAGS += -MMD -MP											# generate dependencies
 
-CXX_FLAGS 		= -std=gnu++17										# use C++17 standard with GNU extensions. Extensions are needed for various things like asm and inline
+CXX_FLAGS 		= -std=gnu++11										# use C++11 standard with GNU extensions. Extensions are needed for various things like asm and inline
 C_FLAGS 		= -std=gnu11										# use C11 standard with GNU extensions. Extensions are needed for various things like asm and inline
 
 # Cortex-M7 specific flags
@@ -43,7 +45,7 @@ MAKEFLAGS += -j$(nproc)
 
 
 # TODO: eventually get rid of this clean
-all: clean
+all:
     # use bear to generate compile_commands.json
 	bear -- make build
 
@@ -71,6 +73,7 @@ $(OUTPUT).elf : $(SOURCE_OBJS)
 	@$(COMPILER_CPP) $(CXX_FLAGS) $(CPU_FLAGS) $(COMPILER_FLAGS) $(LINKER_FLAGS) $^ -o $@
 	@$(OBJDUMP) -dstz  $(OUTPUT).elf > $(OUTPUT).dump
 
+
 $(OUTPUT).hex : $(OUTPUT).elf
 	@$(OBJCOPY) -O ihex -R .eeprom $^ $@
 
@@ -96,4 +99,8 @@ uninstall:
 	@bash $(TOOLS_DIR)/uninstall_compiler.sh
 
 
-.PHONY: all clean install
+.PHONY: all build upload clean install uninstall
+
+
+# Include compile dependencies for proper incremental build
+-include $(SOURCE_DEPS)
