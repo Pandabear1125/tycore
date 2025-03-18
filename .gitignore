@@ -22,3 +22,6 @@ tools/*.txt
 *.elf.*
 *.c.*
 *.cpp.*
+
+# Ignore dumb xlsx file locks
+.~lock*

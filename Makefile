@@ -5,6 +5,7 @@ BUILD_DIR = build
 TOOLS_DIR = tools
 
 SOURCE = $(shell find $(SOURCE_DIR) -name '*.cpp' -or -name '*.c')
+FORMAT_SOURCE = $(shell find $(SOURCE_DIR) -name '*.cpp' -or -name '*.c' -or -name '*.h' -or -name '*.hpp')
 
 SOURCE_OBJS = $(SOURCE:%=$(BUILD_DIR)/%.o)
 SOURCE_DEPS = $(SOURCE:%=$(BUILD_DIR)/%.d)
@@ -46,6 +47,8 @@ MAKEFLAGS += -j$(nproc)
 
 # TODO: eventually get rid of this clean
 all:
+    # automatically format code 
+	clang-format -i -style=file $(FORMAT_SOURCE)
     # use bear to generate compile_commands.json
 	bear -- make build
 
