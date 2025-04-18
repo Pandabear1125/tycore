@@ -1,5 +1,7 @@
 # Ignore build and any build artifacts
 build
+.cache
+compile_commands.json
 
 # Ignore the installed compiler and any tools artifacts
 tools/compiler
@@ -15,3 +17,11 @@ tools/*.txt
 # Ignore any development files
 *.dump
 *.map
+
+# Ignore compiler optimization report files
+*.elf.*
+*.c.*
+*.cpp.*
+
+# Ignore dumb xlsx file locks
+.~lock*

@@ -1,31 +1,32 @@
 #ifndef TYCORE_GPIO_H
 #define TYCORE_GPIO_H
 
+#include "../connectivity/pin_info.h"
 #include "../imxrt_regmap.h"
-#include "../utils/memory.h"
 #include "../utils/macros.h"
-
-#define GPIO_PIN_COUNT 42
+#include "../utils/memory.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus extern "C"
+#endif	// __cplusplus extern "C"
+
+// TODO: make fast GPIO
 
 /**
  * @brief Initialize the GPIO pins and set them to use fast GPIO. On system startup, the GPIO pins are disabled.
  * @note This function must be called before using any GPIO pins otherwise it is undefined behavior.
- * @return 0 if successful, otherwise an error code.
+ * @return 0 if successful, otherwise -1
  */
 FLASH_CODE int gpio_init(void);
 
 // GPIO pin modes
 typedef enum {
-    INPUT = 0,
-    INPUT_PULLUP,
-    INPUT_PULLDOWN,
-    OUTPUT,
-    OUTPUT_OPENDRAIN,
-    INPUT_DISABLE
+	INPUT = 0,
+	INPUT_PULLUP,
+	INPUT_PULLDOWN,
+	OUTPUT,
+	OUTPUT_OPENDRAIN,
+	INPUT_DISABLE,
 } gpio_pin_mode_t;
 
 /**
@@ -68,6 +69,6 @@ ITCM void digitalClear(uint8_t pin);
 
 #ifdef __cplusplus
 }
-#endif  // __cplusplus extern "C"
+#endif	// __cplusplus extern "C"
 
-#endif // TYCORE_GPIO_H
+#endif	// TYCORE_GPIO_H

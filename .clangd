@@ -1,0 +1,19 @@
+Diagnostics:
+  # disable unused include warnings
+  UnusedIncludes: None
+
+  # disable some warnings
+  Suppress: 
+  - anon_bitfield_qualifiers  # anonymous bitfields
+  - unknown-pragmas           # unknown pragmas (optimize)
+
+CompileFlags:
+  # allow clang to not stop after some errors
+  Add: -ferror-limit=0
+
+  Remove:
+  # remove IPA flags
+  - -fopt-info-all
+  - -fdump-tree-all
+  - -fdump-rtl-all
+  - -fdump-ipa-all
