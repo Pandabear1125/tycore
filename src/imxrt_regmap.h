@@ -2207,6 +2207,152 @@ typedef volatile struct {
 
 #pragma region ARM_ARCH
 
+// 0xE0000000-0xE0001000	Instrumentation Trace Macrocell (ITM)
+
+typedef volatile struct {
+	reg_t stimulus : 32;  // read bit 0 for `fifoready`
+} SCS_ITM_STIM_t;
+// 0 <= n < 256
+#define SCS_ITM_STIM(n) 		((SCS_ITM_STIM_t*)(0xE0000000u + (n) * 0x4))
+#define SCS_ITM_STIM_RAW(n) 	((reg_t*)(0xE0000000u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t stimena : 32;
+} SCS_ITM_TER_t;
+// 0 <= n < 8
+#define SCS_ITM_TER(n) 			((SCS_ITM_TER_t*)(0xE0000E00u + (n) * 0x4))
+#define SCS_ITM_TER_RAW(n) 		((reg_t*)(0xE0000E00u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t privmask : 32;
+} SCS_ITM_TPR_t;
+#define SCS_ITM_TPR 			((SCS_ITM_TPR_t*)0xE0000E40u)
+#define SCS_ITM_TPR_RAW 		((reg_t*)0xE0000E40u)
+
+typedef volatile struct {
+	reg_t itmena	 : 1;
+	reg_t tsena		 : 1;
+	reg_t syncena	 : 1;
+	reg_t txena		 : 1;
+	reg_t swoena	 : 1;
+	reg_t			 : 3;
+	reg_t tsprescale : 2;
+	reg_t gtsfreq	 : 2;
+	reg_t			 : 4;
+	reg_t tracebusid : 7;
+	reg_t busy		 : 1;
+	reg_t			 : 8;
+} SCS_ITM_TCR_t;
+#define SCS_ITM_TCR 			((SCS_ITM_TCR_t*)0xE0000E80u)
+#define SCS_ITM_TCR_RAW 		((reg_t*)0xE0000E80u)
+
+// 0xE0001000-0xE0002000	Data Watchpoint and Trace unit (DWT)
+
+typedef volatile struct {
+	reg_t cyccntena	  : 1;
+	reg_t postpreset  : 4;
+	reg_t postinit	  : 4;
+	reg_t cyctap	  : 1;
+	reg_t synctap	  : 2;
+	reg_t pcsamplena  : 1;
+	reg_t			  : 3;
+	reg_t exctrcena	  : 1;
+	reg_t cpievtena	  : 1;
+	reg_t excevtena	  : 1;
+	reg_t sleepevtena : 1;
+	reg_t lsuevtena	  : 1;
+	reg_t foldevtena  : 1;
+	reg_t cycevtena	  : 1;
+	reg_t			  : 1;
+	reg_t noprfcnt	  : 1;
+	reg_t nocyccnt	  : 1;
+	reg_t noexttrig	  : 1;
+	reg_t notrcpkt	  : 1;
+	reg_t numcomp	  : 4;
+} SCS_DWT_CTRL_t;
+#define SCS_DWT_CTRL 			((SCS_DWT_CTRL_t*)0xE0001000u)
+#define SCS_DWT_CTRL_RAW 		((reg_t*)0xE0001000u)
+
+typedef volatile struct {
+	reg_t cyccnt : 32;
+} SCS_DWT_CYCCNT_t;
+#define SCS_DWT_CYCCNT 			((SCS_DWT_CYCCNT_t*)0xE0001004u)
+#define SCS_DWT_CYCCNT_RAW 		((reg_t*)0xE0001004u)
+
+typedef volatile struct {
+	reg_t cpicnt : 8;
+	reg_t		 : 24;
+} SCS_DWT_CPICNT_t;
+#define SCS_DWT_CPICNT 			((SCS_DWT_CPICNT_t*)0xE0001008u)
+#define SCS_DWT_CPICNT_RAW 		((reg_t*)0xE0001008u)
+
+typedef volatile struct {
+	reg_t exccnt : 8;
+	reg_t		 : 24;
+} SCS_DWT_EXCCNT_t;
+#define SCS_DWT_EXCCNT 			((SCS_DWT_EXCCNT_t*)0xE000100Cu)
+#define SCS_DWT_EXCCNT_RAW 		((reg_t*)0xE000100Cu)
+
+typedef volatile struct {
+	reg_t sleepcnt : 8;
+	reg_t		   : 24;
+} SCS_DWT_SLEEPCNT_t;
+#define SCS_DWT_SLEEPCNT 		((SCS_DWT_SLEEPCNT_t*)0xE0001010u)
+#define SCS_DWT_SLEEPCNT_RAW 	((reg_t*)0xE0001010u)
+
+typedef volatile struct {
+	reg_t lsucnt : 8;
+	reg_t		 : 24;
+} SCS_DWT_LSUCNT_t;
+#define SCS_DWT_LSUCNT 			((SCS_DWT_LSUCNT_t*)0xE0001014u)
+#define SCS_DWT_LSUCNT_RAW 		((reg_t*)0xE0001014u)
+
+typedef volatile struct {
+	reg_t foldcnt : 8;
+	reg_t		  : 24;
+} SCS_DWT_FOLDCNT_t;
+#define SCS_DWT_FOLDCNT 		((SCS_DWT_FOLDCNT_t*)0xE0001018u)
+#define SCS_DWT_FOLDCNT_RAW 	((reg_t*)0xE0001018u)
+
+typedef volatile struct {
+	reg_t eiasample : 32;
+} SCS_DWT_PCSR_t;
+#define SCS_DWT_PCSR 			((SCS_DWT_PCSR_t*)0xE000101Cu)
+#define SCS_DWT_PCSR_RAW 		((reg_t*)0xE000101Cu)
+
+typedef volatile struct {
+	reg_t comp : 32;
+} SCS_DWT_COMP_t;
+// 0 <= n < 16
+#define SCS_DWT_COMP(n) 		((SCS_DWT_COMP_t*)(0xE0001020u + (n) * 0x10u))
+#define SCS_DWT_COMP_RAW(n) 	((reg_t*)(0xE0001020u + (n) * 0x10u))
+
+typedef volatile struct {
+	reg_t mask : 32;
+} SCS_DWT_MASK_t;
+// 0 <= n < 16
+#define SCS_DWT_MASK(n) 		((SCS_DWT_MASK_t*)(0xE0001024u + (n) * 0x10u))
+#define SCS_DWT_MASK_RAW(n) 	((reg_t*)(0xE0001024u + (n) * 0x10u))
+
+typedef volatile struct {
+	reg_t function	 : 4;
+	reg_t			 : 1;
+	reg_t emitrange	 : 1;
+	reg_t			 : 1;
+	reg_t cycmatch	 : 1;
+	reg_t datavmatch : 1;
+	reg_t lnk1ena	 : 1;
+	reg_t datavsize	 : 2;
+	reg_t datavaddr0 : 4;
+	reg_t datavaddr1 : 4;
+	reg_t			 : 4;
+	reg_t matched	 : 1;
+	reg_t			 : 7;
+} SCS_DWT_FUNCTION_t;
+// 0 <= n < 16
+#define SCS_DWT_FUNCTION(n) 	((SCS_DWT_FUNCTION_t*)(0xE0001028u + (n) * 0x10u))
+#define SCS_DWT_FUNCTION_RAW(n) ((reg_t*)(0xE0001028u + (n) * 0x10u))
+
 // 0xE000E000-0xE000E00F 	Includes the Interrupt Controller Type and Auxiliary Control registers
 
 typedef volatile struct {
@@ -2225,19 +2371,19 @@ typedef volatile struct {
 // 0xE000E010-0xE000E0FF 	System Timer
 
 typedef volatile struct {
-	reg_t enable : 1;
-	reg_t tickint : 1;
+	reg_t enable	: 1;
+	reg_t tickint	: 1;
 	reg_t clksource : 1;
-	reg_t : 13;
+	reg_t			: 13;
 	reg_t countflag : 1;
-	reg_t : 15;
+	reg_t			: 15;
 } SCS_SYST_CSR_t;
 #define SCS_SYST_CSR 		((SCS_SYST_CSR_t*)0xE000E010u)
 #define SCS_SYST_CSR_RAW 	((reg_t*)0xE000E010u)
 
 typedef volatile struct {
 	reg_t reload : 24;
-	reg_t : 8;
+	reg_t		 : 8;
 } SCS_SYST_RVR_t;
 #define SCS_SYST_RVR 		((SCS_SYST_RVR_t*)0xE000E014u)
 #define SCS_SYST_RVR_RAW 	((reg_t*)0xE000E014u)
@@ -2250,8 +2396,8 @@ typedef volatile struct {
 
 typedef volatile struct {
 	reg_t tenms : 24;
-	reg_t : 5;
-	reg_t skew : 1;
+	reg_t		: 6;
+	reg_t skew	: 1;
 	reg_t noref : 1;
 } SCS_SYST_CALIB_t;
 #define SCS_SYST_CALIB 		((SCS_SYST_CALIB_t*)0xE000E01Cu)
@@ -2777,6 +2923,46 @@ typedef volatile struct {
 } SCS_STIR_t;
 #define SCS_STIR 			((SCS_STIR_t*)0xE000EF00u)
 #define SCS_STIR_RAW 		((reg_t*)0xE000EF00u)
+
+// 0xE0040000-0xE0040FFF	Trace Port Interface Unit (TPIU)
+
+typedef volatile struct {
+	reg_t swidth : 32;
+} TPIU_SSPSR_t;
+#define TPIU_SSPSR 			((TPIU_SSPSR_t*)0xE0040000u)
+#define TPIU_SSPSR_RAW 		((reg_t*)0xE0040000u)
+
+typedef volatile struct {
+	reg_t cwidth : 32;
+} TPIU_CSPSR_t;
+#define TPIU_CSPSR 			((TPIU_CSPSR_t*)0xE0040004u)
+#define TPIU_CSPSR_RAW 		((reg_t*)0xE0040004u)
+
+typedef volatile struct {
+	reg_t swoscaler : 16;
+	reg_t			: 16;
+} TPIU_ACPR_t;
+#define TPIU_ACPR 			((TPIU_ACPR_t*)0xE0040010u)
+#define TPIU_ACPR_RAW 		((reg_t*)0xE0040010u)
+
+typedef volatile struct {
+	reg_t txmode : 2;
+	reg_t		 : 30;
+} TPIU_SPPR_t;
+#define TPIU_SPPR 			((TPIU_SPPR_t*)0xE00400F0u)
+#define TPIU_SPPR_RAW 		((reg_t*)0xE00400F0u)
+
+typedef volatile struct {
+	reg_t			: 6;
+	reg_t fifosz	: 3;
+	reg_t ptinvalid : 1;
+	reg_t mancvalid : 1;
+	reg_t nrzvalid	: 1;
+	reg_t			: 4;
+	reg_t			: 16;
+} TPIU_TYPE_t;
+#define TPIU_TYPE 			((TPIU_TYPE_t*)0xE0040FC8u)
+#define TPIU_TYPE_RAW 		((reg_t*)0xE0040FC8u)
 
 #pragma endregion  // ARM_ARCH
 
