@@ -16,9 +16,13 @@
 // References of the form RM 11.2.3 refer to the reference manual for the IMXRT1062, chapter 11, section 2, subsection 3
 // Reference manual can be found in the doc folder: IMXRT1060ReferenceManual.pdf
 
+// References of the form AM A1.2.3 refer to the ARMv7-M architecture reference manual, chapter A, subchapter 1, section 2, subsection 3
+// Reference manual can be found in the doc folder: ARMv7mManual.pdf
+
 #include <stdint.h>
 
 typedef volatile uint32_t reg_t;
+typedef volatile uint16_t reg16_t;
 
 // IOMUXC Memory Map/Register Definition
 // RM 11
@@ -1258,7 +1262,7 @@ typedef volatile struct {
 	reg_t trace_clk_sel		 : 2;
 	reg_t					 : 2;
 	reg_t pre_periph_clk_sel : 2;
-	reg_t					 : 2;
+	reg_t					 : 3;
 	reg_t lcdif_podf		 : 3;
 	reg_t lpspi_podf		 : 3;
 	reg_t flexspi2_podf		 : 3;
@@ -1297,14 +1301,14 @@ typedef volatile struct {
 
 typedef volatile struct {
 	reg_t uart_clk_podf : 6;
-	reg_t uart_clk_sel	: 2;
+	reg_t uart_clk_sel	: 1;
 	reg_t				: 4;
 	reg_t usdhc1_podf	: 3;
 	reg_t				: 2;
 	reg_t usdhc2_podf	: 3;
 	reg_t				: 6;
-	reg_t trace_podf	: 16;
-	reg_t				: 1;
+	reg_t trace_podf	: 2;
+	reg_t				: 5;
 } CCM_CSCDR1_t;
 #define CCM_CSCDR1      ((CCM_CSCDR1_t*)0x400FC024u)
 #define CCM_CSCDR1_RAW  ((reg_t*)0x400FC024u)
@@ -2198,6 +2202,825 @@ typedef volatile struct {
 #define DCDC_REG3_RAW   ((reg_t*)0x4008000Cu)
 
 #pragma endregion  // DCDC_MODULE
+
+// ARMv7-M Architecture
+// AM B3.2.2
+
+#pragma region ARM_ARCH
+
+// 0xE0000000-0xE0001000	Instrumentation Trace Macrocell (ITM)
+
+typedef volatile struct {
+	reg_t stimulus : 32;  // read bit 0 for `fifoready`
+} SCS_ITM_STIM_t;
+// 0 <= n < 256
+#define SCS_ITM_STIM(n) 		((SCS_ITM_STIM_t*)(0xE0000000u + (n) * 0x4))
+#define SCS_ITM_STIM_RAW(n) 	((reg_t*)(0xE0000000u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t stimena : 32;
+} SCS_ITM_TER_t;
+// 0 <= n < 8
+#define SCS_ITM_TER(n) 			((SCS_ITM_TER_t*)(0xE0000E00u + (n) * 0x4))
+#define SCS_ITM_TER_RAW(n) 		((reg_t*)(0xE0000E00u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t privmask : 32;
+} SCS_ITM_TPR_t;
+#define SCS_ITM_TPR 			((SCS_ITM_TPR_t*)0xE0000E40u)
+#define SCS_ITM_TPR_RAW 		((reg_t*)0xE0000E40u)
+
+typedef volatile struct {
+	reg_t itmena	 : 1;
+	reg_t tsena		 : 1;
+	reg_t syncena	 : 1;
+	reg_t txena		 : 1;
+	reg_t swoena	 : 1;
+	reg_t			 : 3;
+	reg_t tsprescale : 2;
+	reg_t gtsfreq	 : 2;
+	reg_t			 : 4;
+	reg_t tracebusid : 7;
+	reg_t busy		 : 1;
+	reg_t			 : 8;
+} SCS_ITM_TCR_t;
+#define SCS_ITM_TCR 			((SCS_ITM_TCR_t*)0xE0000E80u)
+#define SCS_ITM_TCR_RAW 		((reg_t*)0xE0000E80u)
+
+// 0xE0001000-0xE0002000	Data Watchpoint and Trace unit (DWT)
+
+typedef volatile struct {
+	reg_t cyccntena	  : 1;
+	reg_t postpreset  : 4;
+	reg_t postinit	  : 4;
+	reg_t cyctap	  : 1;
+	reg_t synctap	  : 2;
+	reg_t pcsamplena  : 1;
+	reg_t			  : 3;
+	reg_t exctrcena	  : 1;
+	reg_t cpievtena	  : 1;
+	reg_t excevtena	  : 1;
+	reg_t sleepevtena : 1;
+	reg_t lsuevtena	  : 1;
+	reg_t foldevtena  : 1;
+	reg_t cycevtena	  : 1;
+	reg_t			  : 1;
+	reg_t noprfcnt	  : 1;
+	reg_t nocyccnt	  : 1;
+	reg_t noexttrig	  : 1;
+	reg_t notrcpkt	  : 1;
+	reg_t numcomp	  : 4;
+} SCS_DWT_CTRL_t;
+#define SCS_DWT_CTRL 			((SCS_DWT_CTRL_t*)0xE0001000u)
+#define SCS_DWT_CTRL_RAW 		((reg_t*)0xE0001000u)
+
+typedef volatile struct {
+	reg_t cyccnt : 32;
+} SCS_DWT_CYCCNT_t;
+#define SCS_DWT_CYCCNT 			((SCS_DWT_CYCCNT_t*)0xE0001004u)
+#define SCS_DWT_CYCCNT_RAW 		((reg_t*)0xE0001004u)
+
+typedef volatile struct {
+	reg_t cpicnt : 8;
+	reg_t		 : 24;
+} SCS_DWT_CPICNT_t;
+#define SCS_DWT_CPICNT 			((SCS_DWT_CPICNT_t*)0xE0001008u)
+#define SCS_DWT_CPICNT_RAW 		((reg_t*)0xE0001008u)
+
+typedef volatile struct {
+	reg_t exccnt : 8;
+	reg_t		 : 24;
+} SCS_DWT_EXCCNT_t;
+#define SCS_DWT_EXCCNT 			((SCS_DWT_EXCCNT_t*)0xE000100Cu)
+#define SCS_DWT_EXCCNT_RAW 		((reg_t*)0xE000100Cu)
+
+typedef volatile struct {
+	reg_t sleepcnt : 8;
+	reg_t		   : 24;
+} SCS_DWT_SLEEPCNT_t;
+#define SCS_DWT_SLEEPCNT 		((SCS_DWT_SLEEPCNT_t*)0xE0001010u)
+#define SCS_DWT_SLEEPCNT_RAW 	((reg_t*)0xE0001010u)
+
+typedef volatile struct {
+	reg_t lsucnt : 8;
+	reg_t		 : 24;
+} SCS_DWT_LSUCNT_t;
+#define SCS_DWT_LSUCNT 			((SCS_DWT_LSUCNT_t*)0xE0001014u)
+#define SCS_DWT_LSUCNT_RAW 		((reg_t*)0xE0001014u)
+
+typedef volatile struct {
+	reg_t foldcnt : 8;
+	reg_t		  : 24;
+} SCS_DWT_FOLDCNT_t;
+#define SCS_DWT_FOLDCNT 		((SCS_DWT_FOLDCNT_t*)0xE0001018u)
+#define SCS_DWT_FOLDCNT_RAW 	((reg_t*)0xE0001018u)
+
+typedef volatile struct {
+	reg_t eiasample : 32;
+} SCS_DWT_PCSR_t;
+#define SCS_DWT_PCSR 			((SCS_DWT_PCSR_t*)0xE000101Cu)
+#define SCS_DWT_PCSR_RAW 		((reg_t*)0xE000101Cu)
+
+typedef volatile struct {
+	reg_t comp : 32;
+} SCS_DWT_COMP_t;
+// 0 <= n < 16
+#define SCS_DWT_COMP(n) 		((SCS_DWT_COMP_t*)(0xE0001020u + (n) * 0x10u))
+#define SCS_DWT_COMP_RAW(n) 	((reg_t*)(0xE0001020u + (n) * 0x10u))
+
+typedef volatile struct {
+	reg_t mask : 32;
+} SCS_DWT_MASK_t;
+// 0 <= n < 16
+#define SCS_DWT_MASK(n) 		((SCS_DWT_MASK_t*)(0xE0001024u + (n) * 0x10u))
+#define SCS_DWT_MASK_RAW(n) 	((reg_t*)(0xE0001024u + (n) * 0x10u))
+
+typedef volatile struct {
+	reg_t function	 : 4;
+	reg_t			 : 1;
+	reg_t emitrange	 : 1;
+	reg_t			 : 1;
+	reg_t cycmatch	 : 1;
+	reg_t datavmatch : 1;
+	reg_t lnk1ena	 : 1;
+	reg_t datavsize	 : 2;
+	reg_t datavaddr0 : 4;
+	reg_t datavaddr1 : 4;
+	reg_t			 : 4;
+	reg_t matched	 : 1;
+	reg_t			 : 7;
+} SCS_DWT_FUNCTION_t;
+// 0 <= n < 16
+#define SCS_DWT_FUNCTION(n) 	((SCS_DWT_FUNCTION_t*)(0xE0001028u + (n) * 0x10u))
+#define SCS_DWT_FUNCTION_RAW(n) ((reg_t*)(0xE0001028u + (n) * 0x10u))
+
+// 0xE000E000-0xE000E00F 	Includes the Interrupt Controller Type and Auxiliary Control registers
+
+typedef volatile struct {
+	reg_t intlinesnum : 4;
+	reg_t			  : 28;
+} SCS_ICTR_t;
+#define SCS_ICTR 			((SCS_ICTR_t*)0xE000E004u)
+#define SCS_ICTR_RAW 		((reg_t*)0xE000E004u)
+
+typedef volatile struct {
+	reg_t unknown : 32;	 // TODO: vendor defined
+} SCS_ACTLR_t;
+#define SCS_ACTLR 			((SCS_ACTLR_t*)0xE000E008u)
+#define SCS_ACTLR_RAW 		((reg_t*)0xE000E008u)
+
+// 0xE000E010-0xE000E0FF 	System Timer
+
+typedef volatile struct {
+	reg_t enable	: 1;
+	reg_t tickint	: 1;
+	reg_t clksource : 1;
+	reg_t			: 13;
+	reg_t countflag : 1;
+	reg_t			: 15;
+} SCS_SYST_CSR_t;
+#define SCS_SYST_CSR 		((SCS_SYST_CSR_t*)0xE000E010u)
+#define SCS_SYST_CSR_RAW 	((reg_t*)0xE000E010u)
+
+typedef volatile struct {
+	reg_t reload : 24;
+	reg_t		 : 8;
+} SCS_SYST_RVR_t;
+#define SCS_SYST_RVR 		((SCS_SYST_RVR_t*)0xE000E014u)
+#define SCS_SYST_RVR_RAW 	((reg_t*)0xE000E014u)
+
+typedef volatile struct {
+	reg_t current : 32;
+} SCS_SYST_CVR_t;
+#define SCS_SYST_CVR 		((SCS_SYST_CVR_t*)0xE000E018u)
+#define SCS_SYST_CVR_RAW 	((reg_t*)0xE000E018u)
+
+typedef volatile struct {
+	reg_t tenms : 24;
+	reg_t		: 6;
+	reg_t skew	: 1;
+	reg_t noref : 1;
+} SCS_SYST_CALIB_t;
+#define SCS_SYST_CALIB 		((SCS_SYST_CALIB_t*)0xE000E01Cu)
+#define SCS_SYST_CALIB_RAW 	((reg_t*)0xE000E01Cu)
+
+// 0xE000E100-0xE000ECFF 	External interrupt controller
+
+typedef volatile struct {
+	reg_t setena : 32;
+} SCS_NVIC_ISER_t;
+// 0 <= n < 16
+#define SCS_NVIC_ISER(n) 	((SCS_NVIC_ISER_t*)(0xE000E100u + (n) * 0x4))
+#define SCS_NVIC_ISER_RAW(n) ((reg_t*)(0xE000E100u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t clrena : 32;
+} SCS_NVIC_ICER_t;
+// 0 <= n < 16
+#define SCS_NVIC_ICER(n) 	((SCS_NVIC_ICER_t*)(0xE000E180u + (n) * 0x4))
+#define SCS_NVIC_ICER_RAW(n) ((reg_t*)(0xE000E180u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t setpend : 32;
+} SCS_NVIC_ISPR_t;
+// 0 <= n < 16
+#define SCS_NVIC_ISPR(n) 	((SCS_NVIC_ISPR_t*)(0xE000E200u + (n) * 0x4))
+#define SCS_NVIC_ISPR_RAW(n) ((reg_t*)(0xE000E200u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t clrpend : 32;
+} SCS_NVIC_ICPR_t;
+// 0 <= n < 16
+#define SCS_NVIC_ICPR(n) 	((SCS_NVIC_ICPR_t*)(0xE000E280u + (n) * 0x4))
+#define SCS_NVIC_ICPR_RAW(n) ((reg_t*)(0xE000E280u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t active : 32;
+} SCS_NVIC_IABR_t;
+// 0 <= n < 16
+#define SCS_NVIC_IABR(n) 	((SCS_NVIC_IABR_t*)(0xE000E300u + (n) * 0x4))
+#define SCS_NVIC_IABR_RAW(n) ((reg_t*)(0xE000E300u + (n) * 0x4))
+
+typedef volatile struct {
+	reg_t pri0 : 8;
+	reg_t pri1 : 8;
+	reg_t pri2 : 8;
+	reg_t pri3 : 8;
+} SCS_NVIC_IPR_t;
+// 0 <= n < 124
+#define SCS_NVIC_IPR(n) 	((SCS_NVIC_IPR_t*)(0xE000E400u + (n) * 0x4))
+#define SCS_NVIC_IPR_RAW(n) ((reg_t*)(0xE000E400u + (n) * 0x4))
+
+// 0xE000ED00-0xE000ED8F 	System Control Block (SCB)
+
+typedef volatile struct {
+	reg_t revision	  : 4;
+	reg_t partno	  : 12;
+	reg_t arch		  : 4;	// reads as 0xf
+	reg_t variant	  : 4;
+	reg_t implementer : 8;
+} SCB_CPUID_t;
+#define SCB_CPUID 			((SCB_CPUID_t*)0xE000ED00u)
+#define SCB_CPUID_RAW 		((reg_t*)0xE000ED00u)
+
+typedef volatile struct {
+	reg_t vectactive  : 9;
+	reg_t			  : 2;
+	reg_t rettobase	  : 1;
+	reg_t vectpending : 9;
+	reg_t			  : 1;
+	reg_t isrpending  : 1;
+	reg_t isrpreempt  : 1;
+	reg_t			  : 1;
+	reg_t pendstclr	  : 1;
+	reg_t pendstset	  : 1;
+	reg_t pendsvclr	  : 1;
+	reg_t pendsvset	  : 1;
+	reg_t			  : 2;
+	reg_t nmipendset  : 1;
+} SCB_ICSR_t;
+#define SCB_ICSR 			((SCB_ICSR_t*)0xE000ED04u)
+#define SCB_ICSR_RAW 		((reg_t*)0xE000ED04u)
+
+typedef volatile struct {
+	reg_t		 : 7;
+	reg_t tbloff : 25;
+} SCB_VTOR_t;
+#define SCB_VTOR 			((SCB_VTOR_t*)0xE000ED08u)
+#define SCB_VTOR_RAW 		((reg_t*)0xE000ED08u)
+
+typedef volatile struct {
+	reg_t vectreset		: 1;
+	reg_t vectclractive : 1;
+	reg_t sysresetreq	: 1;
+	reg_t				: 5;
+	reg_t prigroup		: 3;
+	reg_t				: 4;
+	reg_t endianness	: 1;
+	reg_t vectkey		: 16;
+} SCB_AIRCR_t;
+#define SCB_AIRCR 			((SCB_AIRCR_t*)0xE000ED0Cu)
+#define SCB_AIRCR_RAW 		((reg_t*)0xE000ED0Cu)
+
+typedef volatile struct {
+	reg_t			  : 1;
+	reg_t sleeponexit : 1;
+	reg_t sleepdeep	  : 1;
+	reg_t			  : 1;
+	reg_t sevonpend	  : 1;
+	reg_t			  : 27;
+} SCB_SCR_t;
+#define SCB_SCR 			((SCB_SCR_t*)0xE000ED10u)
+#define SCB_SCR_RAW 		((reg_t*)0xE000ED10u)
+
+typedef volatile struct {
+	reg_t nonbasethrdena : 1;
+	reg_t ussersetmpend	 : 1;
+	reg_t				 : 1;
+	reg_t unalign_trp	 : 1;
+	reg_t div_0_trp		 : 1;
+	reg_t				 : 3;
+	reg_t bfhfnmign		 : 1;
+	reg_t stkalign		 : 1;
+	reg_t				 : 6;
+	reg_t dc			 : 1;
+	reg_t ic			 : 1;
+	reg_t bp			 : 1;
+	reg_t				 : 13;
+} SCB_CCR_t;
+#define SCB_CCR 			((SCB_CCR_t*)0xE000ED14u)
+#define SCB_CCR_RAW 		((reg_t*)0xE000ED14u)
+
+typedef volatile struct {
+	reg_t pri_4 : 8;
+	reg_t pri_5 : 8;
+	reg_t pri_6 : 8;
+	reg_t pri_7 : 8;
+} SCB_SHPR1_t;
+#define SCB_SHPR1 			((SCB_SHPR1_t*)0xE000ED18u)
+#define SCB_SHPR1_RAW 		((reg_t*)0xE000ED18u)
+
+typedef volatile struct {
+	reg_t pri_8	 : 8;
+	reg_t pri_9	 : 8;
+	reg_t pri_10 : 8;
+	reg_t pri_11 : 8;
+} SCB_SHPR2_t;
+#define SCB_SHPR2 			((SCB_SHPR2_t*)0xE000ED1Cu)
+#define SCB_SHPR2_RAW 		((reg_t*)0xE000ED1Cu)
+
+typedef volatile struct {
+	reg_t pri_12 : 8;
+	reg_t pri_13 : 8;
+	reg_t pri_14 : 8;
+	reg_t pri_15 : 8;
+} SCB_SHPR3_t;
+#define SCB_SHPR3 			((SCB_SHPR3_t*)0xE000ED20u)
+#define SCB_SHPR3_RAW 		((reg_t*)0xE000ED20u)
+
+typedef volatile struct {
+	reg_t memfaultact	 : 1;
+	reg_t busfaultact	 : 1;
+	reg_t				 : 1;
+	reg_t usagefaultact	 : 1;
+	reg_t				 : 3;
+	reg_t svcallact		 : 1;
+	reg_t monitoract	 : 1;
+	reg_t				 : 1;
+	reg_t pendsvact		 : 1;
+	reg_t systickact	 : 1;
+	reg_t usgfaultpended : 1;
+	reg_t memfaultpended : 1;
+	reg_t busfaultpended : 1;
+	reg_t svcallpended	 : 1;
+	reg_t memfaultena	 : 1;
+	reg_t busfaultena	 : 1;
+	reg_t usgfaultena	 : 1;
+	reg_t				 : 13;
+} SCB_SHCSR_t;
+#define SCB_SHCSR 			((SCB_SHCSR_t*)0xE000ED24u)
+#define SCB_SHCSR_RAW 		((reg_t*)0xE000ED24u)
+
+typedef volatile struct {
+	// memmanage fault status
+	reg_t iaccviol	  : 1;
+	reg_t daccviol	  : 1;
+	reg_t			  : 1;
+	reg_t munstkerr	  : 1;
+	reg_t mstkerr	  : 1;
+	reg_t mlsperr	  : 1;
+	reg_t			  : 1;
+	reg_t mmarvalid	  : 1;
+	// bus fault status
+	reg_t ibuserr	  : 1;
+	reg_t preciserr	  : 1;
+	reg_t impreciserr : 1;
+	reg_t unstkerr	  : 1;
+	reg_t stkerr	  : 1;
+	reg_t lsperr	  : 1;
+	reg_t			  : 1;
+	reg_t bfarvalid	  : 1;
+	// usage fault status
+	reg_t undefinstr  : 1;
+	reg_t invstate	  : 1;
+	reg_t invpc		  : 1;
+	reg_t nocp		  : 1;
+	reg_t			  : 4;
+	reg_t unaligned	  : 1;
+	reg_t divbyzero	  : 1;
+	reg_t			  : 6;
+} SCB_CFSR_t;
+#define SCB_CFSR 			((SCB_CFSR_t*)0xE000ED28u)
+#define SCB_CFSR_RAW 		((reg_t*)0xE000ED28u)
+
+typedef volatile struct {
+	reg_t		   : 1;
+	reg_t vecttbl  : 1;
+	reg_t		   : 28;
+	reg_t forced   : 1;
+	reg_t debugevt : 1;
+} SCB_HFSR_t;
+#define SCB_HFSR 			((SCB_HFSR_t*)0xE000ED2Cu)
+#define SCB_HFSR_RAW 		((reg_t*)0xE000ED2Cu)
+
+typedef volatile struct {
+	reg_t halted   : 1;
+	reg_t bkpt	   : 1;
+	reg_t dwttrap  : 1;
+	reg_t vcatch   : 1;
+	reg_t external : 1;
+	reg_t		   : 27;
+} SCB_DFSR_t;
+#define SCB_DFSR 			((SCB_DFSR_t*)0xE000ED30u)
+#define SCB_DFSR_RAW 		((reg_t*)0xE000ED30u)
+
+typedef volatile struct {
+	reg_t address : 32;
+} SCB_MMFAR_t;
+#define SCB_MMFAR 			((SCB_MMFAR_t*)0xE000ED34u)
+#define SCB_MMFAR_RAW 		((reg_t*)0xE000ED34u)
+
+typedef volatile struct {
+	reg_t address : 32;
+} SCB_BFAR_t;
+#define SCB_BFAR 			((SCB_BFAR_t*)0xE000ED38u)
+#define SCB_BFAR_RAW 		((reg_t*)0xE000ED38u)
+
+typedef volatile struct {
+	reg_t unknown : 32;	 // TODO: vendor defined
+} SCB_AFSR_t;
+#define SCB_AFSR 			((SCB_AFSR_t*)0xE000ED3Cu)
+#define SCB_AFSR_RAW 		((reg_t*)0xE000ED3Cu)
+
+// CPUID scheme registers
+
+typedef volatile struct {
+	reg_t state0 : 4;
+	reg_t state1 : 4;
+	reg_t state2 : 4;
+	reg_t state3 : 4;
+	reg_t		 : 16;
+} SCB_ID_PFR0_t;
+#define SCB_ID_PFR0 		((SCB_ID_PFR0_t*)0xE000ED40u)
+#define SCB_ID_PFR0_RAW 	((reg_t*)0xE000ED40u)
+
+typedef volatile struct {
+	reg_t			 : 8;
+	reg_t prog_model : 4;
+	reg_t			 : 20;
+} SCB_ID_PFR1_t;
+#define SCB_ID_PFR1 		((SCB_ID_PFR1_t*)0xE000ED44u)
+#define SCB_ID_PFR1_RAW 	((reg_t*)0xE000ED44u)
+
+typedef volatile struct {
+	reg_t			  : 20;
+	reg_t debug_model : 4;
+	reg_t			  : 8;
+} SCB_ID_DFR0_t;
+#define SCB_ID_DFR0 		((SCB_ID_DFR0_t*)0xE000ED48u)
+#define SCB_ID_DFR0_RAW 	((reg_t*)0xE000ED48u)
+
+typedef volatile struct {
+	reg_t unknown : 32;	 // TODO: vendor defined
+} SCB_ID_AFR0_t;
+#define SCB_ID_AFR0 		((SCB_ID_AFR0_t*)0xE000ED4Cu)
+#define SCB_ID_AFR0_RAW 	((reg_t*)0xE000ED4Cu)
+
+typedef volatile struct {
+	reg_t			   : 4;
+	reg_t pmsa		   : 4;
+	reg_t outer_share  : 4;
+	reg_t share_levels : 4;
+	reg_t tcm		   : 4;
+	reg_t aux_regs	   : 4;
+	reg_t			   : 8;
+} SCB_ID_MMFR0_t;
+#define SCB_ID_MMFR0 		((SCB_ID_MMFR0_t*)0xE000ED50u)
+#define SCB_ID_MMFR0_RAW 	((reg_t*)0xE000ED50u)
+
+typedef volatile struct {
+	reg_t reserved : 32;
+} SCB_ID_MMFR1_t;
+#define SCB_ID_MMFR1 		((SCB_ID_MMFR1_t*)0xE000ED54u)
+#define SCB_ID_MMFR1_RAW 	((reg_t*)0xE000ED54u)
+
+typedef volatile struct {
+	reg_t			: 24;
+	reg_t wfi_stall : 4;
+	reg_t			: 4;
+} SCB_ID_MMFR2_t;
+#define SCB_ID_MMFR2 		((SCB_ID_MMFR2_t*)0xE000ED58u)
+#define SCB_ID_MMFR2_RAW 	((reg_t*)0xE000ED58u)
+
+typedef volatile struct {
+	reg_t reserved : 32;
+} SCB_ID_MMFR3_t;
+#define SCB_ID_MMFR3 		((SCB_ID_MMFR3_t*)0xE000ED5Cu)
+#define SCB_ID_MMFR3_RAW 	((reg_t*)0xE000ED5Cu)
+
+typedef volatile struct {
+	reg_t				   : 4;
+	reg_t bitcount_instrs  : 4;
+	reg_t bitfield_instrs  : 4;
+	reg_t cmpbranch_instrs : 4;
+	reg_t coproc_instrs	   : 4;
+	reg_t debug_instrs	   : 4;
+	reg_t divide_instrs	   : 4;
+	reg_t				   : 4;
+} SCB_ID_ISAR0_t;
+#define SCB_ID_ISAR0 		((SCB_ID_ISAR0_t*)0xE000ED60u)
+#define SCB_ID_ISAR0_RAW 	((reg_t*)0xE000ED60u)
+
+typedef volatile struct {
+	reg_t				   : 12;
+	reg_t extend_instrs	   : 4;
+	reg_t ifthen_instrs	   : 4;
+	reg_t immediate_instrs : 4;
+	reg_t interwork_instrs : 4;
+	reg_t				   : 4;
+} SCB_ID_ISAR1_t;
+#define SCB_ID_ISAR1 		((SCB_ID_ISAR1_t*)0xE000ED64u)
+#define SCB_ID_ISAR1_RAW 	((reg_t*)0xE000ED64u)
+
+typedef volatile struct {
+	reg_t loadstore_instrs		: 4;
+	reg_t memhint_instrs		: 4;
+	reg_t multiaccessint_instrs : 4;
+	reg_t mult_instrs			: 4;
+	reg_t mults_instrs			: 4;
+	reg_t multu_instrs			: 4;
+	reg_t						: 4;
+	reg_t reversal_instrs		: 4;
+} SCB_ID_ISAR2_t;
+#define SCB_ID_ISAR2 		((SCB_ID_ISAR2_t*)0xE000ED68u)
+#define SCB_ID_ISAR2_RAW 	((reg_t*)0xE000ED68u)
+
+typedef volatile struct {
+	reg_t saturate_instrs  : 4;
+	reg_t simd_instrs	   : 4;
+	reg_t svc_instrs	   : 4;
+	reg_t synchprim_instrs : 4;
+	reg_t tabbranch_instrs : 4;
+	reg_t thumbcopy_instrs : 4;
+	reg_t truenop_instrs   : 4;
+	reg_t				   : 4;
+} SCB_ID_ISAR3_t;
+#define SCB_ID_ISAR3 		((SCB_ID_ISAR3_t*)0xE000ED6Cu)
+#define SCB_ID_ISAR3_RAW 	((reg_t*)0xE000ED6Cu)
+
+typedef volatile struct {
+	reg_t unpriv_instrs			: 4;
+	reg_t withshifts_instrs		: 4;
+	reg_t writeback_instrs		: 4;
+	reg_t						: 4;
+	reg_t barrier_instrs		: 4;
+	reg_t synchprim_instrs_frac : 4;
+	reg_t psr_m_instrs			: 4;
+	reg_t						: 4;
+} SCB_ID_ISAR4_t;
+#define SCB_ID_ISAR4 		((SCB_ID_ISAR4_t*)0xE000ED70u)
+#define SCB_ID_ISAR4_RAW 	((reg_t*)0xE000ED70u)
+
+typedef volatile struct {
+	reg_t reserved : 32;
+} SCB_ID_ISAR5_t;
+#define SCB_ID_ISAR5 		((SCB_ID_ISAR5_t*)0xE000ED74u)
+#define SCB_ID_ISAR5_RAW 	((reg_t*)0xE000ED74u)
+
+typedef volatile struct {
+	reg_t ctype1 : 3;
+	reg_t ctype2 : 3;
+	reg_t ctype3 : 3;
+	reg_t ctype4 : 3;
+	reg_t ctype5 : 3;
+	reg_t ctype6 : 3;
+	reg_t ctype7 : 3;
+	reg_t louis	 : 3;
+	reg_t loc	 : 3;
+	reg_t louu	 : 3;
+	reg_t		 : 2;
+} SCB_ID_CLIDR_t;
+#define SCB_ID_CLIDR 		((SCB_ID_CLIDR_t*)0xE000ED78u)
+#define SCB_ID_CLIDR_RAW 	((reg_t*)0xE000ED78u)
+
+typedef volatile struct {
+	reg_t linesize		: 3;
+	reg_t associativity : 10;
+	reg_t numsets		: 15;
+	reg_t wa			: 1;
+	reg_t ra			: 1;
+	reg_t wb			: 1;
+	reg_t wt			: 1;
+} SCB_ID_CCSIDR_t;
+#define SCB_ID_CCSIDR 		((SCB_ID_CCSIDR_t*)0xE000ED7Cu)
+#define SCB_ID_CCSIDR_RAW 	((reg_t*)0xE000ED7Cu)
+
+typedef volatile struct {
+	reg_t ind	: 1;
+	reg_t level : 3;
+	reg_t		: 28;
+} SCB_ID_CCSELR_t;
+#define SCB_ID_CCSELR 		((SCB_ID_CCSELR_t*)0xE000ED80u)
+#define SCB_ID_CCSELR_RAW 	((reg_t*)0xE000ED80u)
+
+typedef volatile struct {
+	reg_t iminline : 4;
+	reg_t		   : 10;
+	reg_t		   : 2;
+	reg_t dminline : 4;
+	reg_t erg	   : 4;
+	reg_t cwg	   : 4;
+	reg_t		   : 1;
+	reg_t format   : 3;
+} SCB_ID_CTR_t;
+#define SCB_ID_CTR 			((SCB_ID_CTR_t*)0xE000ED84u)
+#define SCB_ID_CTR_RAW 		((reg_t*)0xE000ED84u)
+
+typedef volatile struct {
+	reg_t cp0  : 2;
+	reg_t cp1  : 2;
+	reg_t cp2  : 2;
+	reg_t cp3  : 2;
+	reg_t cp4  : 2;
+	reg_t cp5  : 2;
+	reg_t cp6  : 2;
+	reg_t cp7  : 2;
+	reg_t	   : 4;
+	reg_t cp10 : 2;
+	reg_t cp11 : 2;
+	reg_t	   : 8;
+} SCB_CPACR_t;
+#define SCB_CPACR 			((SCB_CPACR_t*)0xE000ED88u)
+#define SCB_CPACR_RAW 		((reg_t*)0xE000ED88u)
+
+// 0xE000ED90-0xE000EDEF 	Memory Protection Unit
+
+typedef volatile struct {
+	reg_t separate : 1;
+	reg_t : 7;
+	reg_t d_region : 8;
+	reg_t i_region : 8;	// RAZ
+	reg_t : 8;
+} MPU_TYPE_t;
+#define MPU_TYPE			((MPU_TYPE_t*)0xE000ED90u)
+#define MPU_TYPE_RAW 		((reg_t*)0xE000ED90u)
+
+typedef volatile struct {
+	reg_t enable : 1;
+	reg_t hfnmiena : 1;
+	reg_t privdefena : 1;
+	reg_t : 29;
+} MPU_CTRL_t;
+#define MPU_CTRL 			((MPU_CTRL_t*)0xE000ED94u)
+#define MPU_CTRL_RAW 		((reg_t*)0xE000ED94u)
+
+typedef volatile struct {
+	reg_t region : 8;
+	reg_t : 24;
+} MPU_RNR_t;
+#define MPU_RNR 			((MPU_RNR_t*)0xE000ED98u)
+#define MPU_RNR_RAW 		((reg_t*)0xE000ED98u)
+
+typedef volatile struct {
+	reg_t region : 4;
+	reg_t valid : 1;
+	reg_t addr : 27;
+} MPU_RBAR_t;
+#define MPU_RBAR 			((MPU_RBAR_t*)0xE000ED9Cu)
+#define MPU_RBAR_RAW 		((reg_t*)0xE000ED9Cu)
+
+typedef volatile struct {
+	reg_t enable : 1;
+	reg_t size : 5;
+	reg_t : 2;
+	reg_t srd : 8;
+	struct {
+		reg16_t b : 1;
+		reg16_t c : 1;
+		reg16_t s : 1;
+		reg16_t tex : 3;
+		reg16_t : 2;
+		reg16_t ap : 3;
+		reg16_t : 1;
+		reg16_t xn : 1;
+		reg16_t : 3;
+	} attrs;
+} MPU_RASR_t;
+#define MPU_RASR 			((MPU_RASR_t*)0xE000EDA0u)
+#define MPU_RASR_RAW 		((reg_t*)0xE000EDA0u)
+
+// 0xE000EDF0-0xE000EEFF 	Debug registers in the SCS
+
+typedef volatile struct {
+	reg_t c_debugen	  : 1;
+	reg_t c_halt	  : 1;
+	reg_t c_step	  : 1;
+	reg_t c_maskints  : 1;
+	reg_t			  : 1;
+	reg_t c_snapstall : 1;
+	reg_t			  : 10;
+	reg_t s_regrdy	  : 1;
+	reg_t s_halt	  : 1;
+	reg_t s_sleep	  : 1;
+	reg_t s_lockup	  : 1;
+	reg_t			  : 4;
+	reg_t s_retire_st : 1;
+	reg_t s_reset_st  : 1;
+	reg_t			  : 6;
+} SCS_DHCSR_t;
+#define SCS_DHCSR 			((SCS_DHCSR_t*)0xE000EDF0u)
+#define SCS_DHCSR_RAW 		((reg_t*)0xE000EDF0u)
+
+typedef volatile struct {
+	reg_t regsel : 7;
+	reg_t		 : 9;
+	reg_t regwnr : 1;
+	reg_t		 : 15;
+} SCS_DCRSR_t;
+#define SCS_DCRSR 			((SCS_DCRSR_t*)0xE000EDF4u)
+#define SCS_DCRSR_RAW 		((reg_t*)0xE000EDF4u)
+
+typedef volatile struct {
+	reg_t dbgtmp : 32;
+} SCS_DCRDR_t;
+#define SCS_DCRDR 			((SCS_DCRDR_t*)0xE000EDF8u)
+#define SCS_DCRDR_RAW 		((reg_t*)0xE000EDF8u)
+
+typedef volatile struct {
+	reg_t vc_corereset : 1;
+	reg_t			   : 3;
+	reg_t vc_mmerr	   : 1;
+	reg_t vc_nocperr   : 1;
+	reg_t vc_chkerr	   : 1;
+	reg_t vc_staterr   : 1;
+	reg_t vc_buserr	   : 1;
+	reg_t vc_interr	   : 1;
+	reg_t vc_harderr   : 1;
+	reg_t			   : 5;
+	reg_t mon_en	   : 1;
+	reg_t mon_pend	   : 1;
+	reg_t mon_step	   : 1;
+	reg_t mon_req	   : 1;
+	reg_t			   : 4;
+	reg_t trcena	   : 1;
+	reg_t			   : 7;
+} SCS_DEMCR_t;
+#define SCS_DEMCR 			((SCS_DEMCR_t*)0xE000EDFCu)
+#define SCS_DEMCR_RAW 		((reg_t*)0xE000EDFCu)
+
+// 0xE000EF00-0xE000EF4F 	Includes the SW Trigger Interrupt Register
+
+typedef volatile struct {
+	reg_t intid : 9;
+	reg_t		: 23;
+} SCS_STIR_t;
+#define SCS_STIR 			((SCS_STIR_t*)0xE000EF00u)
+#define SCS_STIR_RAW 		((reg_t*)0xE000EF00u)
+
+// 0xE0040000-0xE0040FFF	Trace Port Interface Unit (TPIU)
+
+typedef volatile struct {
+	reg_t swidth : 32;
+} TPIU_SSPSR_t;
+#define TPIU_SSPSR 			((TPIU_SSPSR_t*)0xE0040000u)
+#define TPIU_SSPSR_RAW 		((reg_t*)0xE0040000u)
+
+typedef volatile struct {
+	reg_t cwidth : 32;
+} TPIU_CSPSR_t;
+#define TPIU_CSPSR 			((TPIU_CSPSR_t*)0xE0040004u)
+#define TPIU_CSPSR_RAW 		((reg_t*)0xE0040004u)
+
+typedef volatile struct {
+	reg_t swoscaler : 16;
+	reg_t			: 16;
+} TPIU_ACPR_t;
+#define TPIU_ACPR 			((TPIU_ACPR_t*)0xE0040010u)
+#define TPIU_ACPR_RAW 		((reg_t*)0xE0040010u)
+
+typedef volatile struct {
+	reg_t txmode : 2;
+	reg_t		 : 30;
+} TPIU_SPPR_t;
+#define TPIU_SPPR 			((TPIU_SPPR_t*)0xE00400F0u)
+#define TPIU_SPPR_RAW 		((reg_t*)0xE00400F0u)
+
+typedef volatile struct {
+	reg_t			: 6;
+	reg_t fifosz	: 3;
+	reg_t ptinvalid : 1;
+	reg_t mancvalid : 1;
+	reg_t nrzvalid	: 1;
+	reg_t			: 4;
+	reg_t			: 16;
+} TPIU_TYPE_t;
+#define TPIU_TYPE 			((TPIU_TYPE_t*)0xE0040FC8u)
+#define TPIU_TYPE_RAW 		((reg_t*)0xE0040FC8u)
+
+#pragma endregion  // ARM_ARCH
+
+// ARM Cortex-M7 Platform
+// RM 28
 
 // Low Power UART (LPUART) Module
 // RM 49

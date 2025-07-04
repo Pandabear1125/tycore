@@ -46,9 +46,12 @@ MAKEFLAGS += -j$(nproc)
 
 
 # TODO: eventually get rid of this clean
-all:
+all: clean
     # automatically format code 
-	clang-format -i -style=file $(FORMAT_SOURCE)
+	@clang-format -i -style=file $(FORMAT_SOURCE)
+    # verify the register map correctness
+    # TODO: remove this once the regmap is finished
+	@python3 $(TOOLS_DIR)/check_register_map.py $(SOURCE_DIR)/imxrt_regmap.h
     # use bear to generate compile_commands.json
 	bear -- make build
 
