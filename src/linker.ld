@@ -75,6 +75,7 @@ SECTIONS {
 
     /* All data to be placed into the DTCM */
     .dtcm : {
+        *(.interrupt_vector)
         *(.dtcm_data)
         *(.data*)
         *(.rodata*)

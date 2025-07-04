@@ -1,6 +1,7 @@
 // prevent optimization since this is critical boot code
 #pragma GCC optimize("O0")
 
+#include "boot/nvic.h"
 #include "connectivity/gpio.h"
 #include "connectivity/uart.h"
 #include "imxrt_regmap.h"
@@ -46,6 +47,8 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	dst = &__ld_dtcm_start;
 	len = (uint32_t)&__ld_dtcm_size;
 	while (len--) *dst++ = *src++;
+
+	nvic_init();
 
 	gpio_init();
 

@@ -2406,6 +2406,9 @@ typedef volatile struct {
 
 // 0xE000E100-0xE000ECFF 	External interrupt controller
 
+#define NVIC_SUPPORTED_IRQ_NUM 	(160u)
+#define NVIC_SYSTEM_IRQ_NUM   	(16u)
+
 typedef volatile struct {
 	reg_t setena : 32;
 } SCS_NVIC_ISER_t;
@@ -2857,53 +2860,53 @@ typedef volatile struct {
 
 typedef volatile struct {
 	reg_t separate : 1;
-	reg_t : 7;
+	reg_t		   : 7;
 	reg_t d_region : 8;
-	reg_t i_region : 8;	// RAZ
-	reg_t : 8;
+	reg_t i_region : 8;	 // RAZ
+	reg_t		   : 8;
 } MPU_TYPE_t;
 #define MPU_TYPE			((MPU_TYPE_t*)0xE000ED90u)
 #define MPU_TYPE_RAW 		((reg_t*)0xE000ED90u)
 
 typedef volatile struct {
-	reg_t enable : 1;
-	reg_t hfnmiena : 1;
+	reg_t enable	 : 1;
+	reg_t hfnmiena	 : 1;
 	reg_t privdefena : 1;
-	reg_t : 29;
+	reg_t			 : 29;
 } MPU_CTRL_t;
 #define MPU_CTRL 			((MPU_CTRL_t*)0xE000ED94u)
 #define MPU_CTRL_RAW 		((reg_t*)0xE000ED94u)
 
 typedef volatile struct {
 	reg_t region : 8;
-	reg_t : 24;
+	reg_t		 : 24;
 } MPU_RNR_t;
 #define MPU_RNR 			((MPU_RNR_t*)0xE000ED98u)
 #define MPU_RNR_RAW 		((reg_t*)0xE000ED98u)
 
 typedef volatile struct {
 	reg_t region : 4;
-	reg_t valid : 1;
-	reg_t addr : 27;
+	reg_t valid	 : 1;
+	reg_t addr	 : 27;
 } MPU_RBAR_t;
 #define MPU_RBAR 			((MPU_RBAR_t*)0xE000ED9Cu)
 #define MPU_RBAR_RAW 		((reg_t*)0xE000ED9Cu)
 
 typedef volatile struct {
 	reg_t enable : 1;
-	reg_t size : 5;
-	reg_t : 2;
-	reg_t srd : 8;
+	reg_t size	 : 5;
+	reg_t		 : 2;
+	reg_t srd	 : 8;
 	struct {
-		reg16_t b : 1;
-		reg16_t c : 1;
-		reg16_t s : 1;
+		reg16_t b	: 1;
+		reg16_t c	: 1;
+		reg16_t s	: 1;
 		reg16_t tex : 3;
-		reg16_t : 2;
-		reg16_t ap : 3;
-		reg16_t : 1;
-		reg16_t xn : 1;
-		reg16_t : 3;
+		reg16_t		: 2;
+		reg16_t ap	: 3;
+		reg16_t		: 1;
+		reg16_t xn	: 1;
+		reg16_t		: 3;
 	} attrs;
 } MPU_RASR_t;
 #define MPU_RASR 			((MPU_RASR_t*)0xE000EDA0u)
