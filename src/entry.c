@@ -18,6 +18,9 @@ extern uint32_t __ld_dtcm_start;
 extern uint32_t __ld_dtcm_load;
 extern uint32_t __ld_dtcm_size;
 
+extern uint32_t __ld_bss_start;
+extern uint32_t __ld_bss_size;
+
 extern int	main(void);								 // main function
 extern void __libc_init_array(void);				 // c++ initialization
 extern void set_core_frequency(uint32_t frequency);	 // set the core frequency
@@ -47,6 +50,13 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	dst = &__ld_dtcm_start;
 	len = (uint32_t)&__ld_dtcm_size;
 	while (len--) *dst++ = *src++;
+
+	// zero out the BSS section
+	dst = &__ld_bss_start;
+	len = (uint32_t)&__ld_bss_size;
+	while (len--) *dst++ = 0;
+
+	/* module initialization */
 
 	nvic_init();
 

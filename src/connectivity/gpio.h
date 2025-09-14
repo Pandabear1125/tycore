@@ -1,6 +1,7 @@
 #ifndef TYCORE_GPIO_H
 #define TYCORE_GPIO_H
 
+#include "../boot/nvic.h"
 #include "../connectivity/pin_info.h"
 #include "../imxrt_regmap.h"
 #include "../utils/macros.h"
@@ -66,6 +67,23 @@ ITCM void digitalToggle(uint8_t pin);
  * @note The pin must be set to some OUTPUT mode.
  */
 ITCM void digitalClear(uint8_t pin);
+
+typedef enum {
+	GPIO_LOW_SENSITIVITY  = 0,
+	GPIO_HIGH_SENSITIVITY = 1,
+	GPIO_RISING_EDGE	  = 2,
+	GPIO_FALLING_EDGE	  = 3,
+	GPIO_ANY_EDGE		  = 4
+} gpio_irq_mode_t;
+
+/**
+ * @brief Attach an interrupt service routine (ISR) to a GPIO pin with a specific interrupt sensitivity mode.
+ *
+ * @param pin The GPIO pin number.
+ * @param mode The interrupt mode to set for the pin.
+ */
+// TODO: put this in ITCM?
+FLASH_CODE void gpio_attach_isr(uint8_t pin, gpio_irq_mode_t mode);
 
 #ifdef __cplusplus
 }

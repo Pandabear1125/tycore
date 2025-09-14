@@ -1098,41 +1098,11 @@ typedef volatile struct {
 } GPIO_PSR_t;
 
 typedef volatile struct {
-	reg_t icr0	: 2;
-	reg_t icr1	: 2;
-	reg_t icr2	: 2;
-	reg_t icr3	: 2;
-	reg_t icr4	: 2;
-	reg_t icr5	: 2;
-	reg_t icr6	: 2;
-	reg_t icr7	: 2;
-	reg_t icr8	: 2;
-	reg_t icr9	: 2;
-	reg_t icr10 : 2;
-	reg_t icr11 : 2;
-	reg_t icr12 : 2;
-	reg_t icr13 : 2;
-	reg_t icr14 : 2;
-	reg_t icr15 : 2;
+	reg_t icr : 32;
 } GPIO_ICR1_t;
 
 typedef volatile struct {
-	reg_t icr16 : 2;
-	reg_t icr17 : 2;
-	reg_t icr18 : 2;
-	reg_t icr19 : 2;
-	reg_t icr20 : 2;
-	reg_t icr21 : 2;
-	reg_t icr22 : 2;
-	reg_t icr23 : 2;
-	reg_t icr24 : 2;
-	reg_t icr25 : 2;
-	reg_t icr26 : 2;
-	reg_t icr27 : 2;
-	reg_t icr28 : 2;
-	reg_t icr29 : 2;
-	reg_t icr30 : 2;
-	reg_t icr31 : 2;
+	reg_t icr : 32;
 } GPIO_ICR2_t;
 
 typedef volatile struct {

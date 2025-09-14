@@ -80,14 +80,20 @@ SECTIONS {
         *(.data*)
         *(.rodata*)
         /* TODO: these probably should be placed in FLEXSPI */
-        *(.bss*)        
-        *(COMMON*)      /* this might be useless since COMMON only exists in .o files */
         . = ALIGN(0x10);
     } > DTCM AT > FLEXSPI
 
     __ld_dtcm_start = ADDR(.dtcm);
     __ld_dtcm_load = LOADADDR(.dtcm);
     __ld_dtcm_size = SIZEOF(.dtcm);
+
+    .bss : {
+        *(.bss*)
+        *(COMMON*)      /* this might be useless since COMMON only exists in .o files */
+    } > DTCM
+
+    __ld_bss_start = ADDR(.bss);
+    __ld_bss_size = SIZEOF(.bss);
 
     /* All data pre-allocated to exist within the OCRAM */
     .ocram : {

@@ -1,31 +1,45 @@
 #include "nvic.h"
 
 // define the vector table
-irq_handler_t vector_table[NVIC_SUPPORTED_IRQ_NUM + NVIC_SYSTEM_IRQ_NUM] __attribute__((section(".interrupt_vector")));
+volatile irq_handler_t vector_table[NVIC_SUPPORTED_IRQ_NUM + NVIC_SYSTEM_IRQ_NUM] __attribute__((section(".interrupt_vector")));
 
-void nvic_init(void) {
+ITCM void nvic_init(void) {
+	for (uint8_t i = 0; i < NVIC_SUPPORTED_IRQ_NUM + NVIC_SYSTEM_IRQ_NUM; i++) {
+		vector_table[i] = default_handler;
+	}
+
 	for (uint8_t i = 0; i < NVIC_SUPPORTED_IRQ_NUM; i++) {
-		// ignore the system interrupts
-		vector_table[NVIC_SYSTEM_IRQ_NUM + i] = default_handler;
+		nvic_set_priority(i, 128);
+	}
 
-		// set default priority to the lowest
-		nvic_set_priority(i, 15);
+	SCB_VTOR->tbloff = (uint32_t)&vector_table;
+}
+
+ITCM void nvic_add_handler(uint8_t irq_num, irq_handler_t handler) {
+	if (irq_num < NVIC_SUPPORTED_IRQ_NUM + NVIC_SYSTEM_IRQ_NUM) {
+		vector_table[irq_num + NVIC_SYSTEM_IRQ_NUM] = handler;
 	}
 }
 
-void nvic_add_handler(uint8_t irq_num, irq_handler_t handler) {
+ITCM void nvic_remove_handler(uint8_t irq_num) {
 	if (irq_num < NVIC_SUPPORTED_IRQ_NUM + NVIC_SYSTEM_IRQ_NUM) {
+		vector_table[irq_num + NVIC_SYSTEM_IRQ_NUM] = default_handler;
+	}
+}
+
+ITCM void nvic_add_core_handler(uint8_t irq_num, irq_handler_t handler) {
+	if (irq_num < NVIC_SYSTEM_IRQ_NUM) {
 		vector_table[irq_num] = handler;
 	}
 }
 
-void nvic_remove_handler(uint8_t irq_num) {
-	if (irq_num < NVIC_SUPPORTED_IRQ_NUM + NVIC_SYSTEM_IRQ_NUM) {
+ITCM void nvic_remove_core_handler(uint8_t irq_num) {
+	if (irq_num < NVIC_SYSTEM_IRQ_NUM) {
 		vector_table[irq_num] = default_handler;
 	}
 }
 
-void nvic_set_priority(uint8_t irq_num, uint8_t priority) {
+ITCM void nvic_set_priority(uint8_t irq_num, uint8_t priority) {
 	if (irq_num < NVIC_SUPPORTED_IRQ_NUM + NVIC_SYSTEM_IRQ_NUM) {
 		switch (irq_num % 4) {
 		case 0:
@@ -44,7 +58,7 @@ void nvic_set_priority(uint8_t irq_num, uint8_t priority) {
 	}
 }
 
-uint8_t nvic_get_priority(uint8_t irq_num) {
+ITCM uint8_t nvic_get_priority(uint8_t irq_num) {
 	if (irq_num < NVIC_SUPPORTED_IRQ_NUM + NVIC_SYSTEM_IRQ_NUM) {
 		switch (irq_num % 4) {
 		case 0:
@@ -61,6 +75,6 @@ uint8_t nvic_get_priority(uint8_t irq_num) {
 	return 0xFF;  // Invalid priority
 }
 
-void default_handler(void) {
+ITCM void default_handler(void) {
 	// TODO
 }

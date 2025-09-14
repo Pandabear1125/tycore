@@ -188,6 +188,20 @@ DTCM const uint32_t gpio_pin_to_gpio_mask_map[GPIO_PIN_COUNT] = {
 	/* 41  */ 1u << 21u	  // GPIO1_IO21
 };
 
+void gpio_isr(void) {
+	digitalToggle(13);
+
+	// clear interrupt flag
+	GPIO6->isr.isr = 0xffffffffu;
+	GPIO7->isr.isr = 0xffffffffu;
+	GPIO8->isr.isr = 0xffffffffu;
+	GPIO9->isr.isr = 0xffffffffu;
+
+	asm volatile("nop");
+	asm volatile("dsb" ::
+					 : "memory");
+}
+
 FLASH_CODE int gpio_init(void) {
 	// enable use of fast GPIO
 	// this switches the normal GPIO1/2/3/4 to use GPIO6/7/8/9
@@ -201,7 +215,39 @@ FLASH_CODE int gpio_init(void) {
 	// swap GPIO4 to GPIO9
 	IOMUXC_GPR_GPR29->gpio_mux4_gpio_sel = 0xffffffffu;
 
+	//
+	nvic_add_handler(157, gpio_isr);
+	SCS_NVIC_ISER(157 >> 5)->setena = (1 << ((157 & 31)));
+
 	return 0;
+}
+
+void gpio_attach_isr(uint8_t pin, gpio_irq_mode_t mode) {
+	const uint32_t mask = gpio_pin_to_gpio_mask_map[pin];
+
+	gpio_pin_to_gpio_map[pin]->imr.imr	 &= ~mask;		  // disable interrupt
+	gpio_pin_to_mux_map[pin]->mux_mode	  = IOMUXC_ALT5;  // set GPIO mode
+	gpio_pin_to_pad_map[pin]->hys		  = 1;			  // enable hysteresis
+	gpio_pin_to_gpio_map[pin]->gdir.gdir &= ~mask;		  // set as input
+
+	// figure out the correct icr position
+	const uint32_t mask_index = __builtin_ctz(mask);
+	if (mask_index < 16) {
+		gpio_pin_to_gpio_map[pin]->icr1.icr &= ~(0x3 << (mask_index * 2));
+		gpio_pin_to_gpio_map[pin]->icr1.icr |= ((mode & 0x3) << (mask_index * 2));
+	} else {
+		gpio_pin_to_gpio_map[pin]->icr2.icr &= ~(0x3 << ((mask_index - 16) * 2));
+		gpio_pin_to_gpio_map[pin]->icr2.icr |= ((mode & 0x3) << ((mask_index - 16) * 2));
+	}
+
+	// enabling the edge_select will override the icr setting
+	if (mode == GPIO_ANY_EDGE) {
+		gpio_pin_to_gpio_map[pin]->edge_sel.edge_sel |= mask;	// enable edge select
+	} else {
+		gpio_pin_to_gpio_map[pin]->edge_sel.edge_sel &= ~mask;	// disable edge select
+	}
+
+	gpio_pin_to_gpio_map[pin]->imr.imr |= mask;					// enable interrupt
 }
 
 FLASH_CODE void pinMode(uint8_t pin, gpio_pin_mode_t mode) {
