@@ -2415,10 +2415,7 @@ typedef volatile struct {
 #define SCS_NVIC_IABR_RAW(n) ((reg_t*)(0xE000E300u + (n) * 0x4))
 
 typedef volatile struct {
-	reg_t pri0 : 8;
-	reg_t pri1 : 8;
-	reg_t pri2 : 8;
-	reg_t pri3 : 8;
+	reg_t pri : 32;
 } SCS_NVIC_IPR_t;
 // 0 <= n < 124
 #define SCS_NVIC_IPR(n) 	((SCS_NVIC_IPR_t*)(0xE000E400u + (n) * 0x4))

@@ -6,7 +6,7 @@ volatile int32_t x = 0;
 int main(void) {
 	pinMode(13, OUTPUT);
 
-	gpio_attach_isr(29, GPIO_RISING_EDGE);
+	gpio_attach_isr(29, GPIO_ANY_EDGE, nullptr);
 
 	while (1) {
 		digitalWrite(13, 1);

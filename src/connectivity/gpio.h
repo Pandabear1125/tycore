@@ -69,11 +69,11 @@ ITCM void digitalToggle(uint8_t pin);
 ITCM void digitalClear(uint8_t pin);
 
 typedef enum {
-	GPIO_LOW_SENSITIVITY  = 0,
-	GPIO_HIGH_SENSITIVITY = 1,
-	GPIO_RISING_EDGE	  = 2,
-	GPIO_FALLING_EDGE	  = 3,
-	GPIO_ANY_EDGE		  = 4
+	GPIO_LOW_SENSITIVITY = 0,
+	GPIO_HIGH_SENSITIVITY,
+	GPIO_RISING_EDGE,
+	GPIO_FALLING_EDGE,
+	GPIO_ANY_EDGE
 } gpio_irq_mode_t;
 
 /**
@@ -81,9 +81,16 @@ typedef enum {
  *
  * @param pin The GPIO pin number.
  * @param mode The interrupt mode to set for the pin.
+ * @param handler The function to be called when the interrupt occurs.
  */
-// TODO: put this in ITCM?
-FLASH_CODE void gpio_attach_isr(uint8_t pin, gpio_irq_mode_t mode);
+FLASH_CODE void gpio_attach_isr(uint8_t pin, gpio_irq_mode_t mode, isr_t handler);
+
+/**
+ * @brief Detach the interrupt service routine (ISR) from a GPIO pin.
+ *
+ * @param pin The GPIO pin number.
+ */
+FLASH_CODE void gpio_detach_isr(uint8_t pin);
 
 #ifdef __cplusplus
 }
