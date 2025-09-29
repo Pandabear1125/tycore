@@ -2453,8 +2453,7 @@ typedef volatile struct {
 #define SCB_ICSR_RAW 		((reg_t*)0xE000ED04u)
 
 typedef volatile struct {
-	reg_t		 : 7;
-	reg_t tbloff : 25;
+	reg_t tbloff : 32;
 } SCB_VTOR_t;
 #define SCB_VTOR 			((SCB_VTOR_t*)0xE000ED08u)
 #define SCB_VTOR_RAW 		((reg_t*)0xE000ED08u)

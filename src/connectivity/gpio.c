@@ -109,9 +109,7 @@ ITCM void digitalClear(uint8_t pin) {
 	gpio_pin_to_gpio_map[pin]->dr_clear.dr_clear = gpio_pin_to_gpio_mask_map[pin];
 }
 
-FLASH_CODE void gpio_attach_isr(uint8_t pin, gpio_irq_mode_t mode, isr_t isr) {
-	// TODO: set up the isr to be called on interrupt
-	(void)isr;
+FLASH_CODE void gpio_enable_irq(uint8_t pin, gpio_irq_mode_t mode) {
 	const uint32_t mask = gpio_pin_to_gpio_mask_map[pin];
 
 	gpio_pin_to_gpio_map[pin]->imr.imr	 &= ~mask;		  // disable interrupt
@@ -157,4 +155,9 @@ ITCM void gpio_isr(void) {
 	GPIO7->isr.isr = 0xffffffffu;
 	GPIO8->isr.isr = 0xffffffffu;
 	GPIO9->isr.isr = 0xffffffffu;
+
+	__asm__ volatile("dsb"
+					 :
+					 :
+					 : "memory");
 }
