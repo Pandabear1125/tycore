@@ -24,6 +24,234 @@
 typedef volatile uint32_t reg_t;
 typedef volatile uint16_t reg16_t;
 
+// Interrupts, DMA Events, and XBAR Assignments
+// RM 4
+
+#pragma region INTERRUPTS_MODULE
+
+typedef enum {
+	// eDMA
+	eDMA_0_16 = 0,
+	eDMA_1_17,
+	eDMA_2_18,
+	eDMA_3_19,
+	eDMA_4_20,
+	eDMA_5_21,
+	eDMA_6_22,
+	eDMA_7_23,
+	eDMA_8_24,
+	eDMA_9_25,
+	eDMA_10_26,
+	eDMA_11_27,
+	eDMA_12_28,
+	eDMA_13_29,
+	eDMA_14_30,
+	eDMA_15_31,
+	eDMA_ERROR,
+	// CM7
+	CM7_0,
+	CM7_1,
+	CM7_CORE,
+	// LPUART
+	LPUART1,
+	LPUART2,
+	LPUART3,
+	LPUART4,
+	LPUART5,
+	LPUART6,
+	LPUART7,
+	LPUART8,
+	// LPI2C
+	LPI2C1,
+	LPI2C2,
+	LPI2C3,
+	LPI2C4,
+	// LPSPI
+	LPSPI1,
+	LPSPI2,
+	LPSPI3,
+	LPSPI4,
+	// FlexCAN
+	FLEXCAN1,
+	FLEXCAN2,
+	// CM7
+	FLEXRAM,
+	// Keypad
+	KPP,
+	// TSC
+	TSC_DIG,
+	// CM7
+	GPR_IRQ,
+	// LCDIF Sync
+	LCDIF,
+	// CSI
+	CSI,
+	// PXP
+	PXP,
+	// Watchdog
+	WDOG2,
+	// SNVS
+	SNVS_FUNCTIONAL,
+	SNVS_SECURITY,
+	SNVS_WRAPPER,
+	// CSU
+	CSU,
+	// DCP
+	DCP,
+	DCP_0,
+	DCP_RESERVED,
+	// TRNG
+	TRNG,
+	// RESERVED TODO: find out what this is
+	RESERVED_1,
+	// BEE
+	BEE,
+	// SAI
+	SAI1,
+	SAI2,
+	SAI3_RX,
+	SAI3_TX,
+	// SPDIF
+	SPDIF,
+	// PMU
+	PMU,
+	// RESERVED TODO: find out what this is
+	RESERVED_2,
+	// Temperature Monitor
+	TEMPMON,
+	TEMPMON_PANIC,
+	// USB PHY
+	USB_PHY_0,
+	USB_PHY_1,
+	// ADC
+	ADC1,
+	ADC2,
+	// DCDC
+	DCDC,
+	// RESERVED TODO: find out what this is
+	RESERVED_3,
+	RESERVED_4,
+	// GPIO
+	GPIO1_0,
+	GPIO1_1,
+	GPIO1_2,
+	GPIO1_3,
+	GPIO1_4,
+	GPIO1_5,
+	GPIO1_6,
+	GPIO1_7,
+	GPIO1_LOW,
+	GPIO1_HIGH,
+	GPIO2_LOW,
+	GPIO2_HIGH,
+	GPIO3_LOW,
+	GPIO3_HIGH,
+	GPIO4_LOW,
+	GPIO4_HIGH,
+	GPIO5_LOW,
+	GPIO5_HIGH,
+	// FLEXIO
+	FLEXIO1,
+	FLEXIO2,
+	// Watchdog
+	WDOG1,
+	RTWDOG,
+	// EWM
+	EWM,
+	// CCM
+	CCM_1,
+	CCM_2,
+	// GPC
+	GPC,
+	// SRC
+	SRC,
+	// RESERVED TODO: find out what this is
+	RESERVED_5,
+	// GPT
+	GPT1,
+	GPT2,
+	// FLEXPWM
+	FLEXPWM1_0,
+	FLEXPWM1_1,
+	FLEXPWM1_2,
+	FLEXPWM1_3,
+	FLEXPWM1_ERROR,
+	// FLEXSPI
+	FLEXSPI_2,
+	FLEXSPI_1,
+	// SEMC
+	SEMC,
+	// uSDHC
+	uSDHC1,
+	uSDHC2,
+	// USB
+	USB_OTG2,
+	USB_OTG1,
+	// ENET
+	ENET,
+	ENET_1588,
+	// XBAR
+	XBAR1_0,
+	XBAR1_1,
+	// ADC_ETC
+	ADC_ETC_IRQ0,
+	ADC_ETC_IRQ1,
+	ADC_ETC_IRQ2,
+	ADC_ETC_ERROR,
+	// PIT
+	PIT,
+	// ACMP
+	ACMP1,
+	ACMP2,
+	ACMP3,
+	ACMP4,
+	// RESERVED TODO: find out what this is
+	RESERVED_6,
+	RESERVED_7,
+	// QDC
+	QDC1,
+	QDC2,
+	QDC3,
+	QDC4,
+	// QTimer
+	QTIMER1,
+	QTIMER2,
+	QTIMER3,
+	QTIMER4,
+	// FLEXPWM
+	FLEXPWM2_0,
+	FLEXPWM2_1,
+	FLEXPWM2_2,
+	FLEXPWM2_3,
+	FLEXPWM2_ERROR,
+	FLEXPWM3_0,
+	FLEXPWM3_1,
+	FLEXPWM3_2,
+	FLEXPWM3_3,
+	FLEXPWM3_ERROR,
+	FLEXPWM4_0,
+	FLEXPWM4_1,
+	FLEXPWM4_2,
+	FLEXPWM4_3,
+	FLEXPWM4_ERROR,
+	// ENET2
+	ENET2,
+	ENET2_1588,
+	// CANFD
+	FLEXCAN3,
+	// RESERVED TODO: find out what this is
+	RESERVED_8,
+	// FLEXIO
+	FLEXIO3,
+	// Fast GPIO
+	GPIO6789,
+	// RESERVED TODO: find out what this is
+	RESERVED_9,
+	RESERVED_10
+} irq_num_t;
+
+#pragma endregion  // INTERRUPTS_MODULE
+
 // IOMUXC Memory Map/Register Definition
 // RM 11
 
@@ -1098,41 +1326,11 @@ typedef volatile struct {
 } GPIO_PSR_t;
 
 typedef volatile struct {
-	reg_t icr0	: 2;
-	reg_t icr1	: 2;
-	reg_t icr2	: 2;
-	reg_t icr3	: 2;
-	reg_t icr4	: 2;
-	reg_t icr5	: 2;
-	reg_t icr6	: 2;
-	reg_t icr7	: 2;
-	reg_t icr8	: 2;
-	reg_t icr9	: 2;
-	reg_t icr10 : 2;
-	reg_t icr11 : 2;
-	reg_t icr12 : 2;
-	reg_t icr13 : 2;
-	reg_t icr14 : 2;
-	reg_t icr15 : 2;
+	reg_t icr : 32;
 } GPIO_ICR1_t;
 
 typedef volatile struct {
-	reg_t icr16 : 2;
-	reg_t icr17 : 2;
-	reg_t icr18 : 2;
-	reg_t icr19 : 2;
-	reg_t icr20 : 2;
-	reg_t icr21 : 2;
-	reg_t icr22 : 2;
-	reg_t icr23 : 2;
-	reg_t icr24 : 2;
-	reg_t icr25 : 2;
-	reg_t icr26 : 2;
-	reg_t icr27 : 2;
-	reg_t icr28 : 2;
-	reg_t icr29 : 2;
-	reg_t icr30 : 2;
-	reg_t icr31 : 2;
+	reg_t icr : 32;
 } GPIO_ICR2_t;
 
 typedef volatile struct {
@@ -2406,6 +2604,9 @@ typedef volatile struct {
 
 // 0xE000E100-0xE000ECFF 	External interrupt controller
 
+#define NVIC_SUPPORTED_IRQ_NUM 	(160u)
+#define NVIC_SYSTEM_IRQ_NUM   	(16u)
+
 typedef volatile struct {
 	reg_t setena : 32;
 } SCS_NVIC_ISER_t;
@@ -2442,10 +2643,7 @@ typedef volatile struct {
 #define SCS_NVIC_IABR_RAW(n) ((reg_t*)(0xE000E300u + (n) * 0x4))
 
 typedef volatile struct {
-	reg_t pri0 : 8;
-	reg_t pri1 : 8;
-	reg_t pri2 : 8;
-	reg_t pri3 : 8;
+	reg_t pri : 32;
 } SCS_NVIC_IPR_t;
 // 0 <= n < 124
 #define SCS_NVIC_IPR(n) 	((SCS_NVIC_IPR_t*)(0xE000E400u + (n) * 0x4))
@@ -2483,8 +2681,7 @@ typedef volatile struct {
 #define SCB_ICSR_RAW 		((reg_t*)0xE000ED04u)
 
 typedef volatile struct {
-	reg_t		 : 7;
-	reg_t tbloff : 25;
+	reg_t tbloff : 32;
 } SCB_VTOR_t;
 #define SCB_VTOR 			((SCB_VTOR_t*)0xE000ED08u)
 #define SCB_VTOR_RAW 		((reg_t*)0xE000ED08u)
@@ -2857,53 +3054,53 @@ typedef volatile struct {
 
 typedef volatile struct {
 	reg_t separate : 1;
-	reg_t : 7;
+	reg_t		   : 7;
 	reg_t d_region : 8;
-	reg_t i_region : 8;	// RAZ
-	reg_t : 8;
+	reg_t i_region : 8;	 // RAZ
+	reg_t		   : 8;
 } MPU_TYPE_t;
 #define MPU_TYPE			((MPU_TYPE_t*)0xE000ED90u)
 #define MPU_TYPE_RAW 		((reg_t*)0xE000ED90u)
 
 typedef volatile struct {
-	reg_t enable : 1;
-	reg_t hfnmiena : 1;
+	reg_t enable	 : 1;
+	reg_t hfnmiena	 : 1;
 	reg_t privdefena : 1;
-	reg_t : 29;
+	reg_t			 : 29;
 } MPU_CTRL_t;
 #define MPU_CTRL 			((MPU_CTRL_t*)0xE000ED94u)
 #define MPU_CTRL_RAW 		((reg_t*)0xE000ED94u)
 
 typedef volatile struct {
 	reg_t region : 8;
-	reg_t : 24;
+	reg_t		 : 24;
 } MPU_RNR_t;
 #define MPU_RNR 			((MPU_RNR_t*)0xE000ED98u)
 #define MPU_RNR_RAW 		((reg_t*)0xE000ED98u)
 
 typedef volatile struct {
 	reg_t region : 4;
-	reg_t valid : 1;
-	reg_t addr : 27;
+	reg_t valid	 : 1;
+	reg_t addr	 : 27;
 } MPU_RBAR_t;
 #define MPU_RBAR 			((MPU_RBAR_t*)0xE000ED9Cu)
 #define MPU_RBAR_RAW 		((reg_t*)0xE000ED9Cu)
 
 typedef volatile struct {
 	reg_t enable : 1;
-	reg_t size : 5;
-	reg_t : 2;
-	reg_t srd : 8;
+	reg_t size	 : 5;
+	reg_t		 : 2;
+	reg_t srd	 : 8;
 	struct {
-		reg16_t b : 1;
-		reg16_t c : 1;
-		reg16_t s : 1;
+		reg16_t b	: 1;
+		reg16_t c	: 1;
+		reg16_t s	: 1;
 		reg16_t tex : 3;
-		reg16_t : 2;
-		reg16_t ap : 3;
-		reg16_t : 1;
-		reg16_t xn : 1;
-		reg16_t : 3;
+		reg16_t		: 2;
+		reg16_t ap	: 3;
+		reg16_t		: 1;
+		reg16_t xn	: 1;
+		reg16_t		: 3;
 	} attrs;
 } MPU_RASR_t;
 #define MPU_RASR 			((MPU_RASR_t*)0xE000EDA0u)

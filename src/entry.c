@@ -1,6 +1,7 @@
 // prevent optimization since this is critical boot code
 #pragma GCC optimize("O0")
 
+#include "boot/nvic.h"
 #include "connectivity/gpio.h"
 #include "connectivity/uart.h"
 #include "imxrt_regmap.h"
@@ -16,6 +17,9 @@ extern uint32_t __ld_itcm_size;
 extern uint32_t __ld_dtcm_start;
 extern uint32_t __ld_dtcm_load;
 extern uint32_t __ld_dtcm_size;
+
+extern uint32_t __ld_bss_start;
+extern uint32_t __ld_bss_size;
 
 extern int	main(void);								 // main function
 extern void __libc_init_array(void);				 // c++ initialization
@@ -47,6 +51,15 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	len = (uint32_t)&__ld_dtcm_size;
 	while (len--) *dst++ = *src++;
 
+	// zero out the BSS section
+	dst = &__ld_bss_start;
+	len = (uint32_t)&__ld_bss_size;
+	while (len--) *dst++ = 0;
+
+	/* module initialization */
+
+	nvic_init();
+
 	gpio_init();
 
 	lpuart_init();
@@ -65,5 +78,5 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	main();
 
 	// if main returns, enter infinite loop maintaining interrupts
-	while (1) __asm__("wfi");
+	while (1) WFI();
 }
