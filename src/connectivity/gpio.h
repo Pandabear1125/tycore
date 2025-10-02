@@ -83,7 +83,7 @@ typedef enum {
  * @param mode The interrupt mode to set for the pin.
  * @param handler The function to be called when the interrupt occurs.
  */
-FLASH_CODE void gpio_enable_irq(uint8_t pin, gpio_irq_mode_t mode);
+FLASH_CODE void gpio_enable_irq(uint8_t pin, gpio_irq_mode_t mode, isr_t handler);
 
 /**
  * @brief Detach the interrupt service routine (ISR) from a GPIO pin.

@@ -78,5 +78,5 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 	main();
 
 	// if main returns, enter infinite loop maintaining interrupts
-	while (1) __asm__("wfi");
+	while (1) WFI();
 }

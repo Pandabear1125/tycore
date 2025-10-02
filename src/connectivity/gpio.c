@@ -16,9 +16,8 @@ FLASH_CODE int gpio_init(void) {
 	IOMUXC_GPR_GPR29->gpio_mux4_gpio_sel = 0xffffffffu;
 
 	// enable the shared interrupt isr for GPIO6/7/8/9
-	// TODO: map out the irq numbers
-	nvic_add_isr(157, gpio_isr);
-	nvic_enable_irq(157);
+	nvic_add_isr(GPIO6789, gpio_isr);
+	nvic_enable_irq(GPIO6789);
 
 	return 0;
 }
@@ -109,7 +108,11 @@ ITCM void digitalClear(uint8_t pin) {
 	gpio_pin_to_gpio_map[pin]->dr_clear.dr_clear = gpio_pin_to_gpio_mask_map[pin];
 }
 
-FLASH_CODE void gpio_enable_irq(uint8_t pin, gpio_irq_mode_t mode) {
+// Interrupt Descriptor Table for GPIO pins
+// 4 GPIO blocks (GPIO6, GPIO7, GPIO8, GPIO9) with 32 pins each
+DTCM isr_t gpio_idt[4][32] = {{0}};
+
+FLASH_CODE void gpio_enable_irq(uint8_t pin, gpio_irq_mode_t mode, isr_t handler) {
 	const uint32_t mask = gpio_pin_to_gpio_mask_map[pin];
 
 	gpio_pin_to_gpio_map[pin]->imr.imr	 &= ~mask;		  // disable interrupt
@@ -134,7 +137,22 @@ FLASH_CODE void gpio_enable_irq(uint8_t pin, gpio_irq_mode_t mode) {
 		gpio_pin_to_gpio_map[pin]->edge_sel.edge_sel &= ~mask;	// disable edge select
 	}
 
-	gpio_pin_to_gpio_map[pin]->imr.imr |= mask;					// enable interrupt
+	// figure out which GPIO block this pin belongs to
+	uint8_t gpio_block = 0;
+	if (gpio_pin_to_gpio_map[pin] == GPIO6) {
+		gpio_block = 0;
+	} else if (gpio_pin_to_gpio_map[pin] == GPIO7) {
+		gpio_block = 1;
+	} else if (gpio_pin_to_gpio_map[pin] == GPIO8) {
+		gpio_block = 2;
+	} else if (gpio_pin_to_gpio_map[pin] == GPIO9) {
+		gpio_block = 3;
+	}
+
+	gpio_idt[gpio_block][mask_index] = handler;	 // set the handler
+
+	gpio_pin_to_gpio_map[pin]->isr.isr	= mask;	 // clear any pending interrupt
+	gpio_pin_to_gpio_map[pin]->imr.imr |= mask;	 // enable interrupt
 }
 
 FLASH_CODE void gpio_detach_isr(uint8_t pin) {
@@ -144,20 +162,38 @@ FLASH_CODE void gpio_detach_isr(uint8_t pin) {
 }
 
 ITCM void gpio_isr(void) {
-	digitalToggle(13);
+	// check each GPIO block for pending interrupts
+	for (uint8_t block = 0; block < 4; block++) {
+		GPIO_t* gpio = GPIO6;
+		switch (block) {
+		case 0:
+			gpio = GPIO6;
+			break;
+		case 1:
+			gpio = GPIO7;
+			break;
+		case 2:
+			gpio = GPIO8;
+			break;
+		case 3:
+			gpio = GPIO9;
+			break;
+		}
 
-	// TODO: determine which pin triggered the interrupt and call its ISR
-	// will need to loop through each GPIO block and check it's isr flags
-	// importantly we need to only clear the flag for the pin that triggered the interrupt
+		uint32_t pending = gpio->isr.isr & gpio->imr.imr;
+		// clear the pending bits
+		gpio->isr.isr	 = pending;
 
-	// clear interrupt flag
-	GPIO6->isr.isr = 0xffffffffu;
-	GPIO7->isr.isr = 0xffffffffu;
-	GPIO8->isr.isr = 0xffffffffu;
-	GPIO9->isr.isr = 0xffffffffu;
+		// handle each pending interrupt
+		while (pending) {
+			uint32_t bit = __builtin_ctz(pending);
 
-	__asm__ volatile("dsb"
-					 :
-					 :
-					 : "memory");
+			// the handler should never be null
+			gpio_idt[block][bit]();
+			// clear the interrupt
+			pending &= ~(1u << bit);
+		}
+	}
+
+	DSB();
 }
