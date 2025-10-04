@@ -4,29 +4,27 @@
 int main(void) {
 	pinMode(13, OUTPUT);
 
-	// lpuart_begin(&lpuart1_config);
-	// lpuart_begin(&lpuart2_config);
-	// lpuart_begin(&lpuart3_config);
-	// lpuart_begin(&lpuart4_config);
-	lpuart_begin(&lpuart5_config);
-	// lpuart_begin(&lpuart6_config);
-	// lpuart_begin(&lpuart7_config);
-	// lpuart_begin(&lpuart8_config);
+	lpuart_begin(&lpuart1_config, 0);
 
 	while (1) {
 		digitalWrite(13, 1);
-		for (volatile int i = 0; i < 5000000; i++);
+		for (volatile int i = 0; i < 50000000; i++);
 		digitalWrite(13, 0);
-		for (volatile int i = 0; i < 5000000; i++);
+		for (volatile int i = 0; i < 50000000; i++);
 
-		// lpuart_write(&lpuart1_config, 'A');
-		// lpuart_write(&lpuart2_config, 'A');
-		// lpuart_write(&lpuart3_config, 'A');
-		// lpuart_write(&lpuart4_config, 'A');
-		lpuart_write(&lpuart5_config, 'A');
-		// lpuart_write(&lpuart6_config, 'A');
-		// lpuart_write(&lpuart7_config, 'A');
-		// lpuart_write(&lpuart8_config, 'A');
+		lpuart_write(&lpuart1_config, 'H');
+		for (volatile int i = 0; i < 1000000; i++);
+		lpuart_write(&lpuart1_config, 'e');
+		for (volatile int i = 0; i < 1000000; i++);
+		lpuart_write(&lpuart1_config, 'l');
+		for (volatile int i = 0; i < 1000000; i++);
+		lpuart_write(&lpuart1_config, 'l');
+		for (volatile int i = 0; i < 1000000; i++);
+		lpuart_write(&lpuart1_config, 'o');
+		for (volatile int i = 0; i < 1000000; i++);
+		lpuart_write(&lpuart1_config, '\r');
+		for (volatile int i = 0; i < 1000000; i++);
+		lpuart_write(&lpuart1_config, '\n');
 	}
 
 	return 0;

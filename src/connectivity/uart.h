@@ -28,36 +28,36 @@ typedef struct {
 } lpuart_config_t;
 
 // Serial 6
-extern lpuart_config_t lpuart1_config;
+DTCM extern lpuart_config_t lpuart1_config;
 // Serial 3
-extern lpuart_config_t lpuart2_config;
+DTCM extern lpuart_config_t lpuart2_config;
 // Serial 4
-extern lpuart_config_t lpuart3_config;
+DTCM extern lpuart_config_t lpuart3_config;
 // Serial 2
-extern lpuart_config_t lpuart4_config;
+DTCM extern lpuart_config_t lpuart4_config;
 // Serial 8
-extern lpuart_config_t lpuart5_config;
+DTCM extern lpuart_config_t lpuart5_config;
 // Serial 1
-extern lpuart_config_t lpuart6_config;
+DTCM extern lpuart_config_t lpuart6_config;
 // Serial 7
-extern lpuart_config_t lpuart7_config;
+DTCM extern lpuart_config_t lpuart7_config;
 // Serial 5
-extern lpuart_config_t lpuart8_config;
+DTCM extern lpuart_config_t lpuart8_config;
 
 /**
  * @brief Initialize the LPUART global clock
  */
-void lpuart_init(void);
+FLASH_CODE void lpuart_init(void);
 
 /**
  * @brief Begin a specific LPUART module
  * @param config The configuration for the LPUART module
+ * @param baudrate The desired baudrate
  */
-// TODO: take in baud rate
-void lpuart_begin(lpuart_config_t* config);
+FLASH_CODE void lpuart_begin(lpuart_config_t* config, uint32_t baudrate);
 
 // TODO: name this better
-void lpuart_write(lpuart_config_t* config, uint8_t c);
+ITCM void lpuart_write(lpuart_config_t* config, uint8_t c);
 
 #ifdef __cplusplus
 }
