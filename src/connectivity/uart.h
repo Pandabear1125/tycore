@@ -11,8 +11,9 @@
 extern "C" {
 #endif	// __cplusplus extern "C"
 
-// test OSR: 26
-// test DIV: 8
+// TODO: 80MHz is good for > 2Mbaud, 24MHz is good for < 2Mbaud
+// although 80MHz is acceptable for all but 110baud
+static const uint32_t UART_CLOCK = 24u * 1000u * 1000u;	 // 80 MHz
 
 // TODO: polling for now, implement interrupts later
 
@@ -26,6 +27,11 @@ typedef struct {
 	uint8_t	  tx_pin;	   // the TX pin
 	uint8_t	  tx_pin_mux;  // the TX pin mux (ALT mode)
 } lpuart_config_t;
+
+typedef enum {
+	LPUART_OK				= 0,
+	LPUART_INVALID_BAUDRATE = -1,
+} lpuart_status_t;
 
 // Serial 6
 DTCM extern lpuart_config_t lpuart1_config;
@@ -53,8 +59,10 @@ FLASH_CODE void lpuart_init(void);
  * @brief Begin a specific LPUART module
  * @param config The configuration for the LPUART module
  * @param baudrate The desired baudrate
+ *
+ * @return 0 on success, -1 on failure
  */
-FLASH_CODE void lpuart_begin(lpuart_config_t* config, uint32_t baudrate);
+FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudrate);
 
 // TODO: name this better
 ITCM void lpuart_write(lpuart_config_t* config, uint8_t c);

@@ -25,7 +25,14 @@ ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
 COMPILER_FLAGS += -fno-exceptions -Wpedantic						# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
-COMPILER_FLAGS += -Wall -Wextra -Wpedantic							# enable all warnings and treat them as errors
+COMPILER_FLAGS += -Wall -Wextra -Wpedantic -Wformat=2 -Wshadow -Wdouble-promotion -Wundef \
+-Wconversion -Wsign-conversion -Wcast-qual -Wcast-align=strict \
+-Wstrict-overflow=5 -Wnull-dereference -Winit-self -Wswitch-enum \
+-Wswitch-bool -Wlogical-op -Wduplicated-cond -Wduplicated-branches \
+-Wrestrict -Wvla -Wpointer-arith -Wwrite-strings -Waggregate-return \
+-Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes \
+-fno-common -fstrict-aliasing -Wbidi-chars=ucn
+							# enable all warnings and treat them as errors
 COMPILER_FLAGS += --specs=nano.specs								# use the newlib nano library, significantly reduces binary size
 COMPILER_FLAGS += -ffunction-sections -fdata-sections				# put functions and data in separate sections
 COMPILER_FLAGS += -O2												# optimize for speed

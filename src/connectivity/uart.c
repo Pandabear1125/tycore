@@ -101,11 +101,59 @@ FLASH_CODE void lpuart_init(void) {
 	CCM_CSCDR1->uart_clk_sel = 1;
 }
 
-FLASH_CODE void lpuart_begin(lpuart_config_t* config, uint32_t baudrate) {
-	(void)baudrate;	 // unused for now
-	const uint32_t OSR = 26;
-	const uint32_t DIV = 8;
+FLASH_CODE lpuart_status_t calculate_baudrate_settings(uint32_t target_baud, uint32_t* osr, uint32_t* sbr) {
+	const uint32_t MAX_ERROR	   = 3;	 // percent
+	const uint32_t error_threshold = (target_baud * MAX_ERROR) / 100;
 
+	// init worst case values
+	uint32_t best_sbr	= 8191;
+	uint32_t best_osr	= 31;
+	uint32_t best_error = target_baud;
+
+	// try all osr values, find the best sbr for each
+	for (uint8_t osr = 3; osr <= 31; osr++) {
+		// assumes target_baudrate > 0 and (osr + 1) won't overflow the multiply
+		uint32_t denom		 = target_baud * (osr + 1u);
+		uint32_t perfect_sbr = (UART_CLOCK + denom / 2u) / denom;  // nearest-integer
+
+		// if the sbr is impossible, this osr is not enough
+		if (perfect_sbr < 1 || perfect_sbr > 8191) {
+			continue;
+		}
+
+		// calculate the baudrate with this sbr and osr
+		// and the resulting error
+		uint32_t calculated_baud = UART_CLOCK / (perfect_sbr * (osr + 1));
+		uint32_t error			 = (calculated_baud > target_baud) ? (calculated_baud - target_baud) : (target_baud - calculated_baud);
+
+		if (error < best_error) {
+			// found a new best
+			best_error = error;
+			best_sbr   = perfect_sbr;
+			best_osr   = osr;
+		}
+
+		if (calculated_baud == target_baud) {
+			// perfect match, early return
+			break;
+		}
+	}
+
+	*osr = best_osr;
+	*sbr = best_sbr;
+
+	// do a final check to verify the result is within the error threshold
+	uint32_t calculated_baud = UART_CLOCK / (best_sbr * (best_osr + 1));
+	uint32_t err			 = (calculated_baud > target_baud) ? (calculated_baud - target_baud) : (target_baud - calculated_baud);
+
+	if (err > error_threshold) {
+		return LPUART_INVALID_BAUDRATE;
+	} else {
+		return LPUART_OK;
+	}
+}
+
+FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudrate) {
 	// enable the specific LPUART clock
 	*(config->ccm_reg) |= config->ccm_mask;
 
@@ -125,14 +173,24 @@ FLASH_CODE void lpuart_begin(lpuart_config_t* config, uint32_t baudrate) {
 	// set mux to LPUART
 	gpio_pin_to_mux_map[config->tx_pin]->mux_mode = config->tx_pin_mux;
 
-	/// if baud is not set correctly, data is uninterpretable
-	config->lpuart_reg->baud.osr = (OSR - 1);
-	config->lpuart_reg->baud.sbr = DIV;
-	/// does not seem to impact data transfer
+	// calculate the baudrate settings
+	uint32_t		osr	   = 0;
+	uint32_t		sbr	   = 0;
+	lpuart_status_t status = calculate_baudrate_settings(baudrate, &osr, &sbr);
+
+	// if baud is not set correctly, data is uninterpretable
+	config->lpuart_reg->baud.osr = osr;
+	config->lpuart_reg->baud.sbr = sbr;
+	// TODO: bothedge?
+
+	// does not seem to impact data transfer
 	// LPUART6->pincfg.trgsel = 0;
 
 	config->lpuart_reg->ctrl.te = 1;
 	config->lpuart_reg->ctrl.re = 1;
+
+	// even if the baudrate calculation failed, we still keep the LPUART enabled, the baudrate error may be acceptable
+	return status;
 }
 
 ITCM void lpuart_write(lpuart_config_t* config, uint8_t c) {
@@ -140,81 +198,7 @@ ITCM void lpuart_write(lpuart_config_t* config, uint8_t c) {
 	config->lpuart_reg->data.data = c;
 }
 
-/*
-#include <stdio.h>
-#include <stdint.h>
-#include <math.h>
-
-// TODO: 80MHz is good for > 2Mbaud, 24MHz is good for < 2Mbaud
-// although 80MHz is acceptable for all but 110baud
-const uint32_t UART_CLOCK = 24u * 1000u * 1000u; // 24 MHz
-float MAX_ERROR = 0.05f; // 5%
-
-int main() {
-	const uint32_t target_baudrate = 115200;
-
-	uint32_t common_baudrates[] = {
-		110, 300, 600, 1200, 2400, 4800, 9600, 14400,
-		19200, 38400, 57600, 115200, 128000, 230400,
-		256000, 460800, 921600, 1000000, 1500000,
-		2000000, 2500000, 3000000, 3500000, 4000000,
-		5000000, 6000000, 7000000, 8000000, 9000000,
-		10000000, 12000000, 14000000, 16000000, 18000000,
-		20000000 
-	};
-
-	// baudrate equation from datasheet
-	// baudrate = UART_CLOCK / (SBR * (OSR + 1))
-	// sbr -> [1, 8191]
-	// osr -> [3, 31]
-	// find the best combination of sbr and osr to minimize the baudrate error
-
-	for (uint32_t baud : common_baudrates) {
-		uint32_t calc_baud = 0;
-		float err = 0.0f;
-
-		printf("Trg baud: %-12d", baud);
-		const uint32_t target_baudrate = baud;
-		// init worst case values
-		uint32_t best_sbr = 8191;
-		uint32_t best_osr = 31;
-		float best_error = 1e20;
-		for (uint8_t osr = 3; osr <= 31; osr++) {
-			uint32_t perfect_sbr = (float)UART_CLOCK / (float)(target_baudrate * (osr + 1)) + 0.5f;
-			// if the sbr is impossible, this osr is not enough
-			if (perfect_sbr < 1 || perfect_sbr > 8191) {
-				continue;
-			}
-
-			uint32_t calculated_baud = UART_CLOCK / (perfect_sbr * (osr + 1));
-
-			// calculate the error
-			float error = (calculated_baud > target_baudrate) ? (calculated_baud - target_baudrate) / (float)target_baudrate : (target_baudrate - calculated_baud) / (float)target_baudrate;
-			if (error < best_error) {
-				// found a new best
-				best_error = error;
-				best_sbr = perfect_sbr;
-				best_osr = osr;
-			}
-
-			if (calculated_baud == target_baudrate) {
-				// perfect match
-				break;
-			}
-		}
-
-		calc_baud = UART_CLOCK / (best_sbr * (best_osr + 1));
-		err = (float)calc_baud / (float)target_baudrate - 1.0f;
-		// TODO: handle error too big
-
-		printf("| Calc baud: %-12d | Err: %+0.3f%%", calc_baud, err * 100.0f);
-		if (fabsf(err) > MAX_ERROR) {
-			printf("  <-- ERROR TOO BIG!\n");
-		} else {
-			printf("\n");
-		}
-	}
-
-	return 0;
+ITCM int16_t lpuart_read(lpuart_config_t* config) {
+	// TODO
+	return -1;
 }
-*/
