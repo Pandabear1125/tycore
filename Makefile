@@ -25,14 +25,7 @@ ADDR2LINE		= $(COMPILER_TOOLS_PATH)/arm-none-eabi-addr2line
 SIZE			= $(COMPILER_TOOLS_PATH)/arm-none-eabi-size
 
 COMPILER_FLAGS += -fno-exceptions -Wpedantic						# disables exceptions, there is not a valid place to put the ARM.exidx such that it covers the whole address space 
-COMPILER_FLAGS += -Wall -Wextra -Wpedantic -Wformat=2 -Wshadow -Wdouble-promotion -Wundef \
--Wconversion -Wsign-conversion -Wcast-qual -Wcast-align=strict \
--Wstrict-overflow=5 -Wnull-dereference -Winit-self -Wswitch-enum \
--Wswitch-bool -Wlogical-op -Wduplicated-cond -Wduplicated-branches \
--Wrestrict -Wvla -Wpointer-arith -Wwrite-strings -Waggregate-return \
--Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes \
--fno-common -fstrict-aliasing -Wbidi-chars=ucn
-							# enable all warnings and treat them as errors
+COMPILER_FLAGS += -Wall -Wextra -Wpedantic 							# enable all warnings and treat them as errors
 COMPILER_FLAGS += --specs=nano.specs								# use the newlib nano library, significantly reduces binary size
 COMPILER_FLAGS += -ffunction-sections -fdata-sections				# put functions and data in separate sections
 COMPILER_FLAGS += -O2												# optimize for speed
@@ -53,9 +46,12 @@ MAKEFLAGS += -j$(nproc)
 
 
 # TODO: eventually get rid of this clean
-all:
+all: clean
     # automatically format code 
-	clang-format -i -style=file $(FORMAT_SOURCE)
+	@clang-format -i -style=file $(FORMAT_SOURCE)
+    # verify the register map correctness
+    # TODO: remove this once the regmap is finished
+	@python3 $(TOOLS_DIR)/check_register_map.py $(SOURCE_DIR)/imxrt_regmap.h
     # use bear to generate compile_commands.json
 	bear -- make build
 
@@ -103,6 +99,7 @@ install:
 	sudo apt install -y clangd
 	sudo apt install -y clang-format
 	@bash $(TOOLS_DIR)/install_compiler.sh
+	@bash $(TOOLS_DIR)/install_tytools.sh
 
 
 uninstall:

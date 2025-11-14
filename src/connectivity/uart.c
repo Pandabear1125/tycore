@@ -200,5 +200,6 @@ ITCM void lpuart_write(lpuart_config_t* config, uint8_t c) {
 
 ITCM int16_t lpuart_read(lpuart_config_t* config) {
 	// TODO
+	(void)config;
 	return -1;
 }

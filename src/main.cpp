@@ -2,7 +2,7 @@
 #include "connectivity/uart.h"
 
 int main(void) {
-	pinMode(13, OUTPUT);
+	pinMode(13, OUTPUT);  // onboard LED
 
 	lpuart_begin(&lpuart1_config, 1500000);
 
