@@ -26,6 +26,7 @@ typedef struct {
 	uint8_t	  rx_pin_mux;  // the RX pin mux (ALT mode)
 	uint8_t	  tx_pin;	   // the TX pin
 	uint8_t	  tx_pin_mux;  // the TX pin mux (ALT mode)
+	uint8_t	  irq_num;	   // the IRQ number for this LPUART
 } lpuart_config_t;
 
 typedef enum {

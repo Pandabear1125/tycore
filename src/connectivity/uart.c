@@ -11,6 +11,7 @@ lpuart_config_t lpuart1_config = {
 	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 24,
 	.tx_pin_mux = IOMUXC_ALT2,
+	.irq_num	= IRQ_LPUART1,
 };
 
 // Serial 3
@@ -22,6 +23,7 @@ lpuart_config_t lpuart2_config = {
 	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 14,
 	.tx_pin_mux = IOMUXC_ALT2,
+	.irq_num	= IRQ_LPUART2,
 };
 
 // Serial 4
@@ -33,6 +35,7 @@ lpuart_config_t lpuart3_config = {
 	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 17,
 	.tx_pin_mux = IOMUXC_ALT2,
+	.irq_num	= IRQ_LPUART3,
 };
 
 // Serial 2
@@ -44,6 +47,7 @@ lpuart_config_t lpuart4_config = {
 	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 8,
 	.tx_pin_mux = IOMUXC_ALT2,
+	.irq_num	= IRQ_LPUART4,
 };
 
 // Serial 8
@@ -55,6 +59,7 @@ lpuart_config_t lpuart5_config = {
 	.rx_pin_mux = IOMUXC_ALT1,
 	.tx_pin		= 35,
 	.tx_pin_mux = IOMUXC_ALT1,
+	.irq_num	= IRQ_LPUART5,
 };
 
 // Serial 1
@@ -66,6 +71,7 @@ lpuart_config_t lpuart6_config = {
 	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 1,
 	.tx_pin_mux = IOMUXC_ALT2,
+	.irq_num	= IRQ_LPUART6,
 };
 
 // Serial 7
@@ -77,6 +83,7 @@ lpuart_config_t lpuart7_config = {
 	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 29,
 	.tx_pin_mux = IOMUXC_ALT2,
+	.irq_num	= IRQ_LPUART7,
 };
 
 // Serial 5
@@ -88,6 +95,7 @@ lpuart_config_t lpuart8_config = {
 	.rx_pin_mux = IOMUXC_ALT2,
 	.tx_pin		= 20,
 	.tx_pin_mux = IOMUXC_ALT2,
+	.irq_num	= IRQ_LPUART8,
 };
 
 FLASH_CODE void lpuart_init(void) {
