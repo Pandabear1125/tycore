@@ -1,3 +1,5 @@
+sudo apt install -y curl
+
 echo "Creating /etc/apt/keyrings with proper perm..."
 sudo mkdir -p -m0755 /etc/apt/keyrings
 
