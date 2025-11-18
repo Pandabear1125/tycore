@@ -16,8 +16,8 @@ FLASH_CODE int gpio_init(void) {
 	IOMUXC_GPR_GPR29->gpio_mux4_gpio_sel = 0xffffffffu;
 
 	// enable the shared interrupt isr for GPIO6/7/8/9
-	nvic_add_isr(GPIO6789, gpio_isr);
-	nvic_enable_irq(GPIO6789);
+	nvic_add_isr(IRQ_GPIO6789, gpio_isr);
+	nvic_enable_irq(IRQ_GPIO6789);
 
 	return 0;
 }
