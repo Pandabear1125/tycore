@@ -2,6 +2,7 @@
 build
 .cache
 compile_commands.json
+.bearwrap
 
 # Ignore the installed compiler and any tools artifacts
 tools/compiler
@@ -25,3 +26,6 @@ tools/*.txt
 
 # Ignore dumb xlsx file locks
 .~lock*
+
+# Ignore OS generated files
+*.DS_Store

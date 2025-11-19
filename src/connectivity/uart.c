@@ -5,6 +5,7 @@
 // Serial 6
 uint8_t lpuart1_tx_buffer[LPUART1_TX_BUFFER_SIZE] = {0};
 uint8_t lpuart1_rx_buffer[LPUART1_RX_BUFFER_SIZE] = {0};
+void	lpuart1_isr(void) { lpuart_isr(&lpuart1_config); }
 
 lpuart_config_t lpuart1_config = {
 	.ccm_reg		= CCM_CCGR5_RAW,
@@ -21,11 +22,14 @@ lpuart_config_t lpuart1_config = {
 	.tx_buffer_size = LPUART1_TX_BUFFER_SIZE,
 	.tx_buffer_head = 0,
 	.irq_num		= IRQ_LPUART1,
+	.internal_isr	= lpuart1_isr,
+	.user_isr		= 0,
 };
 
 // Serial 3
 uint8_t lpuart2_tx_buffer[LPUART2_TX_BUFFER_SIZE] = {0};
 uint8_t lpuart2_rx_buffer[LPUART2_RX_BUFFER_SIZE] = {0};
+void	lpuart2_isr(void) { lpuart_isr(&lpuart2_config); }
 
 lpuart_config_t lpuart2_config = {
 	.ccm_reg		= CCM_CCGR0_RAW,
@@ -42,11 +46,14 @@ lpuart_config_t lpuart2_config = {
 	.tx_buffer_size = LPUART2_TX_BUFFER_SIZE,
 	.tx_buffer_head = 0,
 	.irq_num		= IRQ_LPUART2,
+	.internal_isr	= lpuart2_isr,
+	.user_isr		= 0,
 };
 
 // Serial 4
 uint8_t lpuart3_tx_buffer[LPUART3_TX_BUFFER_SIZE] = {0};
 uint8_t lpuart3_rx_buffer[LPUART3_RX_BUFFER_SIZE] = {0};
+void	lpuart3_isr(void) { lpuart_isr(&lpuart3_config); }
 
 lpuart_config_t lpuart3_config = {
 	.ccm_reg		= CCM_CCGR0_RAW,
@@ -63,11 +70,14 @@ lpuart_config_t lpuart3_config = {
 	.tx_buffer_size = LPUART3_TX_BUFFER_SIZE,
 	.tx_buffer_head = 0,
 	.irq_num		= IRQ_LPUART3,
+	.internal_isr	= lpuart3_isr,
+	.user_isr		= 0,
 };
 
 // Serial 2
 uint8_t lpuart4_tx_buffer[LPUART4_TX_BUFFER_SIZE] = {0};
 uint8_t lpuart4_rx_buffer[LPUART4_RX_BUFFER_SIZE] = {0};
+void	lpuart4_isr(void) { lpuart_isr(&lpuart4_config); }
 
 lpuart_config_t lpuart4_config = {
 	.ccm_reg		= CCM_CCGR1_RAW,
@@ -84,11 +94,14 @@ lpuart_config_t lpuart4_config = {
 	.tx_buffer_size = LPUART4_TX_BUFFER_SIZE,
 	.tx_buffer_head = 0,
 	.irq_num		= IRQ_LPUART4,
+	.internal_isr	= lpuart4_isr,
+	.user_isr		= 0,
 };
 
 // Serial 8
 uint8_t lpuart5_tx_buffer[LPUART5_TX_BUFFER_SIZE] = {0};
 uint8_t lpuart5_rx_buffer[LPUART5_RX_BUFFER_SIZE] = {0};
+void	lpuart5_isr(void) { lpuart_isr(&lpuart5_config); }
 
 lpuart_config_t lpuart5_config = {
 	.ccm_reg		= CCM_CCGR3_RAW,
@@ -105,11 +118,14 @@ lpuart_config_t lpuart5_config = {
 	.tx_buffer_size = LPUART5_TX_BUFFER_SIZE,
 	.tx_buffer_head = 0,
 	.irq_num		= IRQ_LPUART5,
+	.internal_isr	= lpuart5_isr,
+	.user_isr		= 0,
 };
 
 // Serial 1
 uint8_t lpuart6_tx_buffer[LPUART6_TX_BUFFER_SIZE] = {0};
 uint8_t lpuart6_rx_buffer[LPUART6_RX_BUFFER_SIZE] = {0};
+void	lpuart6_isr(void) { lpuart_isr(&lpuart6_config); }
 
 lpuart_config_t lpuart6_config = {
 	.ccm_reg		= CCM_CCGR3_RAW,
@@ -126,11 +142,14 @@ lpuart_config_t lpuart6_config = {
 	.tx_buffer_size = LPUART6_TX_BUFFER_SIZE,
 	.tx_buffer_head = 0,
 	.irq_num		= IRQ_LPUART6,
+	.internal_isr	= lpuart6_isr,
+	.user_isr		= 0,
 };
 
 // Serial 7
 uint8_t lpuart7_tx_buffer[LPUART7_TX_BUFFER_SIZE] = {0};
 uint8_t lpuart7_rx_buffer[LPUART7_RX_BUFFER_SIZE] = {0};
+void	lpuart7_isr(void) { lpuart_isr(&lpuart7_config); }
 
 lpuart_config_t lpuart7_config = {
 	.ccm_reg		= CCM_CCGR5_RAW,
@@ -147,11 +166,14 @@ lpuart_config_t lpuart7_config = {
 	.tx_buffer_size = LPUART7_TX_BUFFER_SIZE,
 	.tx_buffer_head = 0,
 	.irq_num		= IRQ_LPUART7,
+	.internal_isr	= lpuart7_isr,
+	.user_isr		= 0,
 };
 
 // Serial 5
 uint8_t lpuart8_tx_buffer[LPUART8_TX_BUFFER_SIZE] = {0};
 uint8_t lpuart8_rx_buffer[LPUART8_RX_BUFFER_SIZE] = {0};
+void	lpuart8_isr(void) { lpuart_isr(&lpuart8_config); }
 
 lpuart_config_t lpuart8_config = {
 	.ccm_reg		= CCM_CCGR6_RAW,
@@ -168,6 +190,8 @@ lpuart_config_t lpuart8_config = {
 	.tx_buffer_size = LPUART8_TX_BUFFER_SIZE,
 	.tx_buffer_head = 0,
 	.irq_num		= IRQ_LPUART8,
+	.internal_isr	= lpuart8_isr,
+	.user_isr		= 0,
 };
 
 FLASH_CODE void lpuart_init(void) {
@@ -266,20 +290,81 @@ FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudra
 	// does not seem to impact data transfer
 	// LPUART6->pincfg.trgsel = 0;
 
+	// TODO:
+	// read what the PARAM.RXFIFO and PARAM.TXFIFO are
+	// DMA?
+
 	config->lpuart_reg->ctrl.te = 1;
 	config->lpuart_reg->ctrl.re = 1;
+
+	// TODO: available interrupts:
+	// - Overrun (ORIE)
+	// - Noise flag (NEIE)
+	// - Framing error (FEIE)
+	// - Parity error (PEIE)
+	// - Tx (TIE)
+	// - Tx complete (TCIE)
+	// - Rx (RIE)
+	// - Idle (ILIE)
+	// - Match 1/2 (MA1IE/MA2IE)
 
 	// even if the baudrate calculation failed, we still keep the LPUART enabled, the baudrate error may be acceptable
 	return status;
 }
 
-ITCM void lpuart_write(lpuart_config_t* config, uint8_t c) {
-	// TODO: determine which register to check to see if writing is available
+ITCM void lpuart_write(lpuart_config_t* config, const uint8_t c) {
+	while (!config->lpuart_reg->stat.tdre);
+
 	config->lpuart_reg->data.data = c;
 }
 
-ITCM int16_t lpuart_read(lpuart_config_t* config) {
+ITCM void lpuart_write_buffer(lpuart_config_t* config, const uint8_t* buffer, const uint32_t length) {
+	for (uint32_t i = 0; i < length; i++) {
+		lpuart_write(config, buffer[i]);
+	}
+}
+
+ITCM int32_t lpuart_read(lpuart_config_t* config) {
 	// TODO
 	(void)config;
 	return -1;
+}
+
+ITCM void lpuart_handle_rx_isr(lpuart_config_t* config) {
+	// check if data is available
+	// check IDLE flag too, this can indicate data in FIFO even if RDRF did not trigger (for example if no new data arrived and the FIFO is not full)
+	if (config->lpuart_reg->stat.rdrf || config->lpuart_reg->stat.idle) {
+		// get number of bytes in FIFO
+		uint32_t rx_count = config->lpuart_reg->water.rxcount;
+
+		for (uint32_t i = 0; i < rx_count; i++) {
+			// read byte from DATA register
+			uint8_t data = (uint8_t)(config->lpuart_reg->data.data & 0xFF);
+
+			// store in RX buffer
+			config->rx_buffer[config->rx_buffer_head] = data;
+			config->rx_buffer_head					  = (config->rx_buffer_head + 1) % config->rx_buffer_size;
+		}
+
+		// clear IDLE flag
+		config->lpuart_reg->stat.idle = 0;
+	}
+}
+
+ITCM void lpuart_handle_tx_isr(lpuart_config_t* config) {
+	// TODO
+	(void)config;
+}
+
+ITCM void lpuart_isr(lpuart_config_t* config) {
+	// handle RX
+	lpuart_handle_rx_isr(config);
+
+	// handle TX
+	lpuart_handle_tx_isr(config);
+
+	// call user ISR if set
+	if (config->user_isr) {
+		config->user_isr();
+	}
 }
