@@ -1,13 +1,20 @@
 #include "connectivity/gpio.h"
+#include "utils/time.h"
 
-void isr(void) {
-	digitalToggle(13);
-}
 
 int main(void) {
 	pinMode(13, OUTPUT);					  // onboard LED
 
-	gpio_enable_irq(37, GPIO_ANY_EDGE, isr);  // GPIO1_IO21
+	digitalToggle(13);
+
+
+	configureSystick();
+
+	while(1) {
+		if(systick_millis % 1000 == 0) { // every second perchance
+			digitalToggle(13);
+		}
+	}
 
 	return 0;
 }

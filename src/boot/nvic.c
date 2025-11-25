@@ -34,7 +34,7 @@ ITCM void nvic_remove_isr(uint8_t irq_num) {
 
 ITCM void nvic_add_core_isr(uint8_t irq_num, isr_t handler) {
 	if (irq_num < NVIC_SYSTEM_IRQ_NUM) {
-		// core isr's live at the start of the vector table
+		// core isr's live at the start of the vector table //EXCEPTIONS
 		vector_table[irq_num] = handler;
 	}
 }
