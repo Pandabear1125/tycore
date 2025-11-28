@@ -1,175 +1,5 @@
 #include "uart.h"
 
-// TODO: implement alt rx/tx pins
-
-// Serial 6
-uint8_t lpuart1_tx_buffer[LPUART1_TX_BUFFER_SIZE] = {0};
-uint8_t lpuart1_rx_buffer[LPUART1_RX_BUFFER_SIZE] = {0};
-
-lpuart_config_t lpuart1_config = {
-	.ccm_reg		= CCM_CCGR5_RAW,
-	.ccm_mask		= CCM_CGn(12),
-	.lpuart_reg		= LPUART1,
-	.rx_pin			= 25,
-	.rx_pin_mux		= IOMUXC_ALT2,
-	.rx_buffer		= lpuart1_rx_buffer,
-	.rx_buffer_size = LPUART1_RX_BUFFER_SIZE,
-	.rx_buffer_head = 0,
-	.tx_pin			= 24,
-	.tx_pin_mux		= IOMUXC_ALT2,
-	.tx_buffer		= lpuart1_tx_buffer,
-	.tx_buffer_size = LPUART1_TX_BUFFER_SIZE,
-	.tx_buffer_head = 0,
-	.irq_num		= IRQ_LPUART1,
-};
-
-// Serial 3
-uint8_t lpuart2_tx_buffer[LPUART2_TX_BUFFER_SIZE] = {0};
-uint8_t lpuart2_rx_buffer[LPUART2_RX_BUFFER_SIZE] = {0};
-
-lpuart_config_t lpuart2_config = {
-	.ccm_reg		= CCM_CCGR0_RAW,
-	.ccm_mask		= CCM_CGn(14),
-	.lpuart_reg		= LPUART2,
-	.rx_pin			= 15,
-	.rx_pin_mux		= IOMUXC_ALT2,
-	.rx_buffer		= lpuart2_rx_buffer,
-	.rx_buffer_size = LPUART2_RX_BUFFER_SIZE,
-	.rx_buffer_head = 0,
-	.tx_pin			= 14,
-	.tx_pin_mux		= IOMUXC_ALT2,
-	.tx_buffer		= lpuart2_tx_buffer,
-	.tx_buffer_size = LPUART2_TX_BUFFER_SIZE,
-	.tx_buffer_head = 0,
-	.irq_num		= IRQ_LPUART2,
-};
-
-// Serial 4
-uint8_t lpuart3_tx_buffer[LPUART3_TX_BUFFER_SIZE] = {0};
-uint8_t lpuart3_rx_buffer[LPUART3_RX_BUFFER_SIZE] = {0};
-
-lpuart_config_t lpuart3_config = {
-	.ccm_reg		= CCM_CCGR0_RAW,
-	.ccm_mask		= CCM_CGn(6),
-	.lpuart_reg		= LPUART3,
-	.rx_pin			= 16,
-	.rx_pin_mux		= IOMUXC_ALT2,
-	.rx_buffer		= lpuart3_rx_buffer,
-	.rx_buffer_size = LPUART3_RX_BUFFER_SIZE,
-	.rx_buffer_head = 0,
-	.tx_pin			= 17,
-	.tx_pin_mux		= IOMUXC_ALT2,
-	.tx_buffer		= lpuart3_tx_buffer,
-	.tx_buffer_size = LPUART3_TX_BUFFER_SIZE,
-	.tx_buffer_head = 0,
-	.irq_num		= IRQ_LPUART3,
-};
-
-// Serial 2
-uint8_t lpuart4_tx_buffer[LPUART4_TX_BUFFER_SIZE] = {0};
-uint8_t lpuart4_rx_buffer[LPUART4_RX_BUFFER_SIZE] = {0};
-
-lpuart_config_t lpuart4_config = {
-	.ccm_reg		= CCM_CCGR1_RAW,
-	.ccm_mask		= CCM_CGn(12),
-	.lpuart_reg		= LPUART4,
-	.rx_pin			= 7,
-	.rx_pin_mux		= IOMUXC_ALT2,
-	.rx_buffer		= lpuart4_rx_buffer,
-	.rx_buffer_size = LPUART4_RX_BUFFER_SIZE,
-	.rx_buffer_head = 0,
-	.tx_pin			= 8,
-	.tx_pin_mux		= IOMUXC_ALT2,
-	.tx_buffer		= lpuart4_tx_buffer,
-	.tx_buffer_size = LPUART4_TX_BUFFER_SIZE,
-	.tx_buffer_head = 0,
-	.irq_num		= IRQ_LPUART4,
-};
-
-// Serial 8
-uint8_t lpuart5_tx_buffer[LPUART5_TX_BUFFER_SIZE] = {0};
-uint8_t lpuart5_rx_buffer[LPUART5_RX_BUFFER_SIZE] = {0};
-
-lpuart_config_t lpuart5_config = {
-	.ccm_reg		= CCM_CCGR3_RAW,
-	.ccm_mask		= CCM_CGn(1),
-	.lpuart_reg		= LPUART5,
-	.rx_pin			= 34,
-	.rx_pin_mux		= IOMUXC_ALT1,
-	.rx_buffer		= lpuart5_rx_buffer,
-	.rx_buffer_size = LPUART5_RX_BUFFER_SIZE,
-	.rx_buffer_head = 0,
-	.tx_pin			= 35,
-	.tx_pin_mux		= IOMUXC_ALT1,
-	.tx_buffer		= lpuart5_tx_buffer,
-	.tx_buffer_size = LPUART5_TX_BUFFER_SIZE,
-	.tx_buffer_head = 0,
-	.irq_num		= IRQ_LPUART5,
-};
-
-// Serial 1
-uint8_t lpuart6_tx_buffer[LPUART6_TX_BUFFER_SIZE] = {0};
-uint8_t lpuart6_rx_buffer[LPUART6_RX_BUFFER_SIZE] = {0};
-
-lpuart_config_t lpuart6_config = {
-	.ccm_reg		= CCM_CCGR3_RAW,
-	.ccm_mask		= CCM_CGn(3),
-	.lpuart_reg		= LPUART6,
-	.rx_pin			= 0,
-	.rx_pin_mux		= IOMUXC_ALT2,
-	.rx_buffer		= lpuart6_rx_buffer,
-	.rx_buffer_size = LPUART6_RX_BUFFER_SIZE,
-	.rx_buffer_head = 0,
-	.tx_pin			= 1,
-	.tx_pin_mux		= IOMUXC_ALT2,
-	.tx_buffer		= lpuart6_tx_buffer,
-	.tx_buffer_size = LPUART6_TX_BUFFER_SIZE,
-	.tx_buffer_head = 0,
-	.irq_num		= IRQ_LPUART6,
-};
-
-// Serial 7
-uint8_t lpuart7_tx_buffer[LPUART7_TX_BUFFER_SIZE] = {0};
-uint8_t lpuart7_rx_buffer[LPUART7_RX_BUFFER_SIZE] = {0};
-
-lpuart_config_t lpuart7_config = {
-	.ccm_reg		= CCM_CCGR5_RAW,
-	.ccm_mask		= CCM_CGn(13),
-	.lpuart_reg		= LPUART7,
-	.rx_pin			= 28,
-	.rx_pin_mux		= IOMUXC_ALT2,
-	.rx_buffer		= lpuart7_rx_buffer,
-	.rx_buffer_size = LPUART7_RX_BUFFER_SIZE,
-	.rx_buffer_head = 0,
-	.tx_pin			= 29,
-	.tx_pin_mux		= IOMUXC_ALT2,
-	.tx_buffer		= lpuart7_tx_buffer,
-	.tx_buffer_size = LPUART7_TX_BUFFER_SIZE,
-	.tx_buffer_head = 0,
-	.irq_num		= IRQ_LPUART7,
-};
-
-// Serial 5
-uint8_t lpuart8_tx_buffer[LPUART8_TX_BUFFER_SIZE] = {0};
-uint8_t lpuart8_rx_buffer[LPUART8_RX_BUFFER_SIZE] = {0};
-
-lpuart_config_t lpuart8_config = {
-	.ccm_reg		= CCM_CCGR6_RAW,
-	.ccm_mask		= CCM_CGn(7),
-	.lpuart_reg		= LPUART8,
-	.rx_pin			= 21,
-	.rx_pin_mux		= IOMUXC_ALT2,
-	.rx_buffer		= lpuart8_rx_buffer,
-	.rx_buffer_size = LPUART8_RX_BUFFER_SIZE,
-	.rx_buffer_head = 0,
-	.tx_pin			= 20,
-	.tx_pin_mux		= IOMUXC_ALT2,
-	.tx_buffer		= lpuart8_tx_buffer,
-	.tx_buffer_size = LPUART8_TX_BUFFER_SIZE,
-	.tx_buffer_head = 0,
-	.irq_num		= IRQ_LPUART8,
-};
-
 FLASH_CODE void lpuart_init(void) {
 	// enable the main LPUART clock
 	// disabling the clock makes signal transfer garbage
@@ -273,13 +103,39 @@ FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudra
 	return status;
 }
 
-ITCM void lpuart_write(lpuart_config_t* config, uint8_t c) {
-	// TODO: determine which register to check to see if writing is available
-	config->lpuart_reg->data.data = c;
+ITCM uint32_t lpuart_sync_write_byte(lpuart_config_t* config, uint8_t byte) {
+	// wait until STAT[TDRE] (transmit data register empty) is set
+	while (!config->lpuart_reg->stat.tdre);	 // TODO: timeout?
+
+	config->lpuart_reg->data.data = byte;
+
+	return 1;
 }
 
-ITCM int16_t lpuart_read(lpuart_config_t* config) {
-	// TODO
-	(void)config;
-	return -1;
+ITCM uint32_t lpuart_sync_write_buffer(lpuart_config_t* config, const uint8_t* buffer, uint32_t length) {
+	for (uint32_t i = 0; i < length; i++) {
+		while (!config->lpuart_reg->stat.tdre);	 // TODO: timeout?
+
+		config->lpuart_reg->data.data = buffer[i];
+	}
+
+	return length;
 }
+
+ITCM int32_t lpuart_sync_read_byte(lpuart_config_t* config) {
+	// wait until STAT[RDRF] (receive data register full) is set
+	while (!config->lpuart_reg->stat.rdrf);	 // TODO: timeout?
+
+	return config->lpuart_reg->data.data;
+}
+
+ITCM int32_t lpuart_sync_read_buffer(lpuart_config_t* config, uint8_t* buffer, uint32_t length) {
+	for (uint32_t i = 0; i < length; i++) {
+		while (!config->lpuart_reg->stat.rdrf);	 // TODO: timeout?
+
+		buffer[i] = config->lpuart_reg->data.data;
+	}
+
+	return length;
+}
+
