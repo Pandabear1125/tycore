@@ -75,6 +75,7 @@ FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudra
 	gpio_pin_to_pad_map[config->rx_pin]->hys	  = 1;
 	// set mux to LPUART
 	gpio_pin_to_mux_map[config->rx_pin]->mux_mode = config->rx_pin_mux;
+	config->rx_input_reg->daisy					  = config->rx_input_daisy;
 
 	// configure the TX pin
 	gpio_pin_to_pad_map[config->tx_pin]->sre	  = 1;
@@ -82,6 +83,7 @@ FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudra
 	gpio_pin_to_pad_map[config->tx_pin]->speed	  = 3;
 	// set mux to LPUART
 	gpio_pin_to_mux_map[config->tx_pin]->mux_mode = config->tx_pin_mux;
+	config->tx_input_reg->daisy					  = config->tx_input_daisy;
 
 	// calculate the baudrate settings
 	uint32_t		osr	   = 0;
@@ -138,4 +140,3 @@ ITCM int32_t lpuart_sync_read_buffer(lpuart_config_t* config, uint8_t* buffer, u
 
 	return length;
 }
-

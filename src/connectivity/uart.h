@@ -17,24 +17,29 @@ static const uint32_t UART_CLOCK = 24u * 1000u * 1000u;	 // 80 MHz
 
 // TODO: polling for now, implement interrupts later
 
+typedef IOMUXC_SELECT_INPUT_DAISY_t lpuart_daisy_t;
 // Components required for a specific LPUART configuration
 typedef struct {
-	reg_t*		   ccm_reg;			// the raw register for the clock module
-	const uint32_t ccm_mask;		// the mask to enable the clock for the LPUART module
-	LPUART_t*	   lpuart_reg;		// the LPUART register
-	const uint8_t  rx_pin;			// the RX pin
-	const uint8_t  rx_pin_mux;		// the RX pin mux (ALT mode)
-	uint8_t* const rx_buffer;		// the RX buffer
-	const uint32_t rx_buffer_size;	// size of the RX buffer
-	uint32_t	   rx_buffer_head;	// head index for RX buffer
-	uint32_t	   rx_buffer_tail;	// tail index for RX buffer
-	const uint8_t  tx_pin;			// the TX pin
-	const uint8_t  tx_pin_mux;		// the TX pin mux (ALT mode)
-	uint8_t* const tx_buffer;		// the TX buffer
-	const uint32_t tx_buffer_size;	// size of the TX buffer
-	uint32_t	   tx_buffer_head;	// head index for TX buffer
-	uint32_t	   tx_buffer_tail;	// tail index for TX buffer
-	const uint8_t  irq_num;			// the IRQ number for this LPUART
+	reg_t*			ccm_reg;		 // the raw register for the clock module
+	const uint32_t	ccm_mask;		 // the mask to enable the clock for the LPUART module
+	LPUART_t*		lpuart_reg;		 // the LPUART register
+	lpuart_daisy_t* rx_input_reg;	 // the RX input select register
+	const uint8_t	rx_input_daisy;	 // the daisy value for the RX input
+	const uint8_t	rx_pin;			 // the RX pin
+	const uint8_t	rx_pin_mux;		 // the RX pin mux (ALT mode)
+	uint8_t* const	rx_buffer;		 // the RX buffer
+	const uint32_t	rx_buffer_size;	 // size of the RX buffer
+	uint32_t		rx_buffer_head;	 // head index for RX buffer
+	uint32_t		rx_buffer_tail;	 // tail index for RX buffer
+	lpuart_daisy_t* tx_input_reg;	 // the TX input select register
+	const uint8_t	tx_input_daisy;	 // the daisy value for the TX input
+	const uint8_t	tx_pin;			 // the TX pin
+	const uint8_t	tx_pin_mux;		 // the TX pin mux (ALT mode)
+	uint8_t* const	tx_buffer;		 // the TX buffer
+	const uint32_t	tx_buffer_size;	 // size of the TX buffer
+	uint32_t		tx_buffer_head;	 // head index for TX buffer
+	uint32_t		tx_buffer_tail;	 // tail index for TX buffer
+	const uint8_t	irq_num;		 // the IRQ number for this LPUART
 } lpuart_config_t;
 
 typedef enum {
