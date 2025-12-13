@@ -25,3 +25,7 @@ tools/*.txt
 
 # Ignore dumb xlsx file locks
 .~lock*
+compile_flags.txt
+
+#ignore mac stuff
+.DS_Store

@@ -1,13 +1,15 @@
 #include "connectivity/gpio.h"
-
-void isr(void) {
-	digitalToggle(13);
-}
+#include "utils/time.h"
 
 int main(void) {
-	pinMode(13, OUTPUT);					  // onboard LED
+	pinMode(13, OUTPUT);  // onboard LED
 
-	gpio_enable_irq(37, GPIO_ANY_EDGE, isr);  // GPIO1_IO21
+	digitalToggle(13);
+
+	while (1) {
+		delay(1000);  //1s
+		digitalToggle(13);
+	}
 
 	return 0;
 }
