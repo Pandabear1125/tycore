@@ -44,16 +44,23 @@ LINKER_FLAGS 	= -Wl,--gc-sections,--relax,--print-memory-usage,-T$(SOURCE_DIR)/l
 # Utilize all available CPU cores for parallel build
 MAKEFLAGS += -j$(nproc)
 
+# Generate compile_commands.json via bear (set to 0 to skip, e.g. on macOS clangd)
+USE_BEAR ?= 0
+
 
 # TODO: eventually get rid of this clean
 all: clean
-    # automatically format code 
+	# automatically format code 
 	@clang-format -i -style=file $(FORMAT_SOURCE)
-    # verify the register map correctness
-    # TODO: remove this once the regmap is finished
+	# verify the register map correctness
+	# TODO: remove this once the regmap is finished
 	@python3 $(TOOLS_DIR)/check_register_map.py $(SOURCE_DIR)/imxrt_regmap.h
-    # use bear to generate compile_commands.json
-	bear -- make build
+ifeq ($(USE_BEAR),1)
+	# use bear to generate compile_commands.json for clangd/intellisense
+	bear -- $(MAKE) build
+else
+	@$(MAKE) build
+endif
 
 
 build: $(OUTPUT).hex
