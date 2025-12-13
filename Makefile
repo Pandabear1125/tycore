@@ -106,6 +106,7 @@ install:
 	sudo apt install -y clangd
 	sudo apt install -y clang-format
 	@bash $(TOOLS_DIR)/install_compiler.sh
+	@bash $(TOOLS_DIR)/install_tytools.sh
 
 
 uninstall:
