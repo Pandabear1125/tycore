@@ -5,6 +5,7 @@
 #include "connectivity/gpio.h"
 #include "connectivity/uart.h"
 #include "imxrt_regmap.h"
+#include "utils/time.h"
 
 // linker script symbols
 extern uint32_t __ld_flexram_config;
@@ -64,12 +65,10 @@ CFUNC SECTION(".reset_vector") void reset_vector(void) {
 
 	lpuart_init();
 
-	// TODO map out systick
-	// (*(volatile uint32_t *)0xE000EDFC) |= (1u << 24u);
-	// (*(volatile uint32_t *)0xE0001000) |= (1u << 0u);
-
 	// set the core frequency
-	set_core_frequency(150000000);
+	set_core_frequency(CORE_FREQ);
+
+	configureSystick();
 
 	// initialize c++ statics and global constructors
 	__libc_init_array();
