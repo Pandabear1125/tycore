@@ -17,24 +17,31 @@ static const uint32_t UART_CLOCK = 24u * 1000u * 1000u;	 // 80 MHz
 
 // TODO: polling for now, implement interrupts later
 
+typedef IOMUXC_SELECT_INPUT_DAISY_t lpuart_daisy_t;
 // Components required for a specific LPUART configuration
 typedef struct {
-	reg_t*		   ccm_reg;			// the raw register for the clock module
-	const uint32_t ccm_mask;		// the mask to enable the clock for the LPUART module
-	LPUART_t*	   lpuart_reg;		// the LPUART register
-	const uint8_t  rx_pin;			// the RX pin
-	const uint8_t  rx_pin_mux;		// the RX pin mux (ALT mode)
-	uint8_t*	   rx_buffer;		// the RX buffer
-	const uint32_t rx_buffer_size;	// size of the RX buffer
-	uint32_t	   rx_buffer_head;	// head index for RX buffer
-	const uint8_t  tx_pin;			// the TX pin
-	const uint8_t  tx_pin_mux;		// the TX pin mux (ALT mode)
-	uint8_t*	   tx_buffer;		// the TX buffer
-	const uint32_t tx_buffer_size;	// size of the TX buffer
-	uint32_t	   tx_buffer_head;	// head index for TX buffer
-	const uint8_t  irq_num;			// the IRQ number for this LPUART
-	const isr_t	   internal_isr;	// the protocol ISR for this LPUART
-	isr_t		   user_isr;		// the user-defined ISR for this LPUART
+	reg_t*			ccm_reg;		 // the raw register for the clock module
+	const uint32_t	ccm_mask;		 // the mask to enable the clock for the LPUART module
+	LPUART_t*		lpuart_reg;		 // the LPUART register
+	lpuart_daisy_t* rx_input_reg;	 // the RX input select register
+	const uint8_t	rx_input_daisy;	 // the daisy value for the RX input
+	const uint8_t	rx_pin;			 // the RX pin
+	const uint8_t	rx_pin_mux;		 // the RX pin mux (ALT mode)
+	uint8_t* const	rx_buffer;		 // the RX buffer
+	const uint32_t	rx_buffer_size;	 // size of the RX buffer
+	uint32_t		rx_buffer_head;	 // head index for RX buffer
+	uint32_t		rx_buffer_tail;	 // tail index for RX buffer
+	lpuart_daisy_t* tx_input_reg;	 // the TX input select register
+	const uint8_t	tx_input_daisy;	 // the daisy value for the TX input
+	const uint8_t	tx_pin;			 // the TX pin
+	const uint8_t	tx_pin_mux;		 // the TX pin mux (ALT mode)
+	uint8_t* const	tx_buffer;		 // the TX buffer
+	const uint32_t	tx_buffer_size;	 // size of the TX buffer
+	uint32_t		tx_buffer_head;	 // head index for TX buffer
+	uint32_t		tx_buffer_tail;	 // tail index for TX buffer
+	const uint8_t	irq_num;		 // the IRQ number for this LPUART
+	const isr_t		internal_isr;	 // the protocol ISR for this LPUART
+	isr_t			user_isr;		 // the user-defined ISR for this LPUART
 } lpuart_config_t;
 
 typedef enum {
@@ -89,25 +96,17 @@ FLASH_CODE void lpuart_init(void);
  */
 FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudrate);
 
-// TODO: name this better
-ITCM void lpuart_write(lpuart_config_t* config, const uint8_t c);
-ITCM void lpuart_write_bytes(lpuart_config_t* config, const uint8_t* data, const uint32_t length);
+// synchronous read/write, does not clobber the rx/tx buffers
+// do not use while the rx/tx interrupts are enabled
+ITCM uint32_t lpuart_sync_write_byte(lpuart_config_t* config, uint8_t byte);
+ITCM uint32_t lpuart_sync_write_buffer(lpuart_config_t* config, const uint8_t* buffer, uint32_t length);
+ITCM int32_t  lpuart_sync_read_byte(lpuart_config_t* config);
+ITCM int32_t  lpuart_sync_read_buffer(lpuart_config_t* config, uint8_t* buffer, uint32_t length);
 
-ITCM int32_t lpuart_read(lpuart_config_t* config);
-
-// Interrupt read logic:
-// - on IRQ, check STAT.RDRF or STAT.IDLE (idle because RDRF may not trigger if no new data arrives and the FIFO is not full)
-//    -if set:
-//       - read get number of bytes in FIFO by grabbing WATER.RXCOUNT
-//       - read that many bytes from DATA.DATA register into RX buffer
-//       - unset IDLE flag?
-
-// Interrupt write logic:
-//
-
-ITCM void lpuart_handle_rx_isr(lpuart_config_t* config);
-ITCM void lpuart_handle_tx_isr(lpuart_config_t* config);
-ITCM void lpuart_isr(lpuart_config_t* config);
+ITCM uint32_t lpuart_write_byte(lpuart_config_t* config, uint8_t byte);
+ITCM uint32_t lpuart_write_buffer(lpuart_config_t* config, const uint8_t* buffer, uint32_t length);
+ITCM int32_t  lpuart_read_byte(lpuart_config_t* config);
+ITCM int32_t  lpuart_read_buffer(lpuart_config_t* config, uint8_t* buffer, uint32_t length);
 
 #ifdef __cplusplus
 }

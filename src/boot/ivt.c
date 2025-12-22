@@ -45,7 +45,10 @@ CDATA SECTION(".boot_data") const uint32_t boot_data[3] = {
 // the Device Configuration Data entry
 // RM 9.7.2
 CDATA SECTION(".dcd") const uint8_t dcd[1768] = {
-	/* header */ 0xD2, 0x00, 0x04, 0x41,
+	/* header */ 0xD2,
+	0x00,
+	0x04,
+	0x41,
 	/* write  */  // ...
 	/* check  */  // ...
 };
