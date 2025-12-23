@@ -5,8 +5,16 @@
 #include <fcntl.h>
 #include <stdint.h>
 #include <termios.h>
+#include <signal.h>
 
 #define BUFFER_SIZE 512
+
+void print_bits(uint8_t byte) {
+	for (int i = 7; i >= 0; i--) {
+		printf("%c", (byte & (1 << i)) ? '1' : '0');
+	}
+	printf(" '%c'", (byte >= 32 && byte <= 126) ? byte : '`');
+}
 
 int print_usage(const char *msg) {
 	if (msg) {
@@ -16,8 +24,94 @@ int print_usage(const char *msg) {
 	return EXIT_FAILURE;
 }
 
+void simple_echo();
+void ascii_check();
+
+static struct termios g_orig_termios;
+static int g_orig_fl = -1;
+static int g_raw_enabled = 0;
+
+int enable_raw_mode(void)
+{
+    if (g_raw_enabled)
+        return 0;
+
+    // Save original termios
+    if (tcgetattr(STDIN_FILENO, &g_orig_termios) == -1)
+        return -1;
+
+    // Save original fd flags
+    g_orig_fl = fcntl(STDIN_FILENO, F_GETFL, 0);
+    if (g_orig_fl == -1)
+        return -1;
+
+    // Put stdin in non-blocking mode (works for TTYs, pipes, sockets)
+    if (fcntl(STDIN_FILENO, F_SETFL, g_orig_fl | O_NONBLOCK) == -1)
+        return -1;
+
+    // If stdin is not a TTY (pipe/file), termios does not apply; we're done.
+    if (!isatty(STDIN_FILENO)) {
+        g_raw_enabled = 1;
+        return 0;
+    }
+
+    struct termios raw = g_orig_termios;
+
+    // Non-canonical mode: deliver input immediately, not line-buffered
+    raw.c_lflag &= ~(ICANON | ECHO);
+
+    // Optional: disable signal generation from Ctrl-C/Ctrl-Z/Ctrl-\.
+    // If you want Ctrl-C to still generate SIGINT, LEAVE ISIG enabled.
+    // raw.c_lflag &= ~(ISIG);
+
+    // Make read() return immediately:
+    // - VMIN=0, VTIME=0 => read returns 0 if no bytes are available
+    raw.c_cc[VMIN]  = 0;
+    raw.c_cc[VTIME] = 0;
+
+    // Apply settings now
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &raw) == -1) {
+        // Best effort: restore fd flags on failure
+        (void)fcntl(STDIN_FILENO, F_SETFL, g_orig_fl);
+        return -1;
+    }
+
+    g_raw_enabled = 1;
+    return 0;
+}
+
+void disable_raw_mode(int signum)
+{
+    if (!g_raw_enabled)
+        return;
+
+    int rc = 0;
+
+    // Restore termios if it was a TTY
+    if (isatty(STDIN_FILENO)) {
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &g_orig_termios) == -1)
+            rc = -1;
+    }
+
+    // Restore original fd flags
+    if (g_orig_fl != -1) {
+        if (fcntl(STDIN_FILENO, F_SETFL, g_orig_fl) == -1)
+            rc = -1;
+    }
+
+    g_raw_enabled = 0;
+
+	printf("Exiting...\n");
+
+	exit(EXIT_SUCCESS);
+}
+
+static int fd = -1;
+
 // usage: monitor <-b baudrate> <device>
 int main(int argc, char **argv) {
+	signal(SIGINT, disable_raw_mode); // ensure raw mode is disabled on Ctrl+C
+	
 	if (argc < 2) {
 		return print_usage("Not enough arguments");
 	}
@@ -35,7 +129,7 @@ int main(int argc, char **argv) {
 	}
 
 	const char *device = argv[argc - 1];
-	int fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
+	fd = open(device, O_RDWR | O_NOCTTY | O_NONBLOCK);
 	if (fd < 0) {
 		perror("Failed to open device");
 		return EXIT_FAILURE;
@@ -55,38 +149,94 @@ int main(int argc, char **argv) {
 	options.c_oflag &= ~OPOST;           // Raw output
 	tcsetattr(fd, TCSANOW, &options);
 
-	uint8_t rx_buffer[BUFFER_SIZE];
-	ssize_t bytes_read;
-	uint8_t tx_buffer[BUFFER_SIZE];
-	ssize_t bytes_written;
+	enable_raw_mode();
 
-	while (1) {
-		// Read from serial port
-		bytes_read = read(fd, rx_buffer, sizeof(rx_buffer) - 1);
-		if (bytes_read > 0) {
-			rx_buffer[bytes_read] = '\0'; // Null-terminate the string
-			printf("RX: ");
-			for (ssize_t i = 0; i < bytes_read; i++) {
-				printf("%.02x ", rx_buffer[i]);
-			}
-			printf("\n");
-			fflush(stdout);
-		}
 
-		// Check for user input
-		int input = getc(stdin);
-		if (input != EOF) {
-			tx_buffer[0] = (uint8_t)input;
-			bytes_written = write(fd, tx_buffer, 1);
-			if (bytes_written < 0) {
-				perror("Failed to write to device");
-				close(fd);
-				return EXIT_FAILURE;
-			}
-		}
-	}
+
+	simple_echo();
+
+
+
+	disable_raw_mode(0);
 
 	close(fd);
 
 	return EXIT_SUCCESS;
+}
+
+void simple_echo() {
+	uint8_t rx_buffer[BUFFER_SIZE];
+	uint8_t tx_buffer[BUFFER_SIZE];
+	ssize_t bytes_read;
+	ssize_t bytes_written;
+
+	while (1) {
+		// read stdin
+		bytes_read = read(STDIN_FILENO, tx_buffer, 1);
+
+		// send stdin to device
+		if (bytes_read > 0) {
+			bytes_written = write(fd, tx_buffer, bytes_read);
+			if (bytes_written < 0) {
+				perror("Failed to write to device");
+				return;
+			} else if (bytes_written > 0) {
+				printf("<-- ");
+				print_bits(tx_buffer[0]);
+				printf("\n");
+			}
+		}
+
+		// read from device
+		bytes_read = read(fd, rx_buffer, BUFFER_SIZE);
+		if (bytes_read > 0) {
+			for (ssize_t i = 0; i < bytes_read; i++) {
+				printf("--> ");
+				print_bits(rx_buffer[i]);
+				printf("\n");
+			}
+		}
+	}
+}
+
+void ascii_check() {
+	uint8_t rx_buffer[BUFFER_SIZE];
+	uint8_t tx_buffer[BUFFER_SIZE];
+	ssize_t bytes_read;
+	ssize_t bytes_written;
+	static int ascii_curr = 1;
+
+	while (1) {
+		// read stdin
+		tx_buffer[0] = ascii_curr++; // cycle through ASCII characters
+		bytes_read = 1;
+		if (ascii_curr == 255) {
+			return;
+		}
+
+		// send stdin to device
+		if (bytes_read > 0) {
+			bytes_written = write(fd, tx_buffer, bytes_read);
+			if (bytes_written < 0) {
+				perror("Failed to write to device");
+				return;
+			} else if (bytes_written > 0) {
+				printf("\n <-- ");
+				print_bits(tx_buffer[0]);
+			}
+		}
+
+		usleep(100000); // 10ms delay
+
+		// read from device
+		bytes_read = read(fd, rx_buffer, BUFFER_SIZE);
+		if (bytes_read > 0) {
+			for (ssize_t i = 0; i < bytes_read; i++) {
+				printf(" --> ");
+				print_bits(~rx_buffer[i]);
+			}
+		}
+	}
+
+	printf("\n");
 }

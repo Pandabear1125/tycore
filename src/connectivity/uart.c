@@ -76,6 +76,8 @@ FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudra
 	// set mux to LPUART
 	gpio_pin_to_mux_map[config->rx_pin]->mux_mode = config->rx_pin_mux;
 	config->rx_input_reg->daisy					  = config->rx_input_daisy;
+	// force RX as input
+	config->lpuart_reg->pincfg.trgsel			  = 0;
 
 	// configure the TX pin
 	gpio_pin_to_pad_map[config->tx_pin]->sre	  = 1;
@@ -93,10 +95,12 @@ FLASH_CODE lpuart_status_t lpuart_begin(lpuart_config_t* config, uint32_t baudra
 	// if baud is not set correctly, data is uninterpretable
 	config->lpuart_reg->baud.osr = osr;
 	config->lpuart_reg->baud.sbr = sbr;
-	// TODO: bothedge?
-
-	// does not seem to impact data transfer
-	// LPUART6->pincfg.trgsel = 0;
+	// bothedge per the datasheet
+	if (osr <= 8) {
+		config->lpuart_reg->baud.bothedge = 1;	// enable 10-bit mode for low osr
+	} else {
+		config->lpuart_reg->baud.bothedge = 0;
+	}
 
 	// TODO:
 	// read what the PARAM.RXFIFO and PARAM.TXFIFO are

@@ -106,7 +106,12 @@ uninstall:
 	@bash $(TOOLS_DIR)/uninstall_compiler.sh
 
 
-.PHONY: all build upload clean install uninstall
+monitor:
+	gcc -o tools/monitor tools/monitor.c
+	./tools/monitor -b 921600 /dev/tty.usbserial-ABSCDFI0
+
+
+.PHONY: all build upload clean install uninstall monitor
 
 
 # Include compile dependencies for proper incremental build

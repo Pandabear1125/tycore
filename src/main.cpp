@@ -4,9 +4,7 @@
 int main(void) {
 	pinMode(13, OUTPUT);  // onboard LED
 
-	lpuart_begin(&lpuart6_config, 115200);
-
-	// const char* buffer = "Hello!\r\n";
+	lpuart_begin(&lpuart6_config, 921600);
 
 	while (1) {
 		// read
