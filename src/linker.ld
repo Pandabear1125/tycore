@@ -33,6 +33,7 @@ SECTIONS {
         KEEP(*(.dcd))
         KEEP(*(.csf))
         FILL(0x58)
+		/* TODO: we only actually use 2800 bytes for bootdata, so we should fit other stuff in here */
         . = ALIGN(0x1000);
         KEEP(*(.ivt))
         KEEP(*(.reset_vector))

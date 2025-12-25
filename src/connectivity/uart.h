@@ -103,6 +103,7 @@ ITCM uint32_t lpuart_sync_write_buffer(lpuart_config_t* config, const uint8_t* b
 ITCM int32_t  lpuart_sync_read_byte(lpuart_config_t* config);
 ITCM int32_t  lpuart_sync_read_buffer(lpuart_config_t* config, uint8_t* buffer, uint32_t length);
 
+ITCM uint32_t lpuart_available(lpuart_config_t* config);
 ITCM uint32_t lpuart_write_byte(lpuart_config_t* config, uint8_t byte);
 ITCM uint32_t lpuart_write_buffer(lpuart_config_t* config, const uint8_t* buffer, uint32_t length);
 ITCM int32_t  lpuart_read_byte(lpuart_config_t* config);

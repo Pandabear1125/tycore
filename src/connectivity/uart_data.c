@@ -2,9 +2,15 @@
 
 // TODO: implement alt rx/tx pins
 
+extern void lpuart_isr(lpuart_config_t* config);
+
 // Serial 6
 DTCM uint8_t lpuart1_tx_buffer[LPUART1_TX_BUFFER_SIZE] = {0};
 DTCM uint8_t lpuart1_rx_buffer[LPUART1_RX_BUFFER_SIZE] = {0};
+
+void lpuart1_internal_isr(void) {
+	lpuart_isr(&lpuart1_config);
+}
 
 lpuart_config_t lpuart1_config = {
 	.ccm_reg		= CCM_CCGR5_RAW,
@@ -27,11 +33,17 @@ lpuart_config_t lpuart1_config = {
 	.tx_buffer_head = 0,
 	.tx_buffer_tail = 0,
 	.irq_num		= IRQ_LPUART1,
+	.internal_isr	= lpuart1_internal_isr,
+	.user_isr		= 0,
 };
 
 // Serial 3
 DTCM uint8_t lpuart2_tx_buffer[LPUART2_TX_BUFFER_SIZE] = {0};
 DTCM uint8_t lpuart2_rx_buffer[LPUART2_RX_BUFFER_SIZE] = {0};
+
+void lpuart2_internal_isr(void) {
+	lpuart_isr(&lpuart2_config);
+}
 
 lpuart_config_t lpuart2_config = {
 	.ccm_reg		= CCM_CCGR0_RAW,
@@ -54,11 +66,17 @@ lpuart_config_t lpuart2_config = {
 	.tx_buffer_head = 0,
 	.tx_buffer_tail = 0,
 	.irq_num		= IRQ_LPUART2,
+	.internal_isr	= lpuart2_internal_isr,
+	.user_isr		= 0,
 };
 
 // Serial 4
 DTCM uint8_t lpuart3_tx_buffer[LPUART3_TX_BUFFER_SIZE] = {0};
 DTCM uint8_t lpuart3_rx_buffer[LPUART3_RX_BUFFER_SIZE] = {0};
+
+void lpuart3_internal_isr(void) {
+	lpuart_isr(&lpuart3_config);
+}
 
 lpuart_config_t lpuart3_config = {
 	.ccm_reg		= CCM_CCGR0_RAW,
@@ -80,11 +98,17 @@ lpuart_config_t lpuart3_config = {
 	.tx_buffer_head = 0,
 	.tx_buffer_tail = 0,
 	.irq_num		= IRQ_LPUART3,
+	.internal_isr	= lpuart3_internal_isr,
+	.user_isr		= 0,
 };
 
 // Serial 2
 DTCM uint8_t lpuart4_tx_buffer[LPUART4_TX_BUFFER_SIZE] = {0};
 DTCM uint8_t lpuart4_rx_buffer[LPUART4_RX_BUFFER_SIZE] = {0};
+
+void lpuart4_internal_isr(void) {
+	lpuart_isr(&lpuart4_config);
+}
 
 lpuart_config_t lpuart4_config = {
 	.ccm_reg		= CCM_CCGR1_RAW,
@@ -106,11 +130,17 @@ lpuart_config_t lpuart4_config = {
 	.tx_buffer_head = 0,
 	.tx_buffer_tail = 0,
 	.irq_num		= IRQ_LPUART4,
+	.internal_isr	= lpuart4_internal_isr,
+	.user_isr		= 0,
 };
 
 // Serial 8
 DTCM uint8_t lpuart5_tx_buffer[LPUART5_TX_BUFFER_SIZE] = {0};
 DTCM uint8_t lpuart5_rx_buffer[LPUART5_RX_BUFFER_SIZE] = {0};
+
+void lpuart5_internal_isr(void) {
+	lpuart_isr(&lpuart5_config);
+}
 
 lpuart_config_t lpuart5_config = {
 	.ccm_reg		= CCM_CCGR3_RAW,
@@ -133,11 +163,17 @@ lpuart_config_t lpuart5_config = {
 	.tx_buffer_head = 0,
 	.tx_buffer_tail = 0,
 	.irq_num		= IRQ_LPUART5,
+	.internal_isr	= lpuart5_internal_isr,
+	.user_isr		= 0,
 };
 
 // Serial 1
 DTCM uint8_t lpuart6_tx_buffer[LPUART6_TX_BUFFER_SIZE] = {0};
 DTCM uint8_t lpuart6_rx_buffer[LPUART6_RX_BUFFER_SIZE] = {0};
+
+void lpuart6_internal_isr(void) {
+	lpuart_isr(&lpuart6_config);
+}
 
 lpuart_config_t lpuart6_config = {
 	.ccm_reg		= CCM_CCGR3_RAW,
@@ -160,11 +196,17 @@ lpuart_config_t lpuart6_config = {
 	.tx_buffer_head = 0,
 	.tx_buffer_tail = 0,
 	.irq_num		= IRQ_LPUART6,
+	.internal_isr	= lpuart6_internal_isr,
+	.user_isr		= 0,
 };
 
 // Serial 7
 DTCM uint8_t lpuart7_tx_buffer[LPUART7_TX_BUFFER_SIZE] = {0};
 DTCM uint8_t lpuart7_rx_buffer[LPUART7_RX_BUFFER_SIZE] = {0};
+
+void lpuart7_internal_isr(void) {
+	lpuart_isr(&lpuart7_config);
+}
 
 lpuart_config_t lpuart7_config = {
 	.ccm_reg		= CCM_CCGR5_RAW,
@@ -187,11 +229,17 @@ lpuart_config_t lpuart7_config = {
 	.tx_buffer_head = 0,
 	.tx_buffer_tail = 0,
 	.irq_num		= IRQ_LPUART7,
+	.internal_isr	= lpuart7_internal_isr,
+	.user_isr		= 0,
 };
 
 // Serial 5
 DTCM uint8_t lpuart8_tx_buffer[LPUART8_TX_BUFFER_SIZE] = {0};
 DTCM uint8_t lpuart8_rx_buffer[LPUART8_RX_BUFFER_SIZE] = {0};
+
+void lpuart8_internal_isr(void) {
+	lpuart_isr(&lpuart8_config);
+}
 
 lpuart_config_t lpuart8_config = {
 	.ccm_reg		= CCM_CCGR6_RAW,
@@ -214,4 +262,6 @@ lpuart_config_t lpuart8_config = {
 	.tx_buffer_head = 0,
 	.tx_buffer_tail = 0,
 	.irq_num		= IRQ_LPUART8,
+	.internal_isr	= lpuart8_internal_isr,
+	.user_isr		= 0,
 };

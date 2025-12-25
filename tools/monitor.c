@@ -226,14 +226,14 @@ void ascii_check() {
 			}
 		}
 
-		usleep(100000); // 10ms delay
+		usleep(1000000); // 10ms delay
 
 		// read from device
 		bytes_read = read(fd, rx_buffer, BUFFER_SIZE);
 		if (bytes_read > 0) {
 			for (ssize_t i = 0; i < bytes_read; i++) {
 				printf(" --> ");
-				print_bits(~rx_buffer[i]);
+				print_bits(rx_buffer[i]);
 			}
 		}
 	}
